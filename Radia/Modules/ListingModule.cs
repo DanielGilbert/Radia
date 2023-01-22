@@ -1,14 +1,23 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.FileProviders;
+using Radia.Services;
+using Radia.Services.FileProviders;
+using System.Text;
 
 namespace Radia.Modules
 {
     public class ListingModule : IListingModule
     {
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly IFileProvider fileProvider;
 
-        public ListingModule(IWebHostEnvironment webHostEnvironment)
+        public ListingModule(IWebHostEnvironment webHostEnvironment,
+                             IFileProviderFactory fileProviderFactory,
+                             IConfigurationService configurationService)
         {
             this.webHostEnvironment = webHostEnvironment;
+
+            var fileProviderConfiguration = configurationService.GetFileProviderConfiguration();
+            this.fileProvider = fileProviderFactory.Create(fileProviderConfiguration);
         }
 
         public IResult ProcessRequest(string arg)

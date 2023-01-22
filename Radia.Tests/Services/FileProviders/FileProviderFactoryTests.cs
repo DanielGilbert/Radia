@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Radia.Tests.Services.FileProviders
 {
@@ -20,12 +21,25 @@ namespace Radia.Tests.Services.FileProviders
 
             public FileProviderConfiguration ValidGitFileProviderConfiguration { get; }
             public FileProviderConfiguration ValidLocalFileProviderConfiguration { get; }
+            public FileProviderConfiguration InvalidEnumFileProviderConfiguration { get; }
 
             public RadiaTestContext()
             {
                 ValidGitFileProviderConfiguration = CreateGitConfiguration();
                 ValidLocalFileProviderConfiguration = CreateLocalConfiguration();
+                InvalidEnumFileProviderConfiguration = CreateInvalidEnumConfiguration();
             }
+
+            private FileProviderConfiguration CreateInvalidEnumConfiguration()
+            {
+                var result = new FileProviderConfiguration()
+                {
+                    FileProvider = (FileProviderEnum)4
+                };
+
+                return result;
+            }
+
             private static FileProviderConfiguration CreateGitConfiguration()
             {
                 var result = new FileProviderConfiguration()
@@ -64,7 +78,7 @@ namespace Radia.Tests.Services.FileProviders
             [DataTestMethod]
             [DataRow(FileProviderEnum.Local, typeof(LocalFileProvider), DisplayName = "Local")]
             [DataRow(FileProviderEnum.Git, typeof(GitFileProvider), DisplayName = "Git")]
-            public void WhenTheConfigurationIsValid_AMatchingInstanceIsReturned(FileProviderEnum fileProviderEnum, Type typeOfInstance)
+            public void WhenTheConfigurationIsValid_ThenAMatchingInstanceIsReturned(FileProviderEnum fileProviderEnum, Type typeOfInstance)
             {
                 var sut = new FileProviderFactory();
                 FileProviderConfiguration fileProviderConfiguration = fileProviderEnum switch
@@ -78,6 +92,20 @@ namespace Radia.Tests.Services.FileProviders
 
                 result.Should().NotBeNull();
                 result.Should().BeOfType(typeOfInstance);
+            }
+
+            [TestMethod]
+            public void WhenFileProviderEnumIsInvalid_ThenAnInvalidEnumExceptionIsThrown()
+            {
+                var sut = new FileProviderFactory();
+                FileProviderConfiguration fileProviderConfiguration = new FileProviderConfiguration()
+                {
+                    FileProvider = (FileProviderEnum)4
+                };
+
+                sut.Invoking(sut => sut.Create(fileProviderConfiguration))
+                   .Should()
+                   .Throw<InvalidEnumArgumentException>();
             }
         }
     }
