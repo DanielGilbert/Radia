@@ -1,7 +1,4 @@
-﻿using System.Net.Mime;
-using System.Text;
-
-namespace Dagidirli.Modules
+﻿namespace Dagidirli.Modules
 {
     public class ListingModule : IListingModule
     {
