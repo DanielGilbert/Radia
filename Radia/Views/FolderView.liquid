@@ -1,0 +1,73 @@
+﻿<header>
+    <h1>@Html.Raw(@ViewBag.H1Header)</h1>
+    @{ var last = Model.Ancestors.LastOrDefault(); }
+    @if (last != null)
+    {
+        <nav>
+            <ul class="breadcrumb">
+                <li><a href="/">home</a></li>
+                @foreach (var ancestor in Model.Ancestors.Take(Model.Ancestors.Count - 1))
+                {
+                    <li><a href="/@ancestor.Url/">@ancestor.Name</a></li>
+                }
+                <li>@last.Name</li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <nav>
+            <ul class="breadcrumb">
+                <li>home</li>
+            </ul>
+        </nav>
+    }
+</header>
+<main>
+    <nav>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var directory in Model.Directories.Where((p) => !p.Name.StartsWith(".")))
+                {
+                <tr>
+                    <td>
+                        <a href="/@directory.Url"><span>@directory.Title</span></a>
+                    </td>
+                    <td>-</td>
+                    @{
+
+                        var fileDateTime = directory.DateTime.Value.ToUniversalTime().ToString("u") ?? String.Empty;
+
+                    }
+                    <td>@fileDateTime</td>
+                </tr>
+                }
+                @foreach (var file in Model.Files.Where((p) => !p.Name.StartsWith(".")))
+                {
+                    <tr>
+                        <td>
+                            <a href="/@file.Url">
+                                <span class="file-name">@file.Title</span>
+                            </a>
+                        </td>
+                        @{var fileSize = !String.IsNullOrWhiteSpace(file.Size) ? file.Size : "-";}
+                        <td>@fileSize</td>
+                        @{var fileDateTime = file.DateTime.Value.ToUniversalTime().ToString("u") ?? String.Empty;}
+                        <td>@fileDateTime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </nav>
+    <article>
+        @Html.Raw(@Model.ReadmeFile.Content)
+    </article>
+</main>

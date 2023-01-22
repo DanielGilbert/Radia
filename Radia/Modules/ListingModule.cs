@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Radia.Services;
 using Radia.Services.FileProviders;
+using Radia.ViewModels;
 using System.Text;
 
 namespace Radia.Modules
@@ -29,9 +30,7 @@ namespace Radia.Modules
 
         public IResult ProcessRequest()
         {
-            return Results.Extensions.View("Index", new Todo(1, "Go back to work!", false));
+            return Results.Extensions.View("FolderView", new FolderViewModel());
         }
     }
-
-    record Todo(int Id, string Name, bool IsComplete);
 }
