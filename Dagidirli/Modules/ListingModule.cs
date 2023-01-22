@@ -1,4 +1,7 @@
-﻿namespace Dagidirli.Modules
+﻿using System.Net.Mime;
+using System.Text;
+
+namespace Dagidirli.Modules
 {
     public class ListingModule : IListingModule
     {
@@ -9,7 +12,9 @@
 
         public IResult ProcessRequest()
         {
-            return Results.Ok("This is just the index page");
+            return Results.Extensions.View("Index", new Todo(1, "Go back to work!", false));
         }
     }
+
+    record Todo(int Id, string Name, bool IsComplete);
 }

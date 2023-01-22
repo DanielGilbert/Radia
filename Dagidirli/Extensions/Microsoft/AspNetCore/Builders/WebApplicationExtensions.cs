@@ -6,8 +6,10 @@ namespace Dagidirli.Extensions.Microsoft.AspNetCore.Builders
     {
         public static WebApplication MapDagidirliModules(this WebApplication app)
         {
-            IStatisticsModule statisticsModule = app.Services.GetService<IStatisticsModule>() ?? throw new InvalidOperationException("StatisticsModule cannot be fetched.");
-            IListingModule listingModule = app.Services.GetService<IListingModule>() ?? throw new InvalidOperationException("ListingModule cannot be fetched.");
+            IStatisticsModule statisticsModule = app.Services.GetService<IStatisticsModule>()
+                                                 ?? throw new InvalidOperationException("StatisticsModule cannot be fetched.");
+            IListingModule listingModule = app.Services.GetService<IListingModule>()
+                                           ?? throw new InvalidOperationException("ListingModule cannot be fetched.");
 
             app.MapGet("/stats", () => statisticsModule.ProcessRequest());
             app.MapGet("/{*path}", (string? path) =>
