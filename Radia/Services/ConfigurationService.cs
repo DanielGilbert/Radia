@@ -16,11 +16,11 @@ namespace Radia.Services
                                     ?? throw new InvalidOperationException("AppConfiguration must not be null. Check appsettings.json");
         }
 
-        public string GetPageTitle()
+        public string GetWebsiteTitle()
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(this.appConfiguration.DefaultPageHeader,
-                                                     nameof(this.appConfiguration.DefaultPageHeader));
-            return this.appConfiguration.DefaultPageHeader;
+            ArgumentNullException.ThrowIfNullOrEmpty(this.appConfiguration.WebsiteTitle,
+                                                     nameof(this.appConfiguration.WebsiteTitle));
+            return this.appConfiguration.WebsiteTitle;
         }
 
         public FileProviderConfiguration GetFileProviderConfiguration()
@@ -28,6 +28,13 @@ namespace Radia.Services
             ArgumentNullException.ThrowIfNull(appConfiguration.FileProviderConfiguration,
                                               nameof(appConfiguration.FileProviderConfiguration));
             return appConfiguration.FileProviderConfiguration;
+        }
+
+        public string GetPageHeader()
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(this.appConfiguration.DefaultPageHeader,
+                                                     nameof(this.appConfiguration.DefaultPageHeader));
+            return this.appConfiguration.DefaultPageHeader;
         }
     }
 }

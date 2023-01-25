@@ -6,5 +6,6 @@
         string PageHeader { get; }
         string Content { get; }
         string FullFilePath { get; }
+        string WebsiteRoot { get; }
     }
 }

@@ -18,7 +18,7 @@
             }
             else
             {
-                return new EmptyContentResult();
+                return new PlainTextContentResult(string.Empty, content, contentType);
             }
         }
     }

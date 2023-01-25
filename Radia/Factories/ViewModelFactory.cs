@@ -10,16 +10,19 @@ namespace Radia.Factories
         private readonly IConfigurationService configurationService;
         private readonly IContentTypeIdentifierService contentTypeIdentifierService;
         private readonly IContentProcessorFactory<string> contentProcessorFactory;
+        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IFileProvider fileProvider;
 
         public ViewModelFactory(IFileProviderFactory fileProviderFactory,
                                 IConfigurationService configurationService,
                                 IContentTypeIdentifierService contentTypeIdentifierService,
-                                IContentProcessorFactory<string> contentProcessorFactory)
+                                IContentProcessorFactory<string> contentProcessorFactory,
+                                IHttpContextAccessor httpContextAccessor)
         {
             this.configurationService = configurationService;
             this.contentTypeIdentifierService = contentTypeIdentifierService;
             this.contentProcessorFactory = contentProcessorFactory;
+            this.httpContextAccessor = httpContextAccessor;
             this.fileProvider = fileProviderFactory.Create(this.configurationService.GetFileProviderConfiguration());
         }
 
@@ -27,27 +30,32 @@ namespace Radia.Factories
         {
             IContentProcessor<string> contentProcessor = this.contentProcessorFactory.Create();
 
+            string websiteRoot = this.httpContextAccessor.HttpContext?.Request.Scheme + "://" + this.httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
+
             if (args.Path == string.Empty)
             {
-                return new FolderViewModel(configurationService.GetPageTitle(),
-                           configurationService.GetPageTitle(),
-                           args.Path);
+                return new FolderViewModel(configurationService.GetWebsiteTitle(),
+                                           configurationService.GetPageHeader(),
+                                           args.Path,
+                                           websiteRoot);
             }
 
             IFileInfo fileInfo = this.fileProvider.GetFileInfo(args.Path);
 
             if (fileInfo.Exists is false)
             {
-                return new PathNotFoundViewModel(configurationService.GetPageTitle(),
-                                                 configurationService.GetPageTitle(),
-                                                 args.Path);
+                return new PathNotFoundViewModel(configurationService.GetWebsiteTitle(),
+                                                 configurationService.GetPageHeader(),
+                                                 args.Path,
+                                                 websiteRoot);
             }
 
             if (fileInfo.IsDirectory)
             {
-                return new FolderViewModel(configurationService.GetPageTitle(),
-                                           configurationService.GetPageTitle(),
-                                           args.Path);
+                return new FolderViewModel(configurationService.GetWebsiteTitle(),
+                                           configurationService.GetPageHeader(),
+                                           args.Path,
+                                           websiteRoot);
             }
 
             var contentType = this.contentTypeIdentifierService.GetContentTypeFrom(args.Path);
@@ -55,14 +63,15 @@ namespace Radia.Factories
             IContentResult<string> contentResult = new EmptyContentResult();
 
             using (var stream = fileInfo.CreateReadStream())
-            {
-                contentResult = contentProcessor.ProcessContent(contentType, stream);
-            }
+            
+            contentResult = contentProcessor.ProcessContent(contentType, stream);
 
             return new PhysicalFileViewModel(contentResult,
-                                             configurationService.GetPageTitle(),
-                                             configurationService.GetPageTitle(),
-                                             args.Path);
+                                             contentType,
+                                             fileInfo.Name,
+                                             configurationService.GetWebsiteTitle(),
+                                             configurationService.GetPageHeader(),
+                                             fileInfo.PhysicalPath ?? string.Empty);
         }
     }
 }

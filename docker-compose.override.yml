@@ -7,5 +7,5 @@ services:
     ports:
       - "80"
     volumes:
-    - C:\\Dev\\Source\\gilbert-world-content\\content\\:/blogsource
+      - "C:\\Dev\\Source\\gilbert-world-content\\content:/blogsource:ro"
 

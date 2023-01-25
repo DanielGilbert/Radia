@@ -42,9 +42,22 @@ namespace Radia.Modules
         private IResult InternalProcessRequest(string path)
         {
             var viewModelFactoryArgs = new ViewModelFactoryArgs(path,
-                                                                this.configurationService.GetPageTitle());
+                                                                this.configurationService.GetWebsiteTitle());
 
             var resultViewModel = this.viewModelFactory.Create(viewModelFactoryArgs);
+
+            if (resultViewModel is IPhysicalFileViewModel physicalFileViewModel)
+            {
+                if (string.IsNullOrWhiteSpace(physicalFileViewModel.ContentResult.Result) is false)
+                {
+                    return Results.Text(physicalFileViewModel.ContentResult.Result, physicalFileViewModel.ContentType);
+                }
+
+                return Results.File(physicalFileViewModel.ContentResult.Stream,
+                                    physicalFileViewModel.ContentType,
+                                    physicalFileViewModel.FileName);
+            }
+
             var resultView = this.viewFactory.Create(resultViewModel);
 
             return Results.Extensions.View(resultView, resultViewModel);
