@@ -6,44 +6,27 @@ namespace Radia.Services
 {
     public class ConfigurationService : IConfigurationService
     {
-        private AppConfiguration appConfiguration;
+        private readonly AppConfiguration appConfiguration;
 
         public ConfigurationService(IConfiguration configuration)
         {
-            if (configuration is null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
+            ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
 
             this.appConfiguration = configuration?.GetSection("AppConfiguration").Get<AppConfiguration>()
                                     ?? throw new InvalidOperationException("AppConfiguration must not be null. Check appsettings.json");
-
-            if (this.appConfiguration.FileProviderConfiguration is null)
-            {
-                throw new InvalidOperationException("FileProviderConfiguration must not be null. Check appsettings.json");
-            }
-
-            //                            ?? throw new InvalidOperationException("RootDirectory must not be null. Check appsettings.json");
-            //string websiteTitle = configuration?.GetSection("AppConfiguration")["WebsiteTitle"]
-            //                            ?? throw new InvalidOperationException("WebsiteTitle must not be null. Check appsettings.json");
-            //string webpageTitle = configuration?.GetSection("AppConfiguration")["WebsiteH1Title"]
-            //                            ?? throw new InvalidOperationException("WebsiteH1Title must not be null. Check appsettings.json");
-
-            //string rootDirectory = Path.GetFullPath(Path.Combine(rootDirectoryValue, string.Empty));
         }
 
-        //public string GetRootDirectory()
-        //{
-        //    return directoryListingConfiguration.RootDirectory;
-        //}
+        public string GetPageTitle()
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(this.appConfiguration.DefaultPageHeader,
+                                                     nameof(this.appConfiguration.DefaultPageHeader));
+            return this.appConfiguration.DefaultPageHeader;
+        }
 
         public FileProviderConfiguration GetFileProviderConfiguration()
         {
-            if (this.appConfiguration.FileProviderConfiguration is null)
-            {
-                throw new InvalidOperationException("FileProviderConfiguration must not be null. Check appsettings.json");
-            }
-
+            ArgumentNullException.ThrowIfNull(appConfiguration.FileProviderConfiguration,
+                                              nameof(appConfiguration.FileProviderConfiguration));
             return appConfiguration.FileProviderConfiguration;
         }
     }

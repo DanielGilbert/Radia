@@ -1,5 +1,5 @@
 ﻿<header>
-    <h1>@Html.Raw(@ViewBag.H1Header)</h1>
+    <h1>{{ PageHeader }}</h1>
     @{ var last = Model.Ancestors.LastOrDefault(); }
     @if (last != null)
     {

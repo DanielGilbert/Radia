@@ -2,5 +2,9 @@
 {
     public interface IViewModel
     {
+        string PageTitle { get; }
+        string PageHeader { get; }
+        string Content { get; }
+        string FullFilePath { get; }
     }
 }

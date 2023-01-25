@@ -1,6 +1,7 @@
-﻿using Radia.Modules;
+﻿using Microsoft.Extensions.FileProviders;
+using Radia.Factories;
+using Radia.Modules;
 using Radia.Services;
-using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Git;
 using Radia.Services.FileProviders.Local;
 
@@ -19,10 +20,13 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
         public static WebApplicationBuilder AddLocalServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
-            var localFileProvider = new LocalFileProvider();
-            var gitFileProvider = new GitFileProvider();
-            var fileProviderFactory = new FileProviderFactory(gitFileProvider, localFileProvider);
-            builder.Services.AddSingleton<IFileProviderFactory>(fileProviderFactory);
+            builder.Services.AddSingleton<IFileProvider, GitFileProvider>();
+            builder.Services.AddSingleton<IFileProvider, LocalFileProvider>();
+            builder.Services.AddSingleton<IFileProviderFactory, FileProviderFactory>();
+            builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+            builder.Services.AddSingleton<IViewFactory, ViewFactory>();
+            builder.Services.AddSingleton<IContentProcessorFactory<string>, ContentProcessorFactory>();
+            builder.Services.AddSingleton<IContentTypeIdentifierService, ContentTypeIdentifierService>();
 
             return builder;
         }

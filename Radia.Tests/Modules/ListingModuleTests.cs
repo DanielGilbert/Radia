@@ -3,15 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Moq;
+using Radia.Factories;
 using Radia.Modules;
 using Radia.Services;
-using Radia.Services.FileProviders;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Radia.Tests.Modules
 {
@@ -26,6 +20,7 @@ namespace Radia.Tests.Modules
             public IFileProvider LocalFileProvider { get; }
             public IFileProvider GitFileProvider { get; }
             public IConfigurationService ConfigurationService { get; }
+            public IViewModelFactory ViewModelFactory { get; }
 
             public RadiaTestContext()
             {
@@ -34,6 +29,7 @@ namespace Radia.Tests.Modules
                 GitFileProvider = MockGitFileProvider();
                 ConfigurationService = MockConfigurationService();
                 FileProviderFactory = BuildFileProviderFactory();
+                ViewModelFactory = new ViewModelFactory();
             }
 
             private static IConfigurationService MockConfigurationService()
@@ -56,7 +52,8 @@ namespace Radia.Tests.Modules
                     {"AllowedHosts", "*"},
                     {"AppConfiguration:FileProviderConfiguration:FileProvider", "Local"},
                     {"AppConfiguration:FileProviderConfiguration:Settings:RootDirectory", "/blogsource/"},
-                    {"AppConfiguration:WebsiteTitle", "g5t.de - 'cause gilbert.de was too expensive..."}
+                    {"AppConfiguration:WebsiteTitle", "g5t.de - 'cause gilbert.de was too expensive..."},
+                    {"AppConfiguration:DefaultPageHeader", "g[ilber]t.de" }
                 };
 
                 return result;
@@ -96,9 +93,15 @@ namespace Radia.Tests.Modules
         [TestClass]
         public class TheProcessRequestMethod
         {
-            RadiaTestContext RadiaTestContext { get; }
+            RadiaTestContext RadiaTestContext { get; set; }
 
             public TheProcessRequestMethod()
+            {
+                RadiaTestContext = new RadiaTestContext();
+            }
+
+            [TestInitialize]
+            public void InitializeTest()
             {
                 RadiaTestContext = new RadiaTestContext();
             }
@@ -108,6 +111,7 @@ namespace Radia.Tests.Modules
             {
                 var sut = new ListingModule(RadiaTestContext.WebHostEnvironment,
                                             RadiaTestContext.FileProviderFactory,
+                                            RadiaTestContext.ViewModelFactory,
                                             RadiaTestContext.ConfigurationService);
 
                 var result = sut.ProcessRequest();
@@ -131,6 +135,7 @@ namespace Radia.Tests.Modules
             {
                 var sut = new ListingModule(RadiaTestContext.WebHostEnvironment,
                                             RadiaTestContext.FileProviderFactory,
+                                            RadiaTestContext.ViewModelFactory,
                                             RadiaTestContext.ConfigurationService);
 
                 var result = sut.ProcessRequest(RadiaTestContext.SubFolderPath);
