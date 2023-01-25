@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  radia:
+    image: ${DOCKER_REGISTRY-}radia
+    build:
+      context: .
+      dockerfile: Radia/Dockerfile

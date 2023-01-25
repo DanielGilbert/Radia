@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  radia:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+    volumes:
+    - C:\\Dev\\Source\\gilbert-world-content\\content\\:/blogsource
+
