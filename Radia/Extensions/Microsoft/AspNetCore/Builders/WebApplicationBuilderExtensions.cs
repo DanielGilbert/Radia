@@ -2,6 +2,7 @@
 using Radia.Factories;
 using Radia.Modules;
 using Radia.Services;
+using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Git;
 using Radia.Services.FileProviders.Local;
 
@@ -20,8 +21,8 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
         public static WebApplicationBuilder AddLocalServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
-            builder.Services.AddSingleton<IFileProvider, GitFileProvider>();
-            builder.Services.AddSingleton<IFileProvider, LocalFileProvider>();
+            builder.Services.AddSingleton<IRadiaFileProvider, GitFileProvider>();
+            builder.Services.AddSingleton<IRadiaFileProvider, LocalFileProvider>();
             builder.Services.AddSingleton<IRadiaFileProviderFactory, FileProviderFactory>();
             builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             builder.Services.AddSingleton<IViewFactory, ViewFactory>();
