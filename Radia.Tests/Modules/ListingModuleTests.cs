@@ -1,11 +1,13 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Moq;
 using Radia.Factories;
 using Radia.Modules;
 using Radia.Services;
+using Radia.Services.FileProviders.Local;
 
 namespace Radia.Tests.Modules
 {
@@ -20,16 +22,51 @@ namespace Radia.Tests.Modules
             public IFileProvider LocalFileProvider { get; }
             public IFileProvider GitFileProvider { get; }
             public IConfigurationService ConfigurationService { get; }
+            public IContentTypeIdentifierService ContentTypeIdentifierService { get; }
             public IViewModelFactory ViewModelFactory { get; }
+            public IContentProcessorFactory<string> ContentProcessorFactory { get; }
+            public IHttpContextAccessor HttpContextAccessor { get; }
+            public IViewFactory ViewFactory { get; set; }
 
             public RadiaTestContext()
             {
+                HttpContextAccessor = MockHttpContextAccessor();
+                ContentProcessorFactory = BuildContentProcessorFactory();
                 WebHostEnvironment = MockWebHostEnvironment();
                 LocalFileProvider = MockLocalFileProvider();
                 GitFileProvider = MockGitFileProvider();
                 ConfigurationService = MockConfigurationService();
+                ContentTypeIdentifierService = BuildContentTypeIdentifierService();
                 FileProviderFactory = BuildFileProviderFactory();
-                ViewModelFactory = new ViewModelFactory();
+                ViewFactory = BuildViewFactory();
+                ViewModelFactory = new ViewModelFactory(FileProviderFactory,
+                                                        ConfigurationService,
+                                                        ContentTypeIdentifierService,
+                                                        ContentProcessorFactory,
+                                                        HttpContextAccessor);
+            }
+
+            private static IViewFactory BuildViewFactory()
+            {
+                return new ViewFactory();
+            }
+
+            private static IHttpContextAccessor MockHttpContextAccessor()
+            {
+                var httpContextAccessor = new Mock<IHttpContextAccessor>();
+                httpContextAccessor.Setup(p => p.HttpContext!.Request.Host).Returns(new HostString("localhost:54321"));
+                httpContextAccessor.Setup(p => p.HttpContext!.Request.Scheme).Returns("http");
+                return httpContextAccessor.Object;
+            }
+
+            private static IContentProcessorFactory<string> BuildContentProcessorFactory()
+            {
+                return new ContentProcessorFactory();
+            }
+
+            private static IContentTypeIdentifierService BuildContentTypeIdentifierService()
+            {
+                return new ContentTypeIdentifierService();
             }
 
             private static IConfigurationService MockConfigurationService()
@@ -75,7 +112,12 @@ namespace Radia.Tests.Modules
 
             private IFileProviderFactory BuildFileProviderFactory()
             {
-                var factory = new FileProviderFactory(GitFileProvider, LocalFileProvider);
+                var fileProviders = new List<IFileProvider>
+                {
+                    GitFileProvider,
+                    LocalFileProvider
+                };
+                var factory = new FileProviderFactory(fileProviders);
 
                 return factory;
             }
@@ -112,6 +154,7 @@ namespace Radia.Tests.Modules
                 var sut = new ListingModule(RadiaTestContext.WebHostEnvironment,
                                             RadiaTestContext.FileProviderFactory,
                                             RadiaTestContext.ViewModelFactory,
+                                            RadiaTestContext.ViewFactory,
                                             RadiaTestContext.ConfigurationService);
 
                 var result = sut.ProcessRequest();
@@ -136,6 +179,7 @@ namespace Radia.Tests.Modules
                 var sut = new ListingModule(RadiaTestContext.WebHostEnvironment,
                                             RadiaTestContext.FileProviderFactory,
                                             RadiaTestContext.ViewModelFactory,
+                                            RadiaTestContext.ViewFactory,
                                             RadiaTestContext.ConfigurationService);
 
                 var result = sut.ProcessRequest(RadiaTestContext.SubFolderPath);

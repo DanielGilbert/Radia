@@ -62,7 +62,7 @@ namespace Radia.Factories
 
             IContentResult<string> contentResult = new EmptyContentResult();
 
-            using (var stream = fileInfo.CreateReadStream())
+            var stream = fileInfo.CreateReadStream();
             
             contentResult = contentProcessor.ProcessContent(contentType, stream);
 
