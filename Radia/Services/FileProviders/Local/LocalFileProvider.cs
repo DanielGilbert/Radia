@@ -3,10 +3,12 @@ using Microsoft.Extensions.Primitives;
 
 namespace Radia.Services.FileProviders.Local
 {
-    public class LocalFileProvider : IFileProvider
+    public class LocalFileProvider : IRadiaFileProvider
     {
         private readonly IFileProvider fileProvider;
         private readonly string rootPath;
+
+        public FileProviderEnum FileProviderEnum { get; }
 
         public LocalFileProvider(IConfigurationService configurationService)
         {
@@ -15,11 +17,13 @@ namespace Radia.Services.FileProviders.Local
             {
                 this.rootPath = fileProviderConfiguration.Settings["RootDirectory"];
                 this.fileProvider = new PhysicalFileProvider(this.rootPath);
+                this.FileProviderEnum = FileProviderEnum.Local;
             }
             else
             {
                 this.rootPath = string.Empty;
                 this.fileProvider = new EmptyFileProvider();
+                this.FileProviderEnum = FileProviderEnum.Empty;
             }
         }
 

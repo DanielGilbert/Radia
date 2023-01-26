@@ -13,7 +13,7 @@ namespace Radia.Factories
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IFileProvider fileProvider;
 
-        public ViewModelFactory(IFileProviderFactory fileProviderFactory,
+        public ViewModelFactory(IRadiaFileProviderFactory fileProviderFactory,
                                 IConfigurationService configurationService,
                                 IContentTypeIdentifierService contentTypeIdentifierService,
                                 IContentProcessorFactory<string> contentProcessorFactory,

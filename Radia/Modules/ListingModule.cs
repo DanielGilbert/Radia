@@ -16,7 +16,7 @@ namespace Radia.Modules
         private readonly IFileProvider fileProvider;
 
         public ListingModule(IWebHostEnvironment webHostEnvironment,
-                             IFileProviderFactory fileProviderFactory,
+                             IRadiaFileProviderFactory fileProviderFactory,
                              IViewModelFactory viewModelFactory,
                              IViewFactory viewFactory,
                              IConfigurationService configurationService)

@@ -27,9 +27,9 @@ namespace Radia.Tests.Services.FileProviders
             public FileProviderConfiguration ValidGitFileProviderConfiguration { get; }
             public FileProviderConfiguration ValidLocalFileProviderConfiguration { get; }
             public FileProviderConfiguration InvalidEnumFileProviderConfiguration { get; }
-            public IFileProvider LocalFileProvider { get; }
-            public IFileProvider GitFileProvider { get; }
-            public IList<IFileProvider> FileProviders { get; }
+            public IRadiaFileProvider LocalFileProvider { get; }
+            public IRadiaFileProvider GitFileProvider { get; }
+            public IList<IRadiaFileProvider> FileProviders { get; }
             public IConfigurationService ConfigurationService { get; }
 
             public RadiaTestContext()
@@ -40,7 +40,7 @@ namespace Radia.Tests.Services.FileProviders
                 ConfigurationService = MockConfigurationService();
                 LocalFileProvider = new LocalFileProvider(ConfigurationService);
                 GitFileProvider = new GitFileProvider();
-                FileProviders = new List<IFileProvider>()
+                FileProviders = new List<IRadiaFileProvider>()
                 {
                     LocalFileProvider,
                     GitFileProvider

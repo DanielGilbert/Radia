@@ -14,7 +14,8 @@
 
     public enum FileProviderEnum
     {
-        Local = 0,
-        Git = 1
+        Empty = 0,
+        Local = 1,
+        Git = 2
     }
 }

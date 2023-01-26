@@ -7,6 +7,7 @@ using Moq;
 using Radia.Factories;
 using Radia.Modules;
 using Radia.Services;
+using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Local;
 
 namespace Radia.Tests.Modules
@@ -18,9 +19,9 @@ namespace Radia.Tests.Modules
             public string WebRootPath = @"./webroot/path/";
             public string SubFolderPath = @"/test";
             public IWebHostEnvironment WebHostEnvironment { get; }
-            public IFileProviderFactory FileProviderFactory { get; }
-            public IFileProvider LocalFileProvider { get; }
-            public IFileProvider GitFileProvider { get; }
+            public IRadiaFileProviderFactory FileProviderFactory { get; }
+            public IRadiaFileProvider LocalFileProvider { get; }
+            public IRadiaFileProvider GitFileProvider { get; }
             public IConfigurationService ConfigurationService { get; }
             public IContentTypeIdentifierService ContentTypeIdentifierService { get; }
             public IViewModelFactory ViewModelFactory { get; }
@@ -96,23 +97,23 @@ namespace Radia.Tests.Modules
                 return result;
             }
 
-            private static IFileProvider MockGitFileProvider()
+            private static IRadiaFileProvider MockGitFileProvider()
             {
-                var localFileProvider = new Mock<IFileProvider>();
-
+                var localFileProvider = new Mock<IRadiaFileProvider>();
+                localFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Local);
                 return localFileProvider.Object;
             }
 
-            private static IFileProvider MockLocalFileProvider()
+            private static IRadiaFileProvider MockLocalFileProvider()
             {
-                var localFileProvider = new Mock<IFileProvider>();
-                
+                var localFileProvider = new Mock<IRadiaFileProvider>();
+                localFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Git);
                 return localFileProvider.Object;
             }
 
-            private IFileProviderFactory BuildFileProviderFactory()
+            private IRadiaFileProviderFactory BuildFileProviderFactory()
             {
-                var fileProviders = new List<IFileProvider>
+                var fileProviders = new List<IRadiaFileProvider>
                 {
                     GitFileProvider,
                     LocalFileProvider

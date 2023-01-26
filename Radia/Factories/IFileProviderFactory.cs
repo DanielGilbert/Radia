@@ -3,8 +3,8 @@ using Radia.Services.FileProviders;
 
 namespace Radia.Factories
 {
-    public interface IFileProviderFactory
+    public interface IRadiaFileProviderFactory
     {
-        IFileProvider Create(FileProviderConfiguration configuration);
+        IRadiaFileProvider Create(FileProviderConfiguration configuration);
     }
 }

@@ -22,7 +22,7 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
             builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
             builder.Services.AddSingleton<IFileProvider, GitFileProvider>();
             builder.Services.AddSingleton<IFileProvider, LocalFileProvider>();
-            builder.Services.AddSingleton<IFileProviderFactory, FileProviderFactory>();
+            builder.Services.AddSingleton<IRadiaFileProviderFactory, FileProviderFactory>();
             builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             builder.Services.AddSingleton<IViewFactory, ViewFactory>();
             builder.Services.AddSingleton<IContentProcessorFactory<string>, ContentProcessorFactory>();

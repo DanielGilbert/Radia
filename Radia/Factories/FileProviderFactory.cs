@@ -7,21 +7,21 @@ using Radia.Services.FileProviders.Local;
 
 namespace Radia.Factories
 {
-    public class FileProviderFactory : IFileProviderFactory
+    public class FileProviderFactory : IRadiaFileProviderFactory
     {
-        private readonly IEnumerable<IFileProvider> fileProviders;
+        private readonly IEnumerable<IRadiaFileProvider> fileProviders;
 
-        public FileProviderFactory(IEnumerable<IFileProvider> fileProviders)
+        public FileProviderFactory(IEnumerable<IRadiaFileProvider> fileProviders)
         {
             this.fileProviders = fileProviders;
         }
 
-        public IFileProvider Create(FileProviderConfiguration configuration)
+        public IRadiaFileProvider Create(FileProviderConfiguration configuration)
         {
-            IFileProvider? result = configuration.FileProvider switch
+            IRadiaFileProvider? result = configuration.FileProvider switch
             {
-                FileProviderEnum.Git => fileProviders.SingleOrDefault((p) => p.GetType() == typeof(GitFileProvider)),
-                FileProviderEnum.Local => fileProviders.SingleOrDefault((p) => p.GetType() == typeof(LocalFileProvider)),
+                FileProviderEnum.Git => fileProviders.SingleOrDefault((p) => p.FileProviderEnum == FileProviderEnum.Git),
+                FileProviderEnum.Local => fileProviders.SingleOrDefault((p) => p.FileProviderEnum == FileProviderEnum.Local),
                 _ => throw new InvalidEnumArgumentException(nameof(configuration.FileProvider), (int)configuration.FileProvider, typeof(FileProviderEnum))
             };
 
