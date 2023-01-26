@@ -16,8 +16,8 @@ namespace Radia.Tests.Modules
     {
         public class RadiaTestContext
         {
-            public string WebRootPath = @"./webroot/path/";
-            public string SubFolderPath = @"/test";
+            public static string WebRootPath = @"./webroot/path/";
+            public static string SubFolderPath = @"/test";
             public IWebHostEnvironment WebHostEnvironment { get; }
             public IRadiaFileProviderFactory FileProviderFactory { get; }
             public IRadiaFileProvider LocalFileProvider { get; }
@@ -28,9 +28,14 @@ namespace Radia.Tests.Modules
             public IContentProcessorFactory<string> ContentProcessorFactory { get; }
             public IHttpContextAccessor HttpContextAccessor { get; }
             public IViewFactory ViewFactory { get; set; }
+            public IFileInfo IndexFileInfo { get; set; }
+            public IFileInfo SubFolderFileInfo { get; set; }
+
 
             public RadiaTestContext()
             {
+                IndexFileInfo = MockIndexFileInfo();
+                SubFolderFileInfo = MockSubFolderFileInfo();
                 HttpContextAccessor = MockHttpContextAccessor();
                 ContentProcessorFactory = BuildContentProcessorFactory();
                 WebHostEnvironment = MockWebHostEnvironment();
@@ -45,6 +50,22 @@ namespace Radia.Tests.Modules
                                                         ContentTypeIdentifierService,
                                                         ContentProcessorFactory,
                                                         HttpContextAccessor);
+            }
+
+            private IFileInfo MockSubFolderFileInfo()
+            {
+                var indexFileInfo = new Mock<IFileInfo>();
+                indexFileInfo.Setup(x => x.Exists).Returns(true);
+                indexFileInfo.Setup(x => x.IsDirectory).Returns(true);
+                return indexFileInfo.Object;
+            }
+
+            private IFileInfo MockIndexFileInfo()
+            {
+                var indexFileInfo = new Mock<IFileInfo>();
+                indexFileInfo.Setup(x => x.Exists).Returns(true);
+                indexFileInfo.Setup(x => x.IsDirectory).Returns(true);
+                return indexFileInfo.Object;
             }
 
             private static IViewFactory BuildViewFactory()
@@ -99,15 +120,18 @@ namespace Radia.Tests.Modules
 
             private static IRadiaFileProvider MockGitFileProvider()
             {
-                var localFileProvider = new Mock<IRadiaFileProvider>();
-                localFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Local);
-                return localFileProvider.Object;
+                var gitFileProvider = new Mock<IRadiaFileProvider>();
+                gitFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Git);
+                return gitFileProvider.Object;
             }
 
-            private static IRadiaFileProvider MockLocalFileProvider()
+            private IRadiaFileProvider MockLocalFileProvider()
             {
                 var localFileProvider = new Mock<IRadiaFileProvider>();
-                localFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Git);
+                localFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Local);
+                localFileProvider.Setup(p => p.GetFileInfo(SubFolderPath)).Returns(SubFolderFileInfo);
+                localFileProvider.Setup(p => p.GetFileInfo(SubFolderPath)).Returns(SubFolderFileInfo);
+                localFileProvider.Setup(p => p.GetFileInfo(string.Empty)).Returns(IndexFileInfo);
                 return localFileProvider.Object;
             }
 

@@ -60,11 +60,9 @@ namespace Radia.Factories
 
             var contentType = this.contentTypeIdentifierService.GetContentTypeFrom(args.Path);
 
-            IContentResult<string> contentResult = new EmptyContentResult();
-
             var stream = fileInfo.CreateReadStream();
             
-            contentResult = contentProcessor.ProcessContent(contentType, stream);
+            var contentResult = contentProcessor.ProcessContent(contentType, stream);
 
             return new PhysicalFileViewModel(contentResult,
                                              contentType,

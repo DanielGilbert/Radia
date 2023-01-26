@@ -10,13 +10,21 @@ namespace Radia.Services.FileProviders.Local
 
         public FileProviderEnum FileProviderEnum { get; }
 
-        public LocalFileProvider(IConfigurationService configurationService)
+        public LocalFileProvider(IConfigurationService configurationService, IFileProvider? frameworkFileProvider = null)
         {
             var fileProviderConfiguration = configurationService.GetFileProviderConfiguration();
             if (fileProviderConfiguration.FileProvider == FileProviderEnum.Local)
             {
                 this.rootPath = fileProviderConfiguration.Settings["RootDirectory"];
-                this.fileProvider = new PhysicalFileProvider(this.rootPath);
+                if (frameworkFileProvider == null)
+                {
+                    this.fileProvider = new PhysicalFileProvider(this.rootPath);
+                }
+                else
+                {
+                    this.fileProvider = frameworkFileProvider;
+                }
+
                 this.FileProviderEnum = FileProviderEnum.Local;
             }
             else
