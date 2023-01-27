@@ -1,5 +1,4 @@
 ﻿using Radia.Services.FileProviders;
-using Radia.Services.FileProviders.Git;
 using Radia.Services.FileProviders.Local;
 using FluentAssertions;
 using System;
@@ -22,21 +21,15 @@ namespace Radia.Tests.Services.FileProviders
         [TestClass]
         public class TheCreateMethod
         {
-            public static DefaultRadiaTestContext RadiaTestContext => new();
-
             [DataTestMethod]
             [DataRow(FileProviderEnum.Local, DisplayName = "Local")]
-            [DataRow(FileProviderEnum.Git, DisplayName = "Git")]
+            [DataRow(FileProviderEnum.Empty, DisplayName = "Empty")]
             public void WhenTheConfigurationIsValid_ThenAMatchingInstanceIsReturned(FileProviderEnum fileProviderEnum)
             {
-                var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
-                FileProviderConfiguration fileProviderConfiguration = fileProviderEnum switch
-                {
-                    FileProviderEnum.Git => RadiaTestContext.ValidGitFileProviderConfiguration,
-                    FileProviderEnum.Local => RadiaTestContext.ValidLocalFileProviderConfiguration,
-                };
+                DefaultRadiaTestContext RadiaTestContext = new(fileProviderEnum);
 
-                var result = sut.Create(fileProviderConfiguration);
+                var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
+                var result = sut.Create(RadiaTestContext.ValidFileProviderConfiguration);
 
                 result.Should().NotBeNull();
                 result.FileProviderEnum.Should().Be(fileProviderEnum);
@@ -45,6 +38,9 @@ namespace Radia.Tests.Services.FileProviders
             [TestMethod]
             public void WhenFileProviderEnumIsInvalid_ThenAnInvalidEnumExceptionIsThrown()
             {
+                ///Actually, it doesn't matter which Configuration is provided here,
+                ///as it just sets the test context.
+                DefaultRadiaTestContext RadiaTestContext = new(FileProviderEnum.Empty);
                 var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
                 var fileProviderConfiguration = new FileProviderConfiguration()
                 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Moq;
-using Radia.Services.FileProviders.Git;
 using Radia.Services.FileProviders.Local;
 using Radia.Services.FileProviders;
 using Radia.Services;
@@ -13,124 +12,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Radia.Factories;
+using System.ComponentModel;
 
 namespace Radia.Tests
 {
-    //internal class DefaultRadiaTestContext
-    //{
-    //    public const string GitRemoteUri = @"https://git.thisdoesnotexist.com/content.git";
-    //    public const string LocalRootDirectory = @"/RootDirectory/";
-
-    //    public FileProviderConfiguration ValidGitFileProviderConfiguration { get; }
-    //    public FileProviderConfiguration ValidLocalFileProviderConfiguration { get; }
-    //    public FileProviderConfiguration InvalidEnumFileProviderConfiguration { get; }
-    //    public IRadiaFileProvider LocalFileProvider { get; }
-    //    public IRadiaFileProvider GitFileProvider { get; }
-    //    public IList<IRadiaFileProvider> FileProviders { get; }
-    //    public IConfigurationService ConfigurationService { get; }
-    //    public IFileProvider FrameworkFileProvider { get; }
-
-    //    public DefaultRadiaTestContext()
-    //    {
-    //        ValidGitFileProviderConfiguration = CreateGitConfiguration();
-    //        ValidLocalFileProviderConfiguration = CreateLocalConfiguration();
-    //        InvalidEnumFileProviderConfiguration = CreateInvalidEnumConfiguration();
-    //        ConfigurationService = MockConfigurationService();
-    //        FrameworkFileProvider = MockFrameworkFileProvider();
-    //        LocalFileProvider = new LocalFileProvider(ConfigurationService, FrameworkFileProvider);
-    //        GitFileProvider = new GitFileProvider();
-    //        FileProviders = new List<IRadiaFileProvider>()
-    //            {
-    //                LocalFileProvider,
-    //                GitFileProvider
-    //            };
-    //    }
-
-    //    private IFileProvider MockFrameworkFileProvider()
-    //    {
-    //        var fileProvider = new Mock<IFileProvider>();
-
-    //        return fileProvider.Object;
-    //    }
-
-    //    private static IConfigurationService MockConfigurationService()
-    //    {
-    //        var myConfiguration = CreateValidConfiguration();
-
-    //        var configuration = new ConfigurationBuilder()
-    //            .AddInMemoryCollection(myConfiguration)
-    //            .Build();
-
-    //        var configurationService = new ConfigurationService(configuration);
-
-    //        return configurationService;
-    //    }
-
-    //    private static Dictionary<string, string?> CreateValidConfiguration()
-    //    {
-    //        var result = new Dictionary<string, string?>
-    //            {
-    //                {"AllowedHosts", "*"},
-    //                {"AppConfiguration:FileProviderConfiguration:FileProvider", "Local"},
-    //                {"AppConfiguration:FileProviderConfiguration:Settings:RootDirectory", "/blogsource/"},
-    //                {"AppConfiguration:WebsiteTitle", "g5t.de - 'cause gilbert.de was too expensive..."},
-    //                {"AppConfiguration:DefaultPageHeader", "g[ilber]t.de" }
-    //            };
-
-    //        return result;
-    //    }
-
-    //    private static FileProviderConfiguration CreateInvalidEnumConfiguration()
-    //    {
-    //        var result = new FileProviderConfiguration()
-    //        {
-    //            FileProvider = (FileProviderEnum)4
-    //        };
-
-    //        return result;
-    //    }
-
-    //    private static FileProviderConfiguration CreateGitConfiguration()
-    //    {
-    //        var result = new FileProviderConfiguration()
-    //        {
-    //            FileProvider = FileProviderEnum.Git,
-    //            Settings = new Dictionary<string, string>()
-    //                {
-    //                    { "Remote", GitRemoteUri }
-    //                }
-    //        };
-
-    //        return result;
-    //    }
-
-    //    private static FileProviderConfiguration CreateLocalConfiguration()
-    //    {
-    //        var result = new FileProviderConfiguration()
-    //        {
-    //            FileProvider = FileProviderEnum.Local,
-    //            Settings = new Dictionary<string, string>()
-    //                {
-    //                    { "RootDirectory", LocalRootDirectory }
-    //                }
-    //        };
-
-    //        return result;
-    //    }
-
-    //}
     public class DefaultRadiaTestContext
     {
-        public static string WebRootPath = @"./webroot/path/";
-        public static string SubFolderPath = @"/test";
-        public const string GitRemoteUri = @"https://git.thisdoesnotexist.com/content.git";
+        public const string WebRootPath = @"./webroot/path/";
+        public const string SubFolderPath = @"/test";
         public const string LocalRootDirectory = @"/RootDirectory/";
-        public FileProviderConfiguration ValidGitFileProviderConfiguration { get; }
-        public FileProviderConfiguration ValidLocalFileProviderConfiguration { get; }
+        public IFileProviderConfiguration ValidFileProviderConfiguration { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
         public IRadiaFileProviderFactory FileProviderFactory { get; }
         public IRadiaFileProvider LocalFileProvider { get; }
-        public IRadiaFileProvider GitFileProvider { get; }
+        public IRadiaFileProvider EmptyFileProvider { get; }
         public IConfigurationService ConfigurationService { get; }
         public IContentTypeIdentifierService ContentTypeIdentifierService { get; }
         public IViewModelFactory ViewModelFactory { get; }
@@ -141,49 +36,55 @@ namespace Radia.Tests
         public IFileInfo SubFolderFileInfo { get; set; }
         public IList<IRadiaFileProvider> FileProviders { get; }
 
-
-        public DefaultRadiaTestContext()
+        public DefaultRadiaTestContext(FileProviderEnum fileProviderEnum)
         {
-            ValidGitFileProviderConfiguration = CreateGitConfiguration();
-            ValidLocalFileProviderConfiguration = CreateLocalConfiguration();
+            ValidFileProviderConfiguration = CreateFileProviderConfiguration(fileProviderEnum);
             IndexFileInfo = MockIndexFileInfo();
             SubFolderFileInfo = MockSubFolderFileInfo();
             HttpContextAccessor = MockHttpContextAccessor();
             ContentProcessorFactory = BuildContentProcessorFactory();
             WebHostEnvironment = MockWebHostEnvironment();
             LocalFileProvider = MockLocalFileProvider();
-            GitFileProvider = MockGitFileProvider();
+            EmptyFileProvider = MockEmptyFileProvider();
             ConfigurationService = MockConfigurationService();
             ContentTypeIdentifierService = BuildContentTypeIdentifierService();
             FileProviderFactory = BuildFileProviderFactory();
             ViewFactory = BuildViewFactory();
+            
             FileProviders = new List<IRadiaFileProvider>()
                         {
                             LocalFileProvider,
-                            GitFileProvider
+                            EmptyFileProvider
                         };
             ViewModelFactory = new ViewModelFactory(FileProviderFactory,
                                                     ConfigurationService,
                                                     ContentTypeIdentifierService,
                                                     ContentProcessorFactory,
-                                                    HttpContextAccessor);
+                                                    HttpContextAccessor,
+                                                    ValidFileProviderConfiguration);
         }
 
-        private static FileProviderConfiguration CreateGitConfiguration()
+        private static IFileProviderConfiguration CreateFileProviderConfiguration(FileProviderEnum fileProviderEnum)
+        {
+            return fileProviderEnum switch
+            {
+                FileProviderEnum.Local => GenerateLocalFileProviderConfiguration(),
+                FileProviderEnum.Empty => GenerateEmptyFileProviderConfiguration(),
+                _ => throw new InvalidEnumArgumentException(nameof(fileProviderEnum), (int)fileProviderEnum, typeof(FileProviderEnum))
+            };
+        }
+
+        private static IFileProviderConfiguration GenerateEmptyFileProviderConfiguration()
         {
             var result = new FileProviderConfiguration()
             {
-                FileProvider = FileProviderEnum.Git,
-                Settings = new Dictionary<string, string>()
-                        {
-                            { "Remote", GitRemoteUri }
-                        }
+                FileProvider = FileProviderEnum.Empty
             };
 
             return result;
         }
 
-        private static FileProviderConfiguration CreateLocalConfiguration()
+        private static IFileProviderConfiguration GenerateLocalFileProviderConfiguration()
         {
             var result = new FileProviderConfiguration()
             {
@@ -197,7 +98,7 @@ namespace Radia.Tests
             return result;
         }
 
-        private IFileInfo MockSubFolderFileInfo()
+        private static IFileInfo MockSubFolderFileInfo()
         {
             var indexFileInfo = new Mock<IFileInfo>();
             indexFileInfo.Setup(x => x.Exists).Returns(true);
@@ -205,7 +106,7 @@ namespace Radia.Tests
             return indexFileInfo.Object;
         }
 
-        private IFileInfo MockIndexFileInfo()
+        private static IFileInfo MockIndexFileInfo()
         {
             var indexFileInfo = new Mock<IFileInfo>();
             indexFileInfo.Setup(x => x.Exists).Returns(true);
@@ -263,13 +164,6 @@ namespace Radia.Tests
             return result;
         }
 
-        private static IRadiaFileProvider MockGitFileProvider()
-        {
-            var gitFileProvider = new Mock<IRadiaFileProvider>();
-            gitFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Git);
-            return gitFileProvider.Object;
-        }
-
         private IRadiaFileProvider MockLocalFileProvider()
         {
             var localFileProvider = new Mock<IRadiaFileProvider>();
@@ -280,19 +174,27 @@ namespace Radia.Tests
             return localFileProvider.Object;
         }
 
+        private static IRadiaFileProvider MockEmptyFileProvider()
+        {
+            var emptyFileProvider = new Mock<IRadiaFileProvider>();
+            emptyFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Empty);
+            return emptyFileProvider.Object;
+        }
+
+
         private IRadiaFileProviderFactory BuildFileProviderFactory()
         {
             var fileProviders = new List<IRadiaFileProvider>
                 {
-                    GitFileProvider,
-                    LocalFileProvider
+                    LocalFileProvider,
+                    EmptyFileProvider
                 };
             var factory = new FileProviderFactory(fileProviders);
 
             return factory;
         }
 
-        private IWebHostEnvironment MockWebHostEnvironment()
+        private static IWebHostEnvironment MockWebHostEnvironment()
         {
             var webHostEnvironment = new Mock<IWebHostEnvironment>();
 

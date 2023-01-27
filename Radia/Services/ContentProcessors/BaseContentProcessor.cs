@@ -2,7 +2,7 @@
 {
     public abstract class BaseContentProcessor : IContentProcessor<string>
     {
-        private IContentProcessor<string> nextContentProcessor;
+        private IContentProcessor<string>? nextContentProcessor;
 
         public IContentProcessor<string> SetNext(IContentProcessor<string> contentProcessor)
         {

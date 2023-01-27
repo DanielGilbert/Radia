@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Radia.Services;
 using Radia.Services.ContentProcessors;
+using Radia.Services.FileProviders;
 using Radia.ViewModels;
 
 namespace Radia.Factories
@@ -17,13 +18,14 @@ namespace Radia.Factories
                                 IConfigurationService configurationService,
                                 IContentTypeIdentifierService contentTypeIdentifierService,
                                 IContentProcessorFactory<string> contentProcessorFactory,
-                                IHttpContextAccessor httpContextAccessor)
+                                IHttpContextAccessor httpContextAccessor,
+                                IFileProviderConfiguration fileProviderConfiguration)
         {
             this.configurationService = configurationService;
             this.contentTypeIdentifierService = contentTypeIdentifierService;
             this.contentProcessorFactory = contentProcessorFactory;
             this.httpContextAccessor = httpContextAccessor;
-            this.fileProvider = fileProviderFactory.Create(this.configurationService.GetFileProviderConfiguration());
+            this.fileProvider = fileProviderFactory.Create(fileProviderConfiguration);
         }
 
         public IViewModel Create(ViewModelFactoryArgs args)

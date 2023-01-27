@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using Radia.Services.FileProviders;
 using System.Security.Cryptography;
-using Radia.Services.FileProviders.Git;
 using Radia.Services.FileProviders.Local;
 
 namespace Radia.Factories
@@ -16,11 +15,11 @@ namespace Radia.Factories
             this.fileProviders = fileProviders;
         }
 
-        public IRadiaFileProvider Create(FileProviderConfiguration configuration)
+        public IRadiaFileProvider Create(IFileProviderConfiguration configuration)
         {
             IRadiaFileProvider? result = configuration.FileProvider switch
             {
-                FileProviderEnum.Git => fileProviders.SingleOrDefault((p) => p.FileProviderEnum == FileProviderEnum.Git),
+                FileProviderEnum.Empty => fileProviders.SingleOrDefault((p) => p.FileProviderEnum == FileProviderEnum.Empty),
                 FileProviderEnum.Local => fileProviders.SingleOrDefault((p) => p.FileProviderEnum == FileProviderEnum.Local),
                 _ => throw new InvalidEnumArgumentException(nameof(configuration.FileProvider), (int)configuration.FileProvider, typeof(FileProviderEnum))
             };

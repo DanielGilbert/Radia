@@ -1,9 +1,8 @@
 ﻿namespace Radia.Services.FileProviders
 {
-    public class FileProviderConfiguration
+    public class FileProviderConfiguration : IFileProviderConfiguration
     {
         public FileProviderEnum FileProvider { get; set; }
-
         public Dictionary<string, string> Settings { get; set; }
 
         public FileProviderConfiguration()
@@ -15,7 +14,6 @@
     public enum FileProviderEnum
     {
         Empty = 0,
-        Local = 1,
-        Git = 2
+        Local = 1
     }
 }

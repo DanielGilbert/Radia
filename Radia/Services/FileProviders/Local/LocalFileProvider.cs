@@ -60,19 +60,6 @@ namespace Radia.Services.FileProviders.Local
                 result = result.Replace("~", string.Empty);
             }
 
-            /*
-            if (!result.StartsWith(this.rootPath))
-            {
-                if (result.StartsWith('~'))
-                {
-                    result = result.Replace("~", this.rootPath);
-                }
-                else
-                {
-                    result = this.rootPath + result;
-                }
-            }
-            */
             return result;
         }
 
