@@ -10,9 +10,8 @@ namespace Radia.Services.FileProviders.Local
 
         public FileProviderEnum FileProviderEnum { get; }
 
-        public LocalFileProvider(IConfigurationService configurationService, IFileProvider? frameworkFileProvider = null)
+        public LocalFileProvider(IFileProviderConfiguration fileProviderConfiguration, IFileProvider? frameworkFileProvider = null)
         {
-            var fileProviderConfiguration = configurationService.GetFileProviderConfiguration();
             if (fileProviderConfiguration.FileProvider == FileProviderEnum.Local)
             {
                 this.rootPath = fileProviderConfiguration.Settings["RootDirectory"];
@@ -37,13 +36,11 @@ namespace Radia.Services.FileProviders.Local
 
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
-            subpath = EnsureFullPath(subpath);
             return this.fileProvider.GetDirectoryContents(subpath);
         }
 
         public IFileInfo GetFileInfo(string subpath)
         {
-            subpath = EnsureFullPath(subpath);
             return this.fileProvider.GetFileInfo(subpath);
         }
 
@@ -51,17 +48,5 @@ namespace Radia.Services.FileProviders.Local
         {
             return this.fileProvider.Watch(filter);
         }
-        private string EnsureFullPath(string subpath)
-        {
-            var result = subpath;
-
-            if (result.StartsWith('~'))
-            {
-                result = result.Replace("~", string.Empty);
-            }
-
-            return result;
-        }
-
     }
 }

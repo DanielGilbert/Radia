@@ -6,7 +6,7 @@ namespace Radia.Factories
     {
         public IContentProcessor<string> Create()
         {
-            var result = new MarkdownContentProcessor().SetNext(new HtmlContentProcessor());
+            var result = new MarkdownContentProcessor();
 
             return result;
         }
