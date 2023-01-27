@@ -34,7 +34,6 @@ namespace Radia.Tests.Services.FileProviders
                 {
                     FileProviderEnum.Git => RadiaTestContext.ValidGitFileProviderConfiguration,
                     FileProviderEnum.Local => RadiaTestContext.ValidLocalFileProviderConfiguration,
-                    _ => throw new InvalidEnumArgumentException(nameof(fileProviderEnum), (int)fileProviderEnum, typeof(FileProviderEnum))
                 };
 
                 var result = sut.Create(fileProviderConfiguration);

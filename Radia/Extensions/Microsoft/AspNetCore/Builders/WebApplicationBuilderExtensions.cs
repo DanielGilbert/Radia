@@ -5,9 +5,11 @@ using Radia.Services;
 using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Git;
 using Radia.Services.FileProviders.Local;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Radia.Extensions.Microsoft.AspNetCore.Builders
 {
+    [ExcludeFromCodeCoverage]
     public static class WebApplicationBuilderExtensions
     {
         public static WebApplicationBuilder AddRadiaModules(this WebApplicationBuilder builder)

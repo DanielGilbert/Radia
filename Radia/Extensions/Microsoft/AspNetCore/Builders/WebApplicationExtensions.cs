@@ -1,7 +1,9 @@
 ﻿using Radia.Modules;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Radia.Extensions.Microsoft.AspNetCore.Builders
 {
+    [ExcludeFromCodeCoverage]
     public static class WebApplicationExtensions
     {
         public static WebApplication MapRadiaModules(this WebApplication app)

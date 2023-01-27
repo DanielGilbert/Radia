@@ -127,7 +127,6 @@ namespace Radia.Tests
         public const string LocalRootDirectory = @"/RootDirectory/";
         public FileProviderConfiguration ValidGitFileProviderConfiguration { get; }
         public FileProviderConfiguration ValidLocalFileProviderConfiguration { get; }
-        public FileProviderConfiguration InvalidEnumFileProviderConfiguration { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
         public IRadiaFileProviderFactory FileProviderFactory { get; }
         public IRadiaFileProvider LocalFileProvider { get; }
@@ -147,7 +146,6 @@ namespace Radia.Tests
         {
             ValidGitFileProviderConfiguration = CreateGitConfiguration();
             ValidLocalFileProviderConfiguration = CreateLocalConfiguration();
-            InvalidEnumFileProviderConfiguration = CreateInvalidEnumConfiguration();
             IndexFileInfo = MockIndexFileInfo();
             SubFolderFileInfo = MockSubFolderFileInfo();
             HttpContextAccessor = MockHttpContextAccessor();
@@ -169,16 +167,6 @@ namespace Radia.Tests
                                                     ContentTypeIdentifierService,
                                                     ContentProcessorFactory,
                                                     HttpContextAccessor);
-        }
-
-        private static FileProviderConfiguration CreateInvalidEnumConfiguration()
-        {
-            var result = new FileProviderConfiguration()
-            {
-                FileProvider = (FileProviderEnum)4
-            };
-
-            return result;
         }
 
         private static FileProviderConfiguration CreateGitConfiguration()
