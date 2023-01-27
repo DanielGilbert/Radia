@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Radia.Factories;
 using Radia.Modules;
 using Radia.Services;
@@ -21,7 +22,9 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
 
         public static WebApplicationBuilder AddLocalServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
+            var configurationService = new ConfigurationService(builder.Configuration);
+            builder.Services.AddSingleton<IConfigurationService>(configurationService);
+            builder.Services.AddSingleton<IFileProviderConfiguration>(configurationService.GetFileProviderConfiguration());
             builder.Services.AddSingleton<IRadiaFileProvider, LocalFileProvider>();
             builder.Services.AddSingleton<IRadiaFileProvider, EmptyFileProvider>();
             builder.Services.AddSingleton<IRadiaFileProviderFactory, FileProviderFactory>();

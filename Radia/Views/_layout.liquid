@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{{ PageTitle }}</title>
+    <title>{{PageTitle}}</title>
 
     <meta name="description" content="@(ViewBag.Description ?? String.Empty)">
     <meta name="author" content="Daniel Gilbert">
 
-    <meta property="og:title" content="@(ViewBag.CleanTitle) - g5t.de">
+    <meta property="og:title" content="{{PageTitle}} - g5t.de">
     <meta property="og:description" content="@ViewBag.SocialMediaDescription">
     <meta property="og:image" content="@(Url.FullURL("~/img/g5t_de.jpg"))">
     <meta property="og:locale" content="en">
@@ -18,10 +18,10 @@
 
     <!-- Core CSS -->
     <!-- CSS for users with dark mode -->
-    <link rel="stylesheet" href="~/css/awsm_theme_black.min.css" media="(prefers-color-scheme: dark)">
+    <link rel="stylesheet" href="{{WebsiteRoot}}/css/awsm_theme_black.min.css" media="(prefers-color-scheme: dark)">
 
     <!-- CSS for users wiuth light mode -->
-    <link rel="stylesheet" href="~/css/awsm_theme_white.min.css" media="(prefers-color-scheme: light)">
+    <link rel="stylesheet" href="{{WebsiteRoot}}/css/awsm_theme_white.min.css" media="(prefers-color-scheme: light)">
 
     <!--<link href="/css/print.css" media="print" rel="stylesheet" />-->
 
