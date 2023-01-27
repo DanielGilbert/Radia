@@ -9,8 +9,8 @@ namespace Radia.Factories
             viewModel switch
             {
                 FolderViewModel => "FolderView",
-                PathNotFoundViewModel => "PathNotFound",
-                PhysicalFileViewModel => "PhysicalFileViewModel",
+                PathNotFoundViewModel => "PathNotFoundView",
+                PhysicalFileViewModel => "PhysicalFileView",
                 _ => string.Empty
             };
         

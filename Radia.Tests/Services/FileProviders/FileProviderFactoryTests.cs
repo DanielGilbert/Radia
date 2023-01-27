@@ -19,119 +19,15 @@ namespace Radia.Tests.Services.FileProviders
 {
     public class FileProviderFactoryTests
     {
-        public class RadiaTestContext
-        {
-            public const string GitRemoteUri = @"https://git.thisdoesnotexist.com/content.git";
-            public const string LocalRootDirectory = @"/RootDirectory/";
-
-            public FileProviderConfiguration ValidGitFileProviderConfiguration { get; }
-            public FileProviderConfiguration ValidLocalFileProviderConfiguration { get; }
-            public FileProviderConfiguration InvalidEnumFileProviderConfiguration { get; }
-            public IRadiaFileProvider LocalFileProvider { get; }
-            public IRadiaFileProvider GitFileProvider { get; }
-            public IList<IRadiaFileProvider> FileProviders { get; }
-            public IConfigurationService ConfigurationService { get; }
-            public IFileProvider FrameworkFileProvider { get; }
-
-            public RadiaTestContext()
-            {
-                ValidGitFileProviderConfiguration = CreateGitConfiguration();
-                ValidLocalFileProviderConfiguration = CreateLocalConfiguration();
-                InvalidEnumFileProviderConfiguration = CreateInvalidEnumConfiguration();
-                ConfigurationService = MockConfigurationService();
-                FrameworkFileProvider = MockFrameworkFileProvider();
-                LocalFileProvider = new LocalFileProvider(ConfigurationService, FrameworkFileProvider);
-                GitFileProvider = new GitFileProvider();
-                FileProviders = new List<IRadiaFileProvider>()
-                {
-                    LocalFileProvider,
-                    GitFileProvider
-                };
-            }
-
-            private IFileProvider MockFrameworkFileProvider()
-            {
-                var fileProvider = new Mock<IFileProvider>();
-
-                return fileProvider.Object;
-            }
-
-            private static IConfigurationService MockConfigurationService()
-            {
-                var myConfiguration = CreateValidConfiguration();
-
-                var configuration = new ConfigurationBuilder()
-                    .AddInMemoryCollection(myConfiguration)
-                    .Build();
-
-                var configurationService = new ConfigurationService(configuration);
-
-                return configurationService;
-            }
-
-            private static Dictionary<string, string?> CreateValidConfiguration()
-            {
-                var result = new Dictionary<string, string?>
-                {
-                    {"AllowedHosts", "*"},
-                    {"AppConfiguration:FileProviderConfiguration:FileProvider", "Local"},
-                    {"AppConfiguration:FileProviderConfiguration:Settings:RootDirectory", "/blogsource/"},
-                    {"AppConfiguration:WebsiteTitle", "g5t.de - 'cause gilbert.de was too expensive..."},
-                    {"AppConfiguration:DefaultPageHeader", "g[ilber]t.de" }
-                };
-
-                return result;
-            }
-
-            private static FileProviderConfiguration CreateInvalidEnumConfiguration()
-            {
-                var result = new FileProviderConfiguration()
-                {
-                    FileProvider = (FileProviderEnum)4
-                };
-
-                return result;
-            }
-
-            private static FileProviderConfiguration CreateGitConfiguration()
-            {
-                var result = new FileProviderConfiguration()
-                {
-                    FileProvider = FileProviderEnum.Git,
-                    Settings = new Dictionary<string, string>()
-                    {
-                        { "Remote", GitRemoteUri }
-                    }
-                };
-
-                return result;
-            }
-
-            private static FileProviderConfiguration CreateLocalConfiguration()
-            {
-                var result = new FileProviderConfiguration()
-                {
-                    FileProvider = FileProviderEnum.Local,
-                    Settings = new Dictionary<string, string>()
-                    {
-                        { "RootDirectory", LocalRootDirectory }
-                    }
-                };
-
-                return result;
-            }
-
-        }
-
         [TestClass]
         public class TheCreateMethod
         {
-            public static RadiaTestContext RadiaTestContext => new();
+            public static DefaultRadiaTestContext RadiaTestContext => new();
 
             [DataTestMethod]
-            [DataRow(FileProviderEnum.Local, typeof(LocalFileProvider), DisplayName = "Local")]
-            [DataRow(FileProviderEnum.Git, typeof(GitFileProvider), DisplayName = "Git")]
-            public void WhenTheConfigurationIsValid_ThenAMatchingInstanceIsReturned(FileProviderEnum fileProviderEnum, Type typeOfInstance)
+            [DataRow(FileProviderEnum.Local, DisplayName = "Local")]
+            [DataRow(FileProviderEnum.Git, DisplayName = "Git")]
+            public void WhenTheConfigurationIsValid_ThenAMatchingInstanceIsReturned(FileProviderEnum fileProviderEnum)
             {
                 var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
                 FileProviderConfiguration fileProviderConfiguration = fileProviderEnum switch
@@ -144,7 +40,7 @@ namespace Radia.Tests.Services.FileProviders
                 var result = sut.Create(fileProviderConfiguration);
 
                 result.Should().NotBeNull();
-                result.Should().BeOfType(typeOfInstance);
+                result.FileProviderEnum.Should().Be(fileProviderEnum);
             }
 
             [TestMethod]
