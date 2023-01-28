@@ -35,35 +35,26 @@
             </thead>
             <tbody>
 
-                @foreach (var directory in Model.Directories.Where((p) => !p.Name.StartsWith(".")))
-                {
+                {% for directory in Directories %}
                 <tr>
                     <td>
-                        <a href="/@directory.Url"><span>@directory.Title</span></a>
+                        <a href="{{WebsiteRoot}}/{{directory.Name}}"><span>{{directory.Name}}</span></a>
                     </td>
                     <td>-</td>
-                    @{
-
-                        var fileDateTime = directory.DateTime.Value.ToUniversalTime().ToString("u") ?? String.Empty;
-
-                    }
-                    <td>@fileDateTime</td>
+                    <td>{{directory.LastModified}}</td>
                 </tr>
-                }
-                @foreach (var file in Model.Files.Where((p) => !p.Name.StartsWith(".")))
-                {
-                    <tr>
-                        <td>
-                            <a href="/@file.Url">
-                                <span class="file-name">@file.Title</span>
-                            </a>
-                        </td>
-                        @{var fileSize = !String.IsNullOrWhiteSpace(file.Size) ? file.Size : "-";}
-                        <td>@fileSize</td>
-                        @{var fileDateTime = file.DateTime.Value.ToUniversalTime().ToString("u") ?? String.Empty;}
-                        <td>@fileDateTime</td>
-                    </tr>
-                }
+                {% endfor %}
+                {% for file in Files %}
+                <tr>
+                    <td>
+                        <a href="/@file.Url">
+                            <span class="file-name">{{file.Name}}</span>
+                        </a>
+                    </td>
+                    <td>{{file.Length}}</td>
+                    <td>{{file.LastModified}}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </nav>

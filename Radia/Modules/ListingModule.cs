@@ -41,6 +41,10 @@ namespace Radia.Modules
 
         private IResult InternalProcessRequest(string path)
         {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                path = "/";
+            }
             var viewModelFactoryArgs = new ViewModelFactoryArgs(path,
                                                                 this.configurationService.GetWebsiteTitle());
 

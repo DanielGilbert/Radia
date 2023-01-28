@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.AspNetCore.Server.IIS.Core;
+using Microsoft.Extensions.FileProviders;
 using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
@@ -34,30 +35,40 @@ namespace Radia.Factories
 
             string websiteRoot = this.httpContextAccessor.HttpContext?.Request.Scheme + "://" + this.httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
 
-            if (args.Path == string.Empty)
-            {
-                return new FolderViewModel(configurationService.GetWebsiteTitle(),
-                                           configurationService.GetPageHeader(),
-                                           args.Path,
-                                           websiteRoot);
-            }
-
             IFileInfo fileInfo = this.fileProvider.GetFileInfo(args.Path);
 
             if (fileInfo.Exists is false)
             {
-                return new PathNotFoundViewModel(configurationService.GetWebsiteTitle(),
-                                                 configurationService.GetPageHeader(),
-                                                 args.Path,
-                                                 websiteRoot);
-            }
+                //Maybe we are dealing with a folder?
+                var directoryContent = this.fileProvider.GetDirectoryContents(args.Path);
 
-            if (fileInfo.IsDirectory)
-            {
-                return new FolderViewModel(configurationService.GetWebsiteTitle(),
-                                           configurationService.GetPageHeader(),
-                                           args.Path,
-                                           websiteRoot);
+                if (directoryContent.Exists is false)
+                {
+                    return new PathNotFoundViewModel(configurationService.GetWebsiteTitle(),
+                                 configurationService.GetPageHeader(),
+                                 args.Path,
+                                 websiteRoot);
+                }
+                else
+                {
+                    var folderViewModel = new FolderViewModel(configurationService.GetWebsiteTitle(),
+                                                          configurationService.GetPageHeader(),
+                                                          args.Path,
+                                                          websiteRoot);
+                    foreach (var dir in directoryContent)
+                    {
+                        if (dir.IsDirectory)
+                        {
+                            folderViewModel.Directories.Add(dir);
+                        }
+                        else
+                        {
+                            folderViewModel.Files.Add(dir);
+                        }
+                    }
+
+                    return folderViewModel;
+                }
             }
 
             var contentType = this.contentTypeIdentifierService.GetContentTypeFrom(args.Path);
