@@ -4,7 +4,7 @@ namespace Radia.Models
 {
     public interface IRadiaFileInfo : IFileInfo
     {
-        IRadiaFileInfo Ancestor { get; }
         bool IsRoot { get; }
+        string Url { get; }
     }
 }

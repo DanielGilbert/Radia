@@ -18,15 +18,18 @@ namespace Radia.Tests.Services.FileProviders
 {
     public class FileProviderFactoryTests
     {
+
+
         [TestClass]
         public class TheCreateMethod
         {
+            public TestContext? TestContext { get; set; }
+
             [DataTestMethod]
             [DataRow(FileProviderEnum.Local, DisplayName = "Local")]
-            [DataRow(FileProviderEnum.Empty, DisplayName = "Empty")]
             public void WhenTheConfigurationIsValid_ThenAMatchingInstanceIsReturned(FileProviderEnum fileProviderEnum)
             {
-                DefaultRadiaTestContext RadiaTestContext = new(fileProviderEnum);
+                DefaultRadiaTestContext RadiaTestContext = new(fileProviderEnum, TestContext.TestRunDirectory);
 
                 var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
                 var result = sut.Create(RadiaTestContext.ValidFileProviderConfiguration);
@@ -40,7 +43,7 @@ namespace Radia.Tests.Services.FileProviders
             {
                 ///Actually, it doesn't matter which Configuration is provided here,
                 ///as it just sets the test context.
-                DefaultRadiaTestContext RadiaTestContext = new(FileProviderEnum.Empty);
+                DefaultRadiaTestContext RadiaTestContext = new(FileProviderEnum.Empty, TestContext.TestRunDirectory);
                 var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
                 var fileProviderConfiguration = new FileProviderConfiguration()
                 {

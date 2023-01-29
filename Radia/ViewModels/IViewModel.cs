@@ -5,7 +5,7 @@
         string PageTitle { get; }
         string PageHeader { get; }
         string Content { get; }
-        string FullFilePath { get; }
+        string RelativePath { get; }
         string WebsiteRoot { get; }
     }
 }

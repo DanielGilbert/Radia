@@ -2,6 +2,7 @@
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Moq;
+using Radia.Exceptions;
 using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Local;
 using System;
@@ -20,20 +21,10 @@ namespace Radia.Tests.Services.FileProviders.Local
             public TestContext? TestContext { get; set; }
 
             [TestMethod]
-            public void GivenAnEmptyFileProviderConfiguration_ThenTheReturnedFileProviderWillSignalEmpty()
-            {
-                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Empty);
-
-                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration);
-
-                sut.FileProviderEnum.Should().Be(FileProviderEnum.Empty);
-            }
-
-            [TestMethod]
             public void GivenALocalFileProviderConfiguration_ThenTheReturnedFileProviderWillSignalLocal()
             {
                 var fileProviderMock = new Mock<IFileProvider>();
-                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
                 var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
 
@@ -43,7 +34,7 @@ namespace Radia.Tests.Services.FileProviders.Local
             [TestMethod]
             public void GivenALocalFileProviderConfiguration_ThenPhysicalFileProviderWillBeCalled()
             {
-                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
                 var configuration = defaultRadiaTestContext.ValidFileProviderConfiguration;
                 configuration.Settings["RootDirectory"] = TestContext?.DeploymentDirectory ?? string.Empty;
 
@@ -64,7 +55,7 @@ namespace Radia.Tests.Services.FileProviders.Local
                 var fileProviderMock = new Mock<IFileProvider>();
                 fileProviderMock.Setup(x => x.GetDirectoryContents(It.IsAny<string>())).Returns(new Mock<IDirectoryContents>().Object);
 
-                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
                 var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
                 var result = sut.GetDirectoryContents(TestContext?.DeploymentDirectory ?? string.Empty);
@@ -84,7 +75,7 @@ namespace Radia.Tests.Services.FileProviders.Local
                 var fileProviderMock = new Mock<IFileProvider>();
                 fileProviderMock.Setup(x => x.GetFileInfo(It.IsAny<string>())).Returns(new Mock<IFileInfo>().Object);
 
-                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
                 var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
                 var result = sut.GetFileInfo(TestContext?.DeploymentDirectory ?? string.Empty);
@@ -104,7 +95,7 @@ namespace Radia.Tests.Services.FileProviders.Local
                 var fileProviderMock = new Mock<IFileProvider>();
                 fileProviderMock.Setup(x => x.Watch(It.IsAny<string>())).Returns(new Mock<IChangeToken>().Object);
 
-                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
                 var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
                 var result = sut.Watch(TestContext?.DeploymentDirectory ?? string.Empty);

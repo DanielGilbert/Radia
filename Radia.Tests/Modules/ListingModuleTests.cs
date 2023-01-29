@@ -19,17 +19,18 @@ namespace Radia.Tests.Modules
         [TestClass]
         public class TheProcessRequestMethod
         {
+            public TestContext? TestContext { get; set; }
             DefaultRadiaTestContext RadiaTestContext { get; set; }
 
             public TheProcessRequestMethod()
             {
-                RadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                RadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
             }
 
             [TestInitialize]
             public void InitializeTest()
             {
-                RadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                RadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
             }
 
             [TestMethod]
@@ -50,11 +51,12 @@ namespace Radia.Tests.Modules
         [TestClass]
         public class TheProcessRequestWithArgsMethod
         {
+            public TestContext? TestContext { get; set; }
             DefaultRadiaTestContext RadiaTestContext { get; }
 
             public TheProcessRequestWithArgsMethod()
             {
-                RadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local);
+                RadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
             }
 
             [TestMethod]

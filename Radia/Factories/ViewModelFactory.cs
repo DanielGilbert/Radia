@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.Extensions.FileProviders;
+using Radia.Models;
 using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
@@ -13,7 +14,7 @@ namespace Radia.Factories
         private readonly IContentTypeIdentifierService contentTypeIdentifierService;
         private readonly IContentProcessorFactory<string> contentProcessorFactory;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IFileProvider fileProvider;
+        private readonly IRadiaFileProvider fileProvider;
 
         public ViewModelFactory(IRadiaFileProviderFactory fileProviderFactory,
                                 IConfigurationService configurationService,
@@ -33,7 +34,7 @@ namespace Radia.Factories
         {
             IContentProcessor<string> contentProcessor = this.contentProcessorFactory.Create();
 
-            string websiteRoot = this.httpContextAccessor.HttpContext?.Request.Scheme + "://" + this.httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
+            string webHost = this.httpContextAccessor.HttpContext?.Request.Scheme + "://" + this.httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
 
             IFileInfo fileInfo = this.fileProvider.GetFileInfo(args.Path);
 
@@ -47,23 +48,24 @@ namespace Radia.Factories
                     return new PathNotFoundViewModel(configurationService.GetWebsiteTitle(),
                                  configurationService.GetPageHeader(),
                                  args.Path,
-                                 websiteRoot);
+                                 webHost);
                 }
                 else
                 {
                     var folderViewModel = new FolderViewModel(configurationService.GetWebsiteTitle(),
                                                           configurationService.GetPageHeader(),
                                                           args.Path,
-                                                          websiteRoot);
+                                                          '/',
+                                                          webHost);
                     foreach (var dir in directoryContent)
                     {
                         if (dir.IsDirectory)
                         {
-                            folderViewModel.Directories.Add(dir);
+                            folderViewModel.Directories.Add(new RadiaFileInfo(webHost, dir, args.Path, this.fileProvider.PathDelimiter));
                         }
                         else
                         {
-                            folderViewModel.Files.Add(dir);
+                            folderViewModel.Files.Add(new RadiaFileInfo(webHost, dir, args.Path, this.fileProvider.PathDelimiter));
                         }
                     }
 

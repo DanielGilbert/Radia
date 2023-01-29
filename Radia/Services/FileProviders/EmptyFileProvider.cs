@@ -7,6 +7,8 @@ namespace Radia.Services.FileProviders
     {
         public FileProviderEnum FileProviderEnum => FileProviderEnum.Empty;
 
+        public char PathDelimiter => ' ';
+
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
             throw new NotImplementedException();

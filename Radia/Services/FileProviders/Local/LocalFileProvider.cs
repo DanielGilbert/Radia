@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
+using Radia.Exceptions;
 
 namespace Radia.Services.FileProviders.Local
 {
@@ -9,6 +10,8 @@ namespace Radia.Services.FileProviders.Local
         private readonly string rootPath;
 
         public FileProviderEnum FileProviderEnum { get; }
+
+        public char PathDelimiter => Path.DirectorySeparatorChar;
 
         public LocalFileProvider(IFileProviderConfiguration fileProviderConfiguration, IFileProvider? frameworkFileProvider = null)
         {
@@ -28,9 +31,7 @@ namespace Radia.Services.FileProviders.Local
             }
             else
             {
-                this.rootPath = string.Empty;
-                this.fileProvider = new EmptyFileProvider();
-                this.FileProviderEnum = FileProviderEnum.Empty;
+                throw new InvalidFileProviderException();
             }
         }
 

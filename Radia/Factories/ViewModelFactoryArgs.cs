@@ -4,7 +4,6 @@
     {
         public string Path { get; }
         public string PageTitle { get; }
-
         public ViewModelFactoryArgs(string path, string pageTitle)
         {
             Path = path;

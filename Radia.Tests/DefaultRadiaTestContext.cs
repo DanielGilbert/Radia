@@ -18,9 +18,12 @@ namespace Radia.Tests
 {
     public class DefaultRadiaTestContext
     {
+        public const string WebHost = "http://unknownWebHost.com/";
         public const string WebRootPath = @"./webroot/path/";
         public const string SubFolderPath = @"/test";
-        public const string LocalRootDirectory = @"/RootDirectory/";
+
+        public string RootDirectory { get; }
+
         public IFileProviderConfiguration ValidFileProviderConfiguration { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
         public IRadiaFileProviderFactory FileProviderFactory { get; }
@@ -36,16 +39,17 @@ namespace Radia.Tests
         public IFileInfo SubFolderFileInfo { get; set; }
         public IList<IRadiaFileProvider> FileProviders { get; }
 
-        public DefaultRadiaTestContext(FileProviderEnum fileProviderEnum)
+        public DefaultRadiaTestContext(FileProviderEnum fileProviderEnum, string rootDirectory)
         {
+            RootDirectory = rootDirectory;
             ValidFileProviderConfiguration = CreateFileProviderConfiguration(fileProviderEnum);
             IndexFileInfo = MockIndexFileInfo();
             SubFolderFileInfo = MockSubFolderFileInfo();
             HttpContextAccessor = MockHttpContextAccessor();
             ContentProcessorFactory = BuildContentProcessorFactory();
             WebHostEnvironment = MockWebHostEnvironment();
-            LocalFileProvider = MockLocalFileProvider();
-            EmptyFileProvider = MockEmptyFileProvider();
+            LocalFileProvider = BuildLocalFileProvider();
+            EmptyFileProvider = BuildEmptyFileProvider();
             ConfigurationService = MockConfigurationService();
             ContentTypeIdentifierService = BuildContentTypeIdentifierService();
             FileProviderFactory = BuildFileProviderFactory();
@@ -64,7 +68,7 @@ namespace Radia.Tests
                                                     ValidFileProviderConfiguration);
         }
 
-        private static IFileProviderConfiguration CreateFileProviderConfiguration(FileProviderEnum fileProviderEnum)
+        private IFileProviderConfiguration CreateFileProviderConfiguration(FileProviderEnum fileProviderEnum)
         {
             return fileProviderEnum switch
             {
@@ -84,14 +88,14 @@ namespace Radia.Tests
             return result;
         }
 
-        private static IFileProviderConfiguration GenerateLocalFileProviderConfiguration()
+        private IFileProviderConfiguration GenerateLocalFileProviderConfiguration()
         {
             var result = new FileProviderConfiguration()
             {
                 FileProvider = FileProviderEnum.Local,
                 Settings = new Dictionary<string, string>()
                         {
-                            { "RootDirectory", LocalRootDirectory }
+                            { "RootDirectory", RootDirectory }
                         }
             };
 
@@ -164,21 +168,14 @@ namespace Radia.Tests
             return result;
         }
 
-        private IRadiaFileProvider MockLocalFileProvider()
+        private IRadiaFileProvider BuildLocalFileProvider()
         {
-            var localFileProvider = new Mock<IRadiaFileProvider>();
-            localFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Local);
-            localFileProvider.Setup(p => p.GetFileInfo(SubFolderPath)).Returns(SubFolderFileInfo);
-            localFileProvider.Setup(p => p.GetFileInfo(SubFolderPath)).Returns(SubFolderFileInfo);
-            localFileProvider.Setup(p => p.GetFileInfo(string.Empty)).Returns(IndexFileInfo);
-            return localFileProvider.Object;
+            return new LocalFileProvider(ValidFileProviderConfiguration);
         }
 
-        private static IRadiaFileProvider MockEmptyFileProvider()
+        private static IRadiaFileProvider BuildEmptyFileProvider()
         {
-            var emptyFileProvider = new Mock<IRadiaFileProvider>();
-            emptyFileProvider.Setup(p => p.FileProviderEnum).Returns(FileProviderEnum.Empty);
-            return emptyFileProvider.Object;
+            return new EmptyFileProvider();
         }
 
 
