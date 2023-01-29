@@ -23,17 +23,29 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
         public static WebApplicationBuilder AddLocalServices(this WebApplicationBuilder builder)
         {
             var configurationService = new ConfigurationService(builder.Configuration);
+            var configurations = configurationService.GetFileProviderConfigurations();
+
             builder.Services.AddSingleton<IConfigurationService>(configurationService);
-            builder.Services.AddSingleton<IFileProviderConfiguration>(configurationService.GetFileProviderConfiguration());
-            builder.Services.AddSingleton<IRadiaFileProvider, LocalFileProvider>();
-            builder.Services.AddSingleton<IRadiaFileProvider, EmptyFileProvider>();
-            builder.Services.AddSingleton<IRadiaFileProviderFactory, FileProviderFactory>();
+            var radiaFileProvider = GetCompositeRadiaFileProvider(configurations);
+            builder.Services.AddFluid(config =>
+            {
+                config.PartialsFileProvider = radiaFileProvider;
+                config.ViewsFileProvider = radiaFileProvider;
+            });
+            builder.Services.AddSingleton(radiaFileProvider);
             builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             builder.Services.AddSingleton<IViewFactory, ViewFactory>();
             builder.Services.AddSingleton<IContentProcessorFactory, ContentProcessorFactory>();
             builder.Services.AddSingleton<IContentTypeIdentifierService, ContentTypeIdentifierService>();
 
             return builder;
+        }
+
+        private static IRadiaFileProvider GetCompositeRadiaFileProvider(IList<FileProviderConfiguration> configurations)
+        {
+            var fileProviderFactory = new FileProviderFactory();
+            IRadiaFileProvider compositeRadiaFileProvider = fileProviderFactory.CreateComposite(configurations);
+            return compositeRadiaFileProvider;
         }
     }
 }

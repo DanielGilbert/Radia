@@ -27,7 +27,7 @@ namespace Radia.Tests.Models
 
                 Directory.CreateDirectory(testFolder);
 
-                var fileProvider = defaultRadiaTestContext.FileProviderFactory.Create(defaultRadiaTestContext.ValidFileProviderConfiguration);
+                var fileProvider = defaultRadiaTestContext.FileProviderFactory.Create(defaultRadiaTestContext.ValidFileProviderConfigurations);
                 var parent = testDirectory.TrimEnd('\\')[..testDirectory.LastIndexOf('\\')];
                 var result = fileProvider.GetDirectoryContents(parent);
                 foreach(var data in result)

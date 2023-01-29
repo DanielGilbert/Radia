@@ -2,6 +2,7 @@
 using Microsoft.Extensions.FileProviders;
 using Radia.Factories;
 using Radia.Services;
+using Radia.Services.FileProviders;
 using Radia.ViewModels;
 using System.Text;
 
@@ -9,24 +10,17 @@ namespace Radia.Modules
 {
     public class ListingModule : IListingModule
     {
-        private readonly IWebHostEnvironment webHostEnvironment;
         private readonly IViewModelFactory viewModelFactory;
         private readonly IViewFactory viewFactory;
         private readonly IConfigurationService configurationService;
-        private readonly IFileProvider fileProvider;
 
-        public ListingModule(IWebHostEnvironment webHostEnvironment,
-                             IRadiaFileProviderFactory fileProviderFactory,
-                             IViewModelFactory viewModelFactory,
+        public ListingModule(IViewModelFactory viewModelFactory,
                              IViewFactory viewFactory,
                              IConfigurationService configurationService)
         {
-            this.webHostEnvironment = webHostEnvironment;
             this.viewModelFactory = viewModelFactory;
             this.viewFactory = viewFactory;
             this.configurationService = configurationService;
-            var fileProviderConfiguration = this.configurationService.GetFileProviderConfiguration();
-            this.fileProvider = fileProviderFactory.Create(fileProviderConfiguration);
         }
 
         public IResult ProcessRequest(string arg)

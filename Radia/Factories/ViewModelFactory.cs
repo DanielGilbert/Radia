@@ -17,18 +17,17 @@ namespace Radia.Factories
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IRadiaFileProvider fileProvider;
 
-        public ViewModelFactory(IRadiaFileProviderFactory fileProviderFactory,
+        public ViewModelFactory(IRadiaFileProvider fileProvider,
                                 IConfigurationService configurationService,
                                 IContentTypeIdentifierService contentTypeIdentifierService,
                                 IContentProcessorFactory contentProcessorFactory,
-                                IHttpContextAccessor httpContextAccessor,
-                                IFileProviderConfiguration fileProviderConfiguration)
+                                IHttpContextAccessor httpContextAccessor)
         {
             this.configurationService = configurationService;
             this.contentTypeIdentifierService = contentTypeIdentifierService;
             this.contentProcessorFactory = contentProcessorFactory;
             this.httpContextAccessor = httpContextAccessor;
-            this.fileProvider = fileProviderFactory.Create(fileProviderConfiguration);
+            this.fileProvider = fileProvider;
         }
 
         public IViewModel Create(ViewModelFactoryArgs args)
@@ -64,7 +63,7 @@ namespace Radia.Factories
                     {
                         if (dir.IsDirectory)
                         {
-                            folderViewModel.Directories.Add(new RadiaFileInfo(webHost, dir, args.Path, this.fileProvider.PathDelimiter));
+                            folderViewModel.Directories.Add(new RadiaFileInfo(webHost, dir, args.Path));
                         }
                         else
                         {
@@ -81,7 +80,7 @@ namespace Radia.Factories
                                 var cntntResult = result.ProcessContent(cntntType, stringContent);
                                 folderViewModel.ReadmeContent = cntntResult.Result;
                             }
-                            folderViewModel.Files.Add(new RadiaFileInfo(webHost, dir, args.Path, this.fileProvider.PathDelimiter));
+                            folderViewModel.Files.Add(new RadiaFileInfo(webHost, dir, args.Path));
                         }
                     }
 

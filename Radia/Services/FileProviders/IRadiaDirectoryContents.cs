@@ -2,7 +2,7 @@
 
 namespace Radia.Services.FileProviders
 {
-    public interface IRadiaFileProvider : IFileProvider
+    public interface IRadiaDirectoryContents : IDirectoryContents
     {
     }
 }

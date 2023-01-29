@@ -8,23 +8,30 @@ namespace Radia.Factories
 {
     public class FileProviderFactory : IRadiaFileProviderFactory
     {
-        private readonly IEnumerable<IRadiaFileProvider> fileProviders;
-
-        public FileProviderFactory(IEnumerable<IRadiaFileProvider> fileProviders)
+        public IRadiaFileProvider Create(FileProviderConfiguration configuration)
         {
-            this.fileProviders = fileProviders;
-        }
+            IRadiaFileProvider? result = null;
 
-        public IRadiaFileProvider Create(IFileProviderConfiguration configuration)
-        {
-            IRadiaFileProvider? result = configuration.FileProvider switch
+            if (configuration.Settings.TryGetValue("RootDirectory", out string? value))
             {
-                FileProviderEnum.Empty => fileProviders.SingleOrDefault((p) => p.FileProviderEnum == FileProviderEnum.Empty),
-                FileProviderEnum.Local => fileProviders.SingleOrDefault((p) => p.FileProviderEnum == FileProviderEnum.Local),
-                _ => throw new InvalidEnumArgumentException(nameof(configuration.FileProvider), (int)configuration.FileProvider, typeof(FileProviderEnum))
-            };
+                result = new LocalFileProvider(value, configuration.AllowListing);
+            }
 
             return result ?? throw new InvalidOperationException("No FileProvider found");
+        }
+
+        public IRadiaFileProvider CreateComposite(IList<FileProviderConfiguration> configuration)
+        {
+            ArgumentNullException.ThrowIfNull(configuration);
+            IList<IRadiaFileProvider> fileProviders = new List<IRadiaFileProvider>();
+
+            foreach(var config in configuration)
+            {
+                fileProviders.Add(Create(config));
+            }
+
+            IRadiaFileProvider compositeRadiaFileProvider = new CompositeRadiaFileProvider(fileProviders);
+            return compositeRadiaFileProvider;
         }
     }
 }

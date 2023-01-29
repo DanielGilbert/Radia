@@ -26,7 +26,7 @@ namespace Radia.Tests.Services.FileProviders.Local
                 var fileProviderMock = new Mock<IFileProvider>();
                 var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
-                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
+                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfigurations, fileProviderMock.Object);
 
                 sut.FileProviderEnum.Should().Be(FileProviderEnum.Local);
             }
@@ -35,7 +35,7 @@ namespace Radia.Tests.Services.FileProviders.Local
             public void GivenALocalFileProviderConfiguration_ThenPhysicalFileProviderWillBeCalled()
             {
                 var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
-                var configuration = defaultRadiaTestContext.ValidFileProviderConfiguration;
+                var configuration = defaultRadiaTestContext.ValidFileProviderConfigurations;
                 configuration.Settings["RootDirectory"] = TestContext?.DeploymentDirectory ?? string.Empty;
 
                 var sut = new LocalFileProvider(configuration);
@@ -57,7 +57,7 @@ namespace Radia.Tests.Services.FileProviders.Local
 
                 var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
-                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
+                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfigurations, fileProviderMock.Object);
                 var result = sut.GetDirectoryContents(TestContext?.DeploymentDirectory ?? string.Empty);
                 sut.FileProviderEnum.Should().Be(FileProviderEnum.Local);
                 fileProviderMock.Verify(x => x.GetDirectoryContents(It.IsAny<string>()));
@@ -77,7 +77,7 @@ namespace Radia.Tests.Services.FileProviders.Local
 
                 var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
-                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
+                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfigurations, fileProviderMock.Object);
                 var result = sut.GetFileInfo(TestContext?.DeploymentDirectory ?? string.Empty);
                 sut.FileProviderEnum.Should().Be(FileProviderEnum.Local);
                 fileProviderMock.Verify(x => x.GetFileInfo(It.IsAny<string>()));
@@ -97,7 +97,7 @@ namespace Radia.Tests.Services.FileProviders.Local
 
                 var defaultRadiaTestContext = new DefaultRadiaTestContext(FileProviderEnum.Local, TestContext.TestRunDirectory);
 
-                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfiguration, fileProviderMock.Object);
+                var sut = new LocalFileProvider(defaultRadiaTestContext.ValidFileProviderConfigurations, fileProviderMock.Object);
                 var result = sut.Watch(TestContext?.DeploymentDirectory ?? string.Empty);
                 sut.FileProviderEnum.Should().Be(FileProviderEnum.Local);
                 fileProviderMock.Verify(x => x.Watch(It.IsAny<string>()));

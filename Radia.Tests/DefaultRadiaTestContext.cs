@@ -24,7 +24,7 @@ namespace Radia.Tests
 
         public string RootDirectory { get; }
 
-        public IFileProviderConfiguration ValidFileProviderConfiguration { get; }
+        public IList<IFileProviderConfiguration> ValidFileProviderConfigurations { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
         public IRadiaFileProviderFactory FileProviderFactory { get; }
         public IRadiaFileProvider LocalFileProvider { get; }
@@ -32,70 +32,46 @@ namespace Radia.Tests
         public IConfigurationService ConfigurationService { get; }
         public IContentTypeIdentifierService ContentTypeIdentifierService { get; }
         public IViewModelFactory ViewModelFactory { get; }
-        public IContentProcessorFactory<string> ContentProcessorFactory { get; }
+        public IContentProcessorFactory ContentProcessorFactory { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IViewFactory ViewFactory { get; set; }
         public IFileInfo IndexFileInfo { get; set; }
         public IFileInfo SubFolderFileInfo { get; set; }
         public IList<IRadiaFileProvider> FileProviders { get; }
 
-        public DefaultRadiaTestContext(FileProviderEnum fileProviderEnum, string rootDirectory)
+        public DefaultRadiaTestContext(IList<IFileProviderConfiguration> fileProviderConfigurations, string rootDirectory)
         {
             RootDirectory = rootDirectory;
-            ValidFileProviderConfiguration = CreateFileProviderConfiguration(fileProviderEnum);
             IndexFileInfo = MockIndexFileInfo();
             SubFolderFileInfo = MockSubFolderFileInfo();
             HttpContextAccessor = MockHttpContextAccessor();
             ContentProcessorFactory = BuildContentProcessorFactory();
             WebHostEnvironment = MockWebHostEnvironment();
-            LocalFileProvider = BuildLocalFileProvider();
-            EmptyFileProvider = BuildEmptyFileProvider();
             ConfigurationService = MockConfigurationService();
             ContentTypeIdentifierService = BuildContentTypeIdentifierService();
             FileProviderFactory = BuildFileProviderFactory();
             ViewFactory = BuildViewFactory();
             
-            FileProviders = new List<IRadiaFileProvider>()
-                        {
-                            LocalFileProvider,
-                            EmptyFileProvider
-                        };
             ViewModelFactory = new ViewModelFactory(FileProviderFactory,
                                                     ConfigurationService,
                                                     ContentTypeIdentifierService,
                                                     ContentProcessorFactory,
                                                     HttpContextAccessor,
-                                                    ValidFileProviderConfiguration);
+                                                    ValidFileProviderConfigurations);
         }
 
-        private IFileProviderConfiguration CreateFileProviderConfiguration(FileProviderEnum fileProviderEnum)
+        public static IList<IFileProviderConfiguration> DefaultFileProviderConfigurations(string testDirectory)
         {
-            return fileProviderEnum switch
-            {
-                FileProviderEnum.Local => GenerateLocalFileProviderConfiguration(),
-                FileProviderEnum.Empty => GenerateEmptyFileProviderConfiguration(),
-                _ => throw new InvalidEnumArgumentException(nameof(fileProviderEnum), (int)fileProviderEnum, typeof(FileProviderEnum))
-            };
+            return new List<IFileProviderConfiguration>() { GenerateLocalFileProviderConfiguration(testDirectory) };
         }
 
-        private static IFileProviderConfiguration GenerateEmptyFileProviderConfiguration()
+        private static IFileProviderConfiguration GenerateLocalFileProviderConfiguration(string testDirectory)
         {
             var result = new FileProviderConfiguration()
             {
-                FileProvider = FileProviderEnum.Empty
-            };
-
-            return result;
-        }
-
-        private IFileProviderConfiguration GenerateLocalFileProviderConfiguration()
-        {
-            var result = new FileProviderConfiguration()
-            {
-                FileProvider = FileProviderEnum.Local,
                 Settings = new Dictionary<string, string>()
                         {
-                            { "RootDirectory", RootDirectory }
+                            { "RootDirectory", testDirectory }
                         }
             };
 
@@ -131,7 +107,7 @@ namespace Radia.Tests
             return httpContextAccessor.Object;
         }
 
-        private static IContentProcessorFactory<string> BuildContentProcessorFactory()
+        private static IContentProcessorFactory BuildContentProcessorFactory()
         {
             return new ContentProcessorFactory();
         }
@@ -159,25 +135,14 @@ namespace Radia.Tests
             var result = new Dictionary<string, string?>
                 {
                     {"AllowedHosts", "*"},
-                    {"AppConfiguration:FileProviderConfiguration:FileProvider", "Local"},
-                    {"AppConfiguration:FileProviderConfiguration:Settings:RootDirectory", "/blogsource/"},
+                    {"AppConfiguration:FileProviderConfigurations:FileProvider", "Local"},
+                    {"AppConfiguration:FileProviderConfigurations:Settings:RootDirectory", "/blogsource/"},
                     {"AppConfiguration:WebsiteTitle", "g5t.de - 'cause gilbert.de was too expensive..."},
                     {"AppConfiguration:DefaultPageHeader", "g[ilber]t.de" }
                 };
 
             return result;
         }
-
-        private IRadiaFileProvider BuildLocalFileProvider()
-        {
-            return new LocalFileProvider(ValidFileProviderConfiguration);
-        }
-
-        private static IRadiaFileProvider BuildEmptyFileProvider()
-        {
-            return new EmptyFileProvider();
-        }
-
 
         private IRadiaFileProviderFactory BuildFileProviderFactory()
         {

@@ -6,37 +6,23 @@ namespace Radia.Services.FileProviders.Local
 {
     public class LocalFileProvider : IRadiaFileProvider
     {
+        private readonly bool allowDirectoryListing;
         private readonly IFileProvider fileProvider;
         private readonly string rootPath;
 
-        public FileProviderEnum FileProviderEnum { get; }
-
-        public char PathDelimiter => Path.DirectorySeparatorChar;
-
-        public LocalFileProvider(IFileProviderConfiguration fileProviderConfiguration, IFileProvider? frameworkFileProvider = null)
+        public LocalFileProvider(string rootPath, bool allowDirectoryListing)
         {
-            if (fileProviderConfiguration.FileProvider == FileProviderEnum.Local)
-            {
-                this.rootPath = fileProviderConfiguration.Settings["RootDirectory"];
-                if (frameworkFileProvider == null)
-                {
-                    this.fileProvider = new PhysicalFileProvider(this.rootPath);
-                }
-                else
-                {
-                    this.fileProvider = frameworkFileProvider;
-                }
-
-                this.FileProviderEnum = FileProviderEnum.Local;
-            }
-            else
-            {
-                throw new InvalidFileProviderException();
-            }
+            this.rootPath = rootPath;
+            this.allowDirectoryListing = allowDirectoryListing;
+            this.fileProvider = new PhysicalFileProvider(this.rootPath);
         }
 
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
+            if (this.allowDirectoryListing is false)
+            {
+                return new EmptyDirectoryContents();
+            }
             return this.fileProvider.GetDirectoryContents(subpath);
         }
 

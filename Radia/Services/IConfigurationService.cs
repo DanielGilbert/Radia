@@ -4,7 +4,7 @@ namespace Radia.Services
 {
     public interface IConfigurationService
     {
-        FileProviderConfiguration GetFileProviderConfiguration();
+        IList<FileProviderConfiguration> GetFileProviderConfigurations();
         string GetWebsiteTitle();
         string GetPageHeader();
     }

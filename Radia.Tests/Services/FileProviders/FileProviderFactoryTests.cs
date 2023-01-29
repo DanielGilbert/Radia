@@ -32,7 +32,7 @@ namespace Radia.Tests.Services.FileProviders
                 DefaultRadiaTestContext RadiaTestContext = new(fileProviderEnum, TestContext.TestRunDirectory);
 
                 var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
-                var result = sut.Create(RadiaTestContext.ValidFileProviderConfiguration);
+                var result = sut.Create(RadiaTestContext.ValidFileProviderConfigurations);
 
                 result.Should().NotBeNull();
                 result.FileProviderEnum.Should().Be(fileProviderEnum);

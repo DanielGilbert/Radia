@@ -2,8 +2,7 @@
 {
     public interface IFileProviderConfiguration
     {
-        FileProviderEnum FileProvider { get; set; }
-
+        bool AllowListing { get; }
         Dictionary<string, string> Settings { get; set; }
     }
 }

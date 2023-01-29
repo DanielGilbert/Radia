@@ -23,11 +23,14 @@ namespace Radia.Services
             return this.appConfiguration.WebsiteTitle;
         }
 
-        public FileProviderConfiguration GetFileProviderConfiguration()
+        public IList<FileProviderConfiguration> GetFileProviderConfigurations()
         {
-            ArgumentNullException.ThrowIfNull(appConfiguration.FileProviderConfiguration,
-                                              nameof(appConfiguration.FileProviderConfiguration));
-            return appConfiguration.FileProviderConfiguration;
+            ArgumentNullException.ThrowIfNull(appConfiguration.FileProviderConfigurations,
+                                              nameof(appConfiguration.FileProviderConfigurations));
+            return appConfiguration
+                   .FileProviderConfigurations.OrderBy(kvp => Convert.ToInt32(kvp.Key))
+                                              .Select(kvp => kvp.Value)
+                                              .ToList();
         }
 
         public string GetPageHeader()

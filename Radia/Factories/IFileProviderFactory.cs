@@ -5,6 +5,7 @@ namespace Radia.Factories
 {
     public interface IRadiaFileProviderFactory
     {
-        IRadiaFileProvider Create(IFileProviderConfiguration configuration);
+        IRadiaFileProvider Create(FileProviderConfiguration configuration);
+        IRadiaFileProvider CreateComposite(IList<FileProviderConfiguration> configuration);
     }
 }

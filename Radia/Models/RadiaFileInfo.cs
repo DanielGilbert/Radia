@@ -9,8 +9,6 @@ namespace Radia.Models
         private readonly string webHost;
         private readonly IFileInfo fileInfo;
         private readonly string relativePath;
-        private readonly char pathDelimiter;
-
         public bool Exists => this.fileInfo.Exists;
 
         public bool IsDirectory => this.fileInfo.IsDirectory;
@@ -29,19 +27,17 @@ namespace Radia.Models
 
         public RadiaFileInfo(string webHost,
                              IFileInfo fileInfo,
-                             string relativePath,
-                             char pathDelimiter)
+                             string relativePath)
         {
             this.webHost = webHost;
             this.fileInfo = fileInfo;
             this.relativePath = relativePath;
-            this.pathDelimiter = pathDelimiter;
             Url = CreateUrl();
         }
 
         private string CreateUrl()
         {
-            return new Uri(this.webHost + '/' + this.relativePath.Replace(this.pathDelimiter, '/').TrimStart('/').TrimEnd('/') + $"/{this.fileInfo.Name}").ToString();
+            return new Uri(this.webHost + '/' + this.relativePath.Replace('\\', '/').TrimStart('/').TrimEnd('/') + $"/{this.fileInfo.Name}").ToString();
         }
 
         public Stream CreateReadStream() => this.fileInfo.CreateReadStream();
