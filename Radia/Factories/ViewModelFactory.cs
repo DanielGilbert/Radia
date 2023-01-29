@@ -5,6 +5,7 @@ using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
 using Radia.ViewModels;
+using System.Net.Mime;
 
 namespace Radia.Factories
 {
@@ -12,14 +13,14 @@ namespace Radia.Factories
     {
         private readonly IConfigurationService configurationService;
         private readonly IContentTypeIdentifierService contentTypeIdentifierService;
-        private readonly IContentProcessorFactory<string> contentProcessorFactory;
+        private readonly IContentProcessorFactory contentProcessorFactory;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IRadiaFileProvider fileProvider;
 
         public ViewModelFactory(IRadiaFileProviderFactory fileProviderFactory,
                                 IConfigurationService configurationService,
                                 IContentTypeIdentifierService contentTypeIdentifierService,
-                                IContentProcessorFactory<string> contentProcessorFactory,
+                                IContentProcessorFactory contentProcessorFactory,
                                 IHttpContextAccessor httpContextAccessor,
                                 IFileProviderConfiguration fileProviderConfiguration)
         {
@@ -32,7 +33,7 @@ namespace Radia.Factories
 
         public IViewModel Create(ViewModelFactoryArgs args)
         {
-            IContentProcessor<string> contentProcessor = this.contentProcessorFactory.Create();
+            IContentProcessor contentProcessor = this.contentProcessorFactory.Create();
 
             string webHost = this.httpContextAccessor.HttpContext?.Request.Scheme + "://" + this.httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
 
@@ -40,7 +41,6 @@ namespace Radia.Factories
 
             if (fileInfo.Exists is false)
             {
-                //Maybe we are dealing with a folder?
                 var directoryContent = this.fileProvider.GetDirectoryContents(args.Path);
 
                 if (directoryContent.Exists is false)
@@ -57,6 +57,9 @@ namespace Radia.Factories
                                                           args.Path,
                                                           '/',
                                                           webHost);
+
+
+
                     foreach (var dir in directoryContent)
                     {
                         if (dir.IsDirectory)
@@ -65,6 +68,19 @@ namespace Radia.Factories
                         }
                         else
                         {
+                            if (dir.Name.ToLowerInvariant().Equals("readme.md"))
+                            {
+                                string cntntType = "text/markdown";
+                                var result = this.contentProcessorFactory.Create();
+                                var stringContent = string.Empty;
+                                using (var reader = new StreamReader(dir.CreateReadStream()))
+                                {
+                                    stringContent = reader.ReadToEnd();
+                                }
+
+                                var cntntResult = result.ProcessContent(cntntType, stringContent);
+                                folderViewModel.ReadmeContent = cntntResult.Result;
+                            }
                             folderViewModel.Files.Add(new RadiaFileInfo(webHost, dir, args.Path, this.fileProvider.PathDelimiter));
                         }
                     }
@@ -75,11 +91,32 @@ namespace Radia.Factories
 
             var contentType = this.contentTypeIdentifierService.GetContentTypeFrom(args.Path);
 
-            var stream = fileInfo.CreateReadStream();
-            
-            var contentResult = contentProcessor.ProcessContent(contentType, stream);
+            var fileContentString = string.Empty;
 
-            return new PhysicalFileViewModel(contentResult,
+            if (contentType.StartsWith("text/"))
+            {
+                using(var reader = new StreamReader(fileInfo.CreateReadStream()))
+                {
+                    fileContentString = reader.ReadToEnd();
+
+                    var cntntResult = new PlainTextContentResult(fileContentString, contentType);
+
+                    return new PhysicalFileViewModel(fileInfo,
+                                 cntntResult,
+                                 contentType,
+                                 fileInfo.Name,
+                                 configurationService.GetWebsiteTitle(),
+                                 configurationService.GetPageHeader(),
+                                 fileInfo.PhysicalPath ?? string.Empty);
+                }
+            }
+
+            var stream = fileInfo.CreateReadStream();
+
+            var contentResult = contentProcessor.ProcessContent(contentType, fileContentString);
+
+            return new PhysicalFileViewModel(fileInfo,
+                                             contentResult,
                                              contentType,
                                              fileInfo.Name,
                                              configurationService.GetWebsiteTitle(),

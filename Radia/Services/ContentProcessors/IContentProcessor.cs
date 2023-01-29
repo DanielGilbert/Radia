@@ -1,9 +1,9 @@
 ﻿namespace Radia.Services.ContentProcessors
 {
-    public interface IContentProcessor<T>
+    public interface IContentProcessor
     {
-        IContentProcessor<T> SetNext(IContentProcessor<T> contentProcessor);
+        IContentProcessor SetNext(IContentProcessor contentProcessor);
 
-        IContentResult<T> ProcessContent(string contentType, Stream content);
+        IContentResult ProcessContent(string contentType, string content);
     }
 }

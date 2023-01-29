@@ -2,8 +2,8 @@
 
 namespace Radia.Factories
 {
-    public interface IContentProcessorFactory<T>
+    public interface IContentProcessorFactory
     {
-        IContentProcessor<T> Create();
+        IContentProcessor Create();
     }
 }

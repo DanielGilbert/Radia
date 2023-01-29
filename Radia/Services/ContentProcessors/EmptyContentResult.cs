@@ -1,9 +1,7 @@
 ﻿namespace Radia.Services.ContentProcessors
 {
-    internal class EmptyContentResult : IContentResult<string>
+    internal class EmptyContentResult : IContentResult
     {
-        public Stream Stream => Stream.Null;
-
         public string Result => string.Empty;
     }
 }

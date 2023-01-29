@@ -2,9 +2,9 @@
 
 namespace Radia.Factories
 {
-    public class ContentProcessorFactory : IContentProcessorFactory<string>
+    public class ContentProcessorFactory : IContentProcessorFactory
     {
-        public IContentProcessor<string> Create()
+        public IContentProcessor Create()
         {
             var result = new MarkdownContentProcessor();
 

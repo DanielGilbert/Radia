@@ -1,10 +1,12 @@
-﻿using Radia.Services.ContentProcessors;
+﻿using Microsoft.Extensions.FileProviders;
+using Radia.Services.ContentProcessors;
 
 namespace Radia.ViewModels
 {
     public interface IPhysicalFileViewModel : IViewModel
     {
-        IContentResult<string> ContentResult { get; }
+        IFileInfo FileInfo { get; }
+        IContentResult ContentResult { get; }
         string? ContentType { get; }
         string? FileName { get; }
     }

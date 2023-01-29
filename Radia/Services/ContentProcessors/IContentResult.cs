@@ -1,8 +1,7 @@
 ﻿namespace Radia.Services.ContentProcessors
 {
-    public interface IContentResult<T>
+    public interface IContentResult
     {
-        Stream Stream { get; }
-        T Result { get; }
+        string Result { get; }
     }
 }

@@ -30,7 +30,7 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
             builder.Services.AddSingleton<IRadiaFileProviderFactory, FileProviderFactory>();
             builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             builder.Services.AddSingleton<IViewFactory, ViewFactory>();
-            builder.Services.AddSingleton<IContentProcessorFactory<string>, ContentProcessorFactory>();
+            builder.Services.AddSingleton<IContentProcessorFactory, ContentProcessorFactory>();
             builder.Services.AddSingleton<IContentTypeIdentifierService, ContentTypeIdentifierService>();
 
             return builder;

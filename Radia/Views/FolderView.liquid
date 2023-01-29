@@ -52,6 +52,6 @@
         </table>
     </nav>
     <article>
-        @Html.Raw(@Model.ReadmeFile.Content)
+        {{ ReadmeContent | raw }}
     </article>
 </main>

@@ -1,16 +1,16 @@
 ﻿namespace Radia.Services.ContentProcessors
 {
-    public abstract class BaseContentProcessor : IContentProcessor<string>
+    public abstract class BaseContentProcessor : IContentProcessor
     {
-        private IContentProcessor<string>? nextContentProcessor;
+        private IContentProcessor? nextContentProcessor;
 
-        public IContentProcessor<string> SetNext(IContentProcessor<string> contentProcessor)
+        public IContentProcessor SetNext(IContentProcessor contentProcessor)
         {
             this.nextContentProcessor = contentProcessor;
             return contentProcessor;
         }
 
-        public virtual IContentResult<string> ProcessContent(string contentType, Stream content)
+        public virtual IContentResult ProcessContent(string contentType, string content)
         {
             if (this.nextContentProcessor != null)
             {
@@ -18,7 +18,7 @@
             }
             else
             {
-                return new PlainTextContentResult(string.Empty, content, contentType);
+                return new PlainTextContentResult(content, contentType);
             }
         }
     }

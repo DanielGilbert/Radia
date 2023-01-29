@@ -57,7 +57,7 @@ namespace Radia.Modules
                     return Results.Text(physicalFileViewModel.ContentResult.Result, physicalFileViewModel.ContentType);
                 }
 
-                return Results.File(physicalFileViewModel.ContentResult.Stream,
+                return Results.File(physicalFileViewModel.FileInfo.CreateReadStream(),
                                     physicalFileViewModel.ContentType,
                                     physicalFileViewModel.FileName);
             }

@@ -13,6 +13,7 @@ namespace Radia.ViewModels
         public IList<IRadiaAncestorInfo> Ancestors { get; }
         public IList<IRadiaAncestorInfo> AncestorsWithoutLastElement => Ancestors.Take(Ancestors.Count - 1).ToList();
         public IRadiaAncestorInfo? LastAncestor { get; }
+        public string ReadmeContent { get; set; }
 
         public FolderViewModel(string pageTitle,
                                string pageHeader,
