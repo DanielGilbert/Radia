@@ -7,14 +7,14 @@ namespace Radia.Services.FileProviders
     {
         public bool Exists => true;
 
-        public IEnumerator<IFileInfo> GetEnumerator()
-        {
-            return new List<IFileInfo>().GetEnumerator();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new List<IFileInfo>().GetEnumerator();
+            return new List<IRadiaFileInfo>().GetEnumerator();
+        }
+
+        IEnumerator<IRadiaFileInfo> IEnumerable<IRadiaFileInfo>.GetEnumerator()
+        {
+            return new List<IRadiaFileInfo>().GetEnumerator();
         }
     }
 }

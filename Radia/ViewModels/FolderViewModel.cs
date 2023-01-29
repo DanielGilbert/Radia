@@ -8,8 +8,8 @@ namespace Radia.ViewModels
     {
         private readonly char pathDelimiter;
 
-        public IList<IRadiaFileInfo> Directories { get; }
-        public IList<IRadiaFileInfo> Files { get; }
+        public IList<RadiaFileInfoViewModel> Directories { get; }
+        public IList<RadiaFileInfoViewModel> Files { get; }
         public IList<IRadiaAncestorInfo> Ancestors { get; }
         public IList<IRadiaAncestorInfo> AncestorsWithoutLastElement => Ancestors.Take(Ancestors.Count - 1).ToList();
         public IRadiaAncestorInfo? LastAncestor { get; }
@@ -21,8 +21,8 @@ namespace Radia.ViewModels
                                char pathDelimiter,
                                string websiteRoot) : base(pageTitle, pageHeader, relativePath, websiteRoot)
         {
-            Directories = new List<IRadiaFileInfo>();
-            Files = new List<IRadiaFileInfo>();
+            Directories = new List<RadiaFileInfoViewModel>();
+            Files = new List<RadiaFileInfoViewModel>();
             this.pathDelimiter = pathDelimiter;
             Ancestors = CreateAncestorList();
             LastAncestor = Ancestors.LastOrDefault();

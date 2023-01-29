@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
-using Radia.Exceptions;
 
 namespace Radia.Services.FileProviders.Local
 {
@@ -17,18 +16,18 @@ namespace Radia.Services.FileProviders.Local
             this.fileProvider = new PhysicalFileProvider(this.rootPath);
         }
 
-        public IDirectoryContents GetDirectoryContents(string subpath)
+        public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
             if (this.allowDirectoryListing is false)
             {
                 return new EmptyDirectoryContents();
             }
-            return this.fileProvider.GetDirectoryContents(subpath);
+            return new LocalDirectoryContents(this.fileProvider.GetDirectoryContents(subpath));
         }
 
-        public IFileInfo GetFileInfo(string subpath)
+        public IRadiaFileInfo GetFileInfo(string subpath)
         {
-            return this.fileProvider.GetFileInfo(subpath);
+            return new LocalFileInfo(this.fileProvider.GetFileInfo(subpath));
         }
 
         public IChangeToken Watch(string filter)

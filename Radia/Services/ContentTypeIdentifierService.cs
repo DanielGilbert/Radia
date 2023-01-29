@@ -15,7 +15,7 @@ namespace Radia.Services
         {
             if (fileExtensionContentTypeProvider.TryGetContentType(filePath, out string? contentType))
             {
-                return contentType ?? string.Empty;
+                return contentType;
             }
 
             return string.Empty;

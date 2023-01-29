@@ -16,30 +16,30 @@ namespace Radia.Services.FileProviders
         }
 
         public bool AllowListing => true;
-        public IDirectoryContents GetDirectoryContents(string subpath)
+        public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
             var directoryContents = new CompositeRadiaDirectoryContents(this.radiaFileProviders, subpath);
             return directoryContents;
         }
 
-        public IFileInfo GetFileInfo(string subpath)
+        public IRadiaFileInfo GetFileInfo(string subpath)
         {
             foreach (IRadiaFileProvider fileProvider in this.radiaFileProviders)
             {
-                IFileInfo fileInfo = fileProvider.GetFileInfo(subpath);
+                IRadiaFileInfo fileInfo = fileProvider.GetFileInfo(subpath);
                 if (fileInfo != null && fileInfo.Exists)
                 {
                     return fileInfo;
                 }
             }
-            return new NotFoundFileInfo(subpath);
+            return new RadiaNotFoundFileInfo(subpath);
         }
 
         public IChangeToken Watch(string filter)
         {
             // Watch all file providers
             var changeTokens = new List<IChangeToken>();
-            foreach (IFileProvider fileProvider in this.radiaFileProviders)
+            foreach (IRadiaFileProvider fileProvider in this.radiaFileProviders)
             {
                 IChangeToken changeToken = fileProvider.Watch(filter);
                 if (changeToken != null)

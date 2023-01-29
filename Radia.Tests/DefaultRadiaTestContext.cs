@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using Radia.Factories;
 using Radia.Factories.ContentProcessor;
+using Radia.Factories.FileProvider;
 using Radia.Factories.View;
 using Radia.Factories.ViewModel;
 using Radia.Services;

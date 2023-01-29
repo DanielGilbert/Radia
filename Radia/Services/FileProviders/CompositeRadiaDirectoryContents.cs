@@ -8,9 +8,9 @@ namespace Radia.Services.FileProviders
     {
         private readonly IList<IRadiaFileProvider> fileProviders;
         private readonly string subpath;
-        private List<IFileInfo>? files;
+        private List<IRadiaFileInfo>? files;
         private bool exists;
-        private List<IDirectoryContents>? directories;
+        private List<IRadiaDirectoryContents>? directories;
 
         /// <summary>
         /// True if any given providers exists
@@ -31,13 +31,14 @@ namespace Radia.Services.FileProviders
             this.subpath = subpath;
         }
 
-        public IEnumerator<IFileInfo> GetEnumerator()
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             EnsureFilesAreInitialized();
             return this.files.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator<IRadiaFileInfo> IEnumerable<IRadiaFileInfo>.GetEnumerator()
         {
             EnsureFilesAreInitialized();
             return this.files.GetEnumerator();
@@ -48,10 +49,10 @@ namespace Radia.Services.FileProviders
         {
             if (this.directories == null)
             {
-                this.directories = new List<IDirectoryContents>();
-                foreach (IFileProvider fileProvider in this.fileProviders)
+                this.directories = new List<IRadiaDirectoryContents>();
+                foreach (IRadiaFileProvider fileProvider in this.fileProviders)
                 {
-                    IDirectoryContents directoryContents = fileProvider.GetDirectoryContents(this.subpath);
+                    IRadiaDirectoryContents directoryContents = fileProvider.GetDirectoryContents(this.subpath);
                     if (directoryContents != null && directoryContents.Exists)
                     {
                         this.exists = true;
@@ -68,12 +69,12 @@ namespace Radia.Services.FileProviders
             EnsureDirectoriesAreInitialized();
             if (this.files == null)
             {
-                this.files = new List<IFileInfo>();
+                this.files = new List<IRadiaFileInfo>();
                 var names = new HashSet<string>();
                 for (int i = 0; i < this.directories.Count; i++)
                 {
-                    IDirectoryContents directoryContents = this.directories[i];
-                    foreach (IFileInfo file in directoryContents)
+                    IRadiaDirectoryContents directoryContents = this.directories[i];
+                    foreach (IRadiaFileInfo file in directoryContents)
                     {
                         if (names.Add(file.Name))
                         {
@@ -83,5 +84,7 @@ namespace Radia.Services.FileProviders
                 }
             }
         }
+
+
     }
 }

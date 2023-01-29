@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Radia.Factories.ContentProcessor;
+﻿using Radia.Factories.ContentProcessor;
+using Radia.Factories.FileProvider;
 using Radia.Factories.View;
 using Radia.Factories.ViewModel;
 using Radia.Modules;
 using Radia.Services;
 using Radia.Services.FileProviders;
-using Radia.Services.FileProviders.Local;
+using Radia.Services.FileProviders.Microsoft;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Radia.Extensions.Microsoft.AspNetCore.Builders
@@ -31,8 +30,8 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
             var radiaFileProvider = GetCompositeRadiaFileProvider(configurations);
             builder.Services.AddFluid(config =>
             {
-                config.PartialsFileProvider = radiaFileProvider;
-                config.ViewsFileProvider = radiaFileProvider;
+                config.PartialsFileProvider = new MicrosoftFileProvider(radiaFileProvider);
+                config.ViewsFileProvider = new MicrosoftFileProvider(radiaFileProvider);
             });
             builder.Services.AddSingleton(radiaFileProvider);
             builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();

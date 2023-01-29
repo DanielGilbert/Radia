@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Server.IIS.Core;
-using Microsoft.Extensions.FileProviders;
-using Radia.Factories.ContentProcessor;
-using Radia.Models;
+﻿using Radia.Factories.ContentProcessor;
 using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
 using Radia.ViewModels;
-using System.Net.Mime;
 
 namespace Radia.Factories.ViewModel
 {
@@ -37,7 +33,7 @@ namespace Radia.Factories.ViewModel
 
             string webHost = httpContextAccessor.HttpContext?.Request.Scheme + "://" + httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
 
-            IFileInfo fileInfo = fileProvider.GetFileInfo(args.Path);
+            IRadiaFileInfo fileInfo = fileProvider.GetFileInfo(args.Path);
 
             if (fileInfo.Exists is false)
             {
@@ -64,7 +60,7 @@ namespace Radia.Factories.ViewModel
                     {
                         if (dir.IsDirectory)
                         {
-                            folderViewModel.Directories.Add(new RadiaFileInfo(webHost, dir, args.Path));
+                            folderViewModel.Directories.Add(new RadiaFileInfoViewModel(webHost, dir, args.Path));
                         }
                         else
                         {
@@ -81,7 +77,7 @@ namespace Radia.Factories.ViewModel
                                 var cntntResult = result.ProcessContent(cntntType, stringContent);
                                 folderViewModel.ReadmeContent = cntntResult.Result;
                             }
-                            folderViewModel.Files.Add(new RadiaFileInfo(webHost, dir, args.Path));
+                            folderViewModel.Files.Add(new RadiaFileInfoViewModel(webHost, dir, args.Path));
                         }
                     }
 

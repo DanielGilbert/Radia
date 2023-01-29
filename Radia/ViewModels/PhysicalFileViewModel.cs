@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Radia.Services.ContentProcessors;
+using Radia.Services.FileProviders;
 
 namespace Radia.ViewModels
 {
@@ -9,9 +10,9 @@ namespace Radia.ViewModels
         public string ContentType { get; }
         public string FileName { get; }
 
-        public IFileInfo FileInfo { get; }
+        public IRadiaFileInfo FileInfo { get; }
 
-        public PhysicalFileViewModel(IFileInfo fileInfo,
+        public PhysicalFileViewModel(IRadiaFileInfo fileInfo,
                                      IContentResult contentResult,
                                      string contentType,
                                      string fileName,

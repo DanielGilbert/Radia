@@ -2,7 +2,6 @@
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Moq;
-using Radia.Exceptions;
 using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Local;
 using System;
