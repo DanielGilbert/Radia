@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Radia.Models;
+using System.Reflection;
 
 namespace Radia.ViewModels
 {
@@ -10,6 +11,7 @@ namespace Radia.ViewModels
         public IList<IRadiaFileInfo> Directories { get; }
         public IList<IRadiaFileInfo> Files { get; }
         public IList<IRadiaAncestorInfo> Ancestors { get; }
+        public IList<IRadiaAncestorInfo> AncestorsWithoutLastElement => Ancestors.Take(Ancestors.Count - 1).ToList();
         public IRadiaAncestorInfo? LastAncestor { get; }
 
         public FolderViewModel(string pageTitle,
@@ -22,6 +24,7 @@ namespace Radia.ViewModels
             Files = new List<IRadiaFileInfo>();
             this.pathDelimiter = pathDelimiter;
             Ancestors = CreateAncestorList();
+            LastAncestor = Ancestors.LastOrDefault();
         }
 
         private IList<IRadiaAncestorInfo> CreateAncestorList()
@@ -33,13 +36,6 @@ namespace Radia.ViewModels
             {
                 return ancestors;
             }
-
-            //if (this.fileInfo.IsDirectory is false
-            //    && string.IsNullOrWhiteSpace(path) is false
-            //    && path.Contains(this.pathDelimiter))
-            //{
-            //    path = path[..path.LastIndexOf(this.pathDelimiter)];
-            //}
 
             while (path.TrimEnd(this.pathDelimiter) != String.Empty)
             {

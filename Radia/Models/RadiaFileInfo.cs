@@ -41,7 +41,7 @@ namespace Radia.Models
 
         private string CreateUrl()
         {
-            return new Uri(Uri.EscapeUriString(this.webHost + '/' + this.relativePath.Replace(this.pathDelimiter, '/').TrimStart('/').TrimEnd('/') + $"/{this.fileInfo.Name}")).ToString();
+            return new Uri(this.webHost + '/' + this.relativePath.Replace(this.pathDelimiter, '/').TrimStart('/').TrimEnd('/') + $"/{this.fileInfo.Name}").ToString();
         }
 
         public Stream CreateReadStream() => this.fileInfo.CreateReadStream();
