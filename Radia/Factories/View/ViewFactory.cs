@@ -10,7 +10,8 @@ namespace Radia.Factories.View
             {
                 FolderViewModel => "FolderView",
                 PathNotFoundViewModel => "PathNotFoundView",
-                PhysicalFileViewModel => "PhysicalFileView",
+                DownloadableFileViewModel => "PhysicalFileView",
+                ProcessedFileViewModel => "ProcessedFileView",
                 _ => string.Empty
             };
 

@@ -8,6 +8,7 @@ namespace Radia.ViewModels
     public class FolderViewModel : BaseViewModel
     {
         private readonly char pathDelimiter;
+        private readonly string relativePath;
 
         public IList<RadiaFileInfoViewModel> Directories { get; }
         public IList<RadiaFileInfoViewModel> Files { get; }
@@ -19,21 +20,21 @@ namespace Radia.ViewModels
         public FolderViewModel(string pageTitle,
                                string pageHeader,
                                string relativePath,
-                               char pathDelimiter,
-                               string websiteRoot) : base(pageTitle, pageHeader, relativePath, websiteRoot)
+                               string websiteRoot) : base(pageTitle, pageHeader, websiteRoot)
         {
             Directories = new List<RadiaFileInfoViewModel>();
             Files = new List<RadiaFileInfoViewModel>();
-            this.pathDelimiter = pathDelimiter;
+            this.pathDelimiter = '/';
             Ancestors = CreateAncestorList();
             LastAncestor = Ancestors.LastOrDefault();
             ReadmeContent = string.Empty;
+            this.relativePath = relativePath;
         }
 
         private IList<IRadiaAncestorInfo> CreateAncestorList()
         {
             var ancestors = new List<IRadiaAncestorInfo>();
-            var path = RelativePath;
+            var path = this.relativePath;
 
             if (path is null)
             {

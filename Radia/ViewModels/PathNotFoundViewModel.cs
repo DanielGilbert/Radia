@@ -4,8 +4,7 @@
     {
         public PathNotFoundViewModel(string pageTitle,
                                      string pageHeader,
-                                     string fullFilePath,
-                                     string websiteRoot) : base(pageTitle, pageHeader, fullFilePath, websiteRoot)
+                                     string websiteRoot) : base(pageTitle, pageHeader, websiteRoot)
         {
         }
     }

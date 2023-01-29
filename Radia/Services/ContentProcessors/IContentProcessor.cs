@@ -4,6 +4,6 @@
     {
         IContentProcessor SetNext(IContentProcessor contentProcessor);
 
-        IContentResult ProcessContent(string contentType, string content);
+        string ProcessContent(string contentType, string content);
     }
 }

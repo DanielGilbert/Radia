@@ -1,0 +1,23 @@
+﻿<header>
+    <h1>{{ PageHeader }}</h1>
+        <nav>
+            {% if LastAncestor != blank %}
+            <ul class="breadcrumb">
+                <li><a href="/">home</a></li>
+                {% for ancestor in AncestorsWithoutLastElement %}
+                    <li><a href="{{ancestor.Url}}">{{ancestor.Name}}</a></li>
+                {% endfor %}
+                <li>{{LastAncestor.Name}}</li>
+            </ul>
+            {% else %}
+            <ul class="breadcrumb">
+                <li>home</li>
+            </ul>
+            {% endif %}
+        </nav>
+</header>
+<main>
+    <article>
+        {{ Content | raw }}
+    </article>
+</main>

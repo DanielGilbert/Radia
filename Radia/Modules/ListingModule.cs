@@ -46,16 +46,12 @@ namespace Radia.Modules
 
             var resultViewModel = this.viewModelFactory.Create(viewModelFactoryArgs);
 
-            if (resultViewModel is IPhysicalFileViewModel physicalFileViewModel)
+            if (resultViewModel is IDownloadableFileViewModel downloadableFileViewModel)
             {
-                if (string.IsNullOrWhiteSpace(physicalFileViewModel.ContentResult.Result) is false)
-                {
-                    return Results.Text(physicalFileViewModel.ContentResult.Result, physicalFileViewModel.ContentType);
-                }
-
-                return Results.File(physicalFileViewModel.FileInfo.CreateReadStream(),
-                                    physicalFileViewModel.ContentType,
-                                    physicalFileViewModel.FileName);
+                return Results.File(downloadableFileViewModel.FileInfo.CreateReadStream(),
+                                    downloadableFileViewModel.ContentType,
+                                    downloadableFileViewModel.FileInfo.Name,
+                                    enableRangeProcessing: true);
             }
 
             var resultView = this.viewFactory.Create(resultViewModel);

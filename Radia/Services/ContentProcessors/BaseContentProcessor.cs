@@ -10,7 +10,7 @@
             return contentProcessor;
         }
 
-        public virtual IContentResult ProcessContent(string contentType, string content)
+        public virtual string ProcessContent(string contentType, string content)
         {
             if (this.nextContentProcessor != null)
             {
@@ -18,7 +18,7 @@
             }
             else
             {
-                return new PlainTextContentResult(content, contentType);
+                return content;
             }
         }
     }
