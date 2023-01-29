@@ -18,42 +18,11 @@ namespace Radia.Tests.Services.FileProviders
 {
     public class FileProviderFactoryTests
     {
-
-
         [TestClass]
         public class TheCreateMethod
         {
             public TestContext? TestContext { get; set; }
 
-            [DataTestMethod]
-            [DataRow(FileProviderEnum.Local, DisplayName = "Local")]
-            public void WhenTheConfigurationIsValid_ThenAMatchingInstanceIsReturned(FileProviderEnum fileProviderEnum)
-            {
-                DefaultRadiaTestContext RadiaTestContext = new(fileProviderEnum, TestContext.TestRunDirectory);
-
-                var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
-                var result = sut.Create(RadiaTestContext.ValidFileProviderConfigurations);
-
-                result.Should().NotBeNull();
-                result.FileProviderEnum.Should().Be(fileProviderEnum);
-            }
-
-            [TestMethod]
-            public void WhenFileProviderEnumIsInvalid_ThenAnInvalidEnumExceptionIsThrown()
-            {
-                ///Actually, it doesn't matter which Configuration is provided here,
-                ///as it just sets the test context.
-                DefaultRadiaTestContext RadiaTestContext = new(FileProviderEnum.Empty, TestContext.TestRunDirectory);
-                var sut = new FileProviderFactory(RadiaTestContext.FileProviders);
-                var fileProviderConfiguration = new FileProviderConfiguration()
-                {
-                    FileProvider = (FileProviderEnum)4
-                };
-
-                sut.Invoking(sut => sut.Create(fileProviderConfiguration))
-                   .Should()
-                   .Throw<InvalidEnumArgumentException>();
-            }
         }
     }
 }

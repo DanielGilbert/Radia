@@ -1,18 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Moq;
-using Radia.Services.FileProviders.Local;
-using Radia.Services.FileProviders;
-using Radia.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Radia.Factories;
-using System.ComponentModel;
+using Radia.Services;
+using Radia.Services.FileProviders;
 
 namespace Radia.Tests
 {
@@ -21,77 +12,43 @@ namespace Radia.Tests
         public const string WebHost = "http://unknownWebHost.com/";
         public const string WebRootPath = @"./webroot/path/";
         public const string SubFolderPath = @"/test";
-
         public string RootDirectory { get; }
-
-        public IList<IFileProviderConfiguration> ValidFileProviderConfigurations { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
-        public IRadiaFileProviderFactory FileProviderFactory { get; }
-        public IRadiaFileProvider LocalFileProvider { get; }
-        public IRadiaFileProvider EmptyFileProvider { get; }
         public IConfigurationService ConfigurationService { get; }
         public IContentTypeIdentifierService ContentTypeIdentifierService { get; }
         public IViewModelFactory ViewModelFactory { get; }
         public IContentProcessorFactory ContentProcessorFactory { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IViewFactory ViewFactory { get; set; }
-        public IFileInfo IndexFileInfo { get; set; }
-        public IFileInfo SubFolderFileInfo { get; set; }
-        public IList<IRadiaFileProvider> FileProviders { get; }
+        public IRadiaFileProvider FileProvider { get; }
 
-        public DefaultRadiaTestContext(IList<IFileProviderConfiguration> fileProviderConfigurations, string rootDirectory)
+        public DefaultRadiaTestContext(string rootDirectory, IRadiaFileProvider fileProvider)
         {
             RootDirectory = rootDirectory;
-            IndexFileInfo = MockIndexFileInfo();
-            SubFolderFileInfo = MockSubFolderFileInfo();
-            HttpContextAccessor = MockHttpContextAccessor();
-            ContentProcessorFactory = BuildContentProcessorFactory();
-            WebHostEnvironment = MockWebHostEnvironment();
-            ConfigurationService = MockConfigurationService();
-            ContentTypeIdentifierService = BuildContentTypeIdentifierService();
-            FileProviderFactory = BuildFileProviderFactory();
+            FileProvider = fileProvider;
+            ConfigurationService = BuildConfigurationService();
+            ViewModelFactory = BuildViewModelFactory();
             ViewFactory = BuildViewFactory();
+            ContentProcessorFactory = BuildContentProcessorFactory();
+            ContentTypeIdentifierService = BuildContentTypeIdentifierService();
+            HttpContextAccessor = MockHttpContextAccessor();
+        }
+
+        public static IRadiaFileProvider DefaultFileProvider()
+        {
+            var fileProviderFactory = new FileProviderFactory();
+            var configurationService = BuildConfigurationService();
+            var fileProvider = fileProviderFactory.CreateComposite(configurationService.GetFileProviderConfigurations());
+            return fileProvider;
+        }
+
+        private IViewModelFactory BuildViewModelFactory()
+        {
+            return new ViewModelFactory(FileProvider,
+                                        ConfigurationService,
+                                        ContentTypeIdentifierService,
+                                        ContentProcessorFactory,
+                                        HttpContextAccessor);
             
-            ViewModelFactory = new ViewModelFactory(FileProviderFactory,
-                                                    ConfigurationService,
-                                                    ContentTypeIdentifierService,
-                                                    ContentProcessorFactory,
-                                                    HttpContextAccessor,
-                                                    ValidFileProviderConfigurations);
-        }
-
-        public static IList<IFileProviderConfiguration> DefaultFileProviderConfigurations(string testDirectory)
-        {
-            return new List<IFileProviderConfiguration>() { GenerateLocalFileProviderConfiguration(testDirectory) };
-        }
-
-        private static IFileProviderConfiguration GenerateLocalFileProviderConfiguration(string testDirectory)
-        {
-            var result = new FileProviderConfiguration()
-            {
-                Settings = new Dictionary<string, string>()
-                        {
-                            { "RootDirectory", testDirectory }
-                        }
-            };
-
-            return result;
-        }
-
-        private static IFileInfo MockSubFolderFileInfo()
-        {
-            var indexFileInfo = new Mock<IFileInfo>();
-            indexFileInfo.Setup(x => x.Exists).Returns(true);
-            indexFileInfo.Setup(x => x.IsDirectory).Returns(true);
-            return indexFileInfo.Object;
-        }
-
-        private static IFileInfo MockIndexFileInfo()
-        {
-            var indexFileInfo = new Mock<IFileInfo>();
-            indexFileInfo.Setup(x => x.Exists).Returns(true);
-            indexFileInfo.Setup(x => x.IsDirectory).Returns(true);
-            return indexFileInfo.Object;
         }
 
         private static IViewFactory BuildViewFactory()
@@ -102,7 +59,7 @@ namespace Radia.Tests
         private static IHttpContextAccessor MockHttpContextAccessor()
         {
             var httpContextAccessor = new Mock<IHttpContextAccessor>();
-            httpContextAccessor.Setup(p => p.HttpContext!.Request.Host).Returns(new HostString("localhost:54321"));
+            httpContextAccessor.Setup(p => p.HttpContext!.Request.Host).Returns(new HostString("unknownWebHost.com"));
             httpContextAccessor.Setup(p => p.HttpContext!.Request.Scheme).Returns("http");
             return httpContextAccessor.Object;
         }
@@ -117,7 +74,7 @@ namespace Radia.Tests
             return new ContentTypeIdentifierService();
         }
 
-        private static IConfigurationService MockConfigurationService()
+        private static IConfigurationService BuildConfigurationService()
         {
             var myConfiguration = CreateValidConfiguration();
 
@@ -135,34 +92,16 @@ namespace Radia.Tests
             var result = new Dictionary<string, string?>
                 {
                     {"AllowedHosts", "*"},
-                    {"AppConfiguration:FileProviderConfigurations:FileProvider", "Local"},
-                    {"AppConfiguration:FileProviderConfigurations:Settings:RootDirectory", "/blogsource/"},
-                    {"AppConfiguration:WebsiteTitle", "g5t.de - 'cause gilbert.de was too expensive..."},
-                    {"AppConfiguration:DefaultPageHeader", "g[ilber]t.de" }
+                    {"AppConfiguration:FileProviderConfigurations:0:Settings:RootDirectory", "/content/"},
+                    {"AppConfiguration:FileProviderConfigurations:1:AllowListing", "false"},
+                    {"AppConfiguration:FileProviderConfigurations:1:Settings:RootDirectory", "/app/templates/default/views/"},
+                    {"AppConfiguration:FileProviderConfigurations:2:AllowListing", "false"},
+                    {"AppConfiguration:FileProviderConfigurations:2:Settings:RootDirectory", "/app/templates/default/"},
+                    {"AppConfiguration:WebsiteTitle", "TestWebsiteTitle"},
+                    {"AppConfiguration:DefaultPageHeader", "TestWebsitePageHeader" }
                 };
 
             return result;
-        }
-
-        private IRadiaFileProviderFactory BuildFileProviderFactory()
-        {
-            var fileProviders = new List<IRadiaFileProvider>
-                {
-                    LocalFileProvider,
-                    EmptyFileProvider
-                };
-            var factory = new FileProviderFactory(fileProviders);
-
-            return factory;
-        }
-
-        private static IWebHostEnvironment MockWebHostEnvironment()
-        {
-            var webHostEnvironment = new Mock<IWebHostEnvironment>();
-
-            webHostEnvironment.Setup((env) => env.WebRootPath).Returns(WebRootPath);
-
-            return webHostEnvironment.Object;
         }
     }
 }

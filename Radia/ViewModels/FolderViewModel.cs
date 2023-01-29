@@ -26,6 +26,7 @@ namespace Radia.ViewModels
             this.pathDelimiter = pathDelimiter;
             Ancestors = CreateAncestorList();
             LastAncestor = Ancestors.LastOrDefault();
+            ReadmeContent = string.Empty;
         }
 
         private IList<IRadiaAncestorInfo> CreateAncestorList()
