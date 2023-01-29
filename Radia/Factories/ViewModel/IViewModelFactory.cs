@@ -1,6 +1,6 @@
 ﻿using Radia.ViewModels;
 
-namespace Radia.Factories
+namespace Radia.Factories.ViewModel
 {
     public interface IViewModelFactory
     {

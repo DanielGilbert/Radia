@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Localization;
 using Radia.ViewModels;
 
-namespace Radia.Factories
+namespace Radia.Factories.View
 {
     public class ViewFactory : IViewFactory
     {
@@ -13,6 +13,6 @@ namespace Radia.Factories
                 PhysicalFileViewModel => "PhysicalFileView",
                 _ => string.Empty
             };
-        
+
     }
 }

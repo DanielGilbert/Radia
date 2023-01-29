@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Radia.Factories;
+using Radia.Factories.ContentProcessor;
+using Radia.Factories.View;
+using Radia.Factories.ViewModel;
 using Radia.Modules;
 using Radia.Services;
 using Radia.Services.FileProviders;

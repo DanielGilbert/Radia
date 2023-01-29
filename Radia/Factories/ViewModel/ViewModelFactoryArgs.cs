@@ -1,4 +1,4 @@
-﻿namespace Radia.Factories
+﻿namespace Radia.Factories.ViewModel
 {
     public class ViewModelFactoryArgs
     {

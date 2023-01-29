@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.Extensions.FileProviders;
+using Radia.Factories.ContentProcessor;
 using Radia.Models;
 using Radia.Services;
 using Radia.Services.ContentProcessors;
@@ -7,7 +8,7 @@ using Radia.Services.FileProviders;
 using Radia.ViewModels;
 using System.Net.Mime;
 
-namespace Radia.Factories
+namespace Radia.Factories.ViewModel
 {
     public class ViewModelFactory : IViewModelFactory
     {
@@ -32,15 +33,15 @@ namespace Radia.Factories
 
         public IViewModel Create(ViewModelFactoryArgs args)
         {
-            IContentProcessor contentProcessor = this.contentProcessorFactory.Create();
+            IContentProcessor contentProcessor = contentProcessorFactory.Create();
 
-            string webHost = this.httpContextAccessor.HttpContext?.Request.Scheme + "://" + this.httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
+            string webHost = httpContextAccessor.HttpContext?.Request.Scheme + "://" + httpContextAccessor.HttpContext?.Request.Host.ToString() ?? string.Empty;
 
-            IFileInfo fileInfo = this.fileProvider.GetFileInfo(args.Path);
+            IFileInfo fileInfo = fileProvider.GetFileInfo(args.Path);
 
             if (fileInfo.Exists is false)
             {
-                var directoryContent = this.fileProvider.GetDirectoryContents(args.Path);
+                var directoryContent = fileProvider.GetDirectoryContents(args.Path);
 
                 if (directoryContent.Exists is false)
                 {
@@ -70,7 +71,7 @@ namespace Radia.Factories
                             if (dir.Name.ToLowerInvariant().Equals("readme.md"))
                             {
                                 string cntntType = "text/markdown";
-                                var result = this.contentProcessorFactory.Create();
+                                var result = contentProcessorFactory.Create();
                                 var stringContent = string.Empty;
                                 using (var reader = new StreamReader(dir.CreateReadStream()))
                                 {
@@ -88,13 +89,13 @@ namespace Radia.Factories
                 }
             }
 
-            var contentType = this.contentTypeIdentifierService.GetContentTypeFrom(args.Path);
+            var contentType = contentTypeIdentifierService.GetContentTypeFrom(args.Path);
 
             var fileContentString = string.Empty;
 
             if (contentType.StartsWith("text/"))
             {
-                using(var reader = new StreamReader(fileInfo.CreateReadStream()))
+                using (var reader = new StreamReader(fileInfo.CreateReadStream()))
                 {
                     fileContentString = reader.ReadToEnd();
 

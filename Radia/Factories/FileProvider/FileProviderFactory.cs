@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.FileProviders;
-using System.ComponentModel;
-using Radia.Services.FileProviders;
-using System.Security.Cryptography;
+﻿using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Local;
 
-namespace Radia.Factories
+namespace Radia.Factories.FileProvider
 {
     public class FileProviderFactory : IRadiaFileProviderFactory
     {
@@ -25,7 +22,7 @@ namespace Radia.Factories
             ArgumentNullException.ThrowIfNull(configuration);
             IList<IRadiaFileProvider> fileProviders = new List<IRadiaFileProvider>();
 
-            foreach(var config in configuration)
+            foreach (var config in configuration)
             {
                 fileProviders.Add(Create(config));
             }

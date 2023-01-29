@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Radia.Services.FileProviders;
 
-namespace Radia.Factories
+namespace Radia.Factories.FileProvider
 {
     public interface IRadiaFileProviderFactory
     {

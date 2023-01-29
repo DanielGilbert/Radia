@@ -1,6 +1,6 @@
 ﻿using Radia.Services.ContentProcessors;
 
-namespace Radia.Factories
+namespace Radia.Factories.ContentProcessor
 {
     public class ContentProcessorFactory : IContentProcessorFactory
     {
