@@ -60,7 +60,7 @@ namespace Radia.Factories.ViewModel
                     {
                         if (dir.IsDirectory)
                         {
-                            folderViewModel.Directories.Add(new RadiaFileInfoViewModel(webHost, dir, args.Path));
+                            folderViewModel.Directories.Add(new RadiaFileInfoViewModel(webHost, dir, dir.IsDirectory, args.Path));
                         }
                         else
                         {
@@ -77,7 +77,7 @@ namespace Radia.Factories.ViewModel
                                 var cntntResult = result.ProcessContent(cntntType, stringContent);
                                 folderViewModel.ReadmeContent = cntntResult.Result;
                             }
-                            folderViewModel.Files.Add(new RadiaFileInfoViewModel(webHost, dir, args.Path));
+                            folderViewModel.Files.Add(new RadiaFileInfoViewModel(webHost, dir, dir.IsDirectory, args.Path));
                         }
                     }
 

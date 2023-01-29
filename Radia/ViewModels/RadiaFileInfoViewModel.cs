@@ -1,4 +1,5 @@
 ﻿using Radia.Services.FileProviders;
+using System.IO;
 
 namespace Radia.ViewModels
 {
@@ -12,17 +13,21 @@ namespace Radia.ViewModels
         public long Length => dir.Length;
         public DateTimeOffset LastModified => dir.LastModified;
 
-        public RadiaFileInfoViewModel(string webHost, IRadiaFileInfo dir, string path)
+        public RadiaFileInfoViewModel(string webHost, IRadiaFileInfo dir, bool isDirectory, string path)
         {
             this.webHost = webHost;
             this.dir = dir;
             this.path = path;
-            Url = CreateUrl();
+            Url = CreateUrl(isDirectory);
         }
 
-        private string CreateUrl()
+        private string CreateUrl(bool isDirectory)
         {
-            return new Uri(this.webHost + '/' + this.path.Replace('\\', '/').TrimStart('/').TrimEnd('/') + $"/{this.dir.Name}").ToString();
+            IList<string> components = path.Split('/').ToList();
+            components.Add(dir.Name);
+            components = components.Where(x => string.IsNullOrWhiteSpace(x) is false).ToList();
+            string completePath = string.Join('/', components.ToArray());
+            return new Uri(this.webHost + '/' + completePath + (isDirectory ? "/" : "")).ToString();
         }
 
     }
