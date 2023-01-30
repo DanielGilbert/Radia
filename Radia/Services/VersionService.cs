@@ -6,9 +6,9 @@ namespace Radia.Services
     {
         public string Version { get; }
 
-        public VersionService()
+        public VersionService(string version)
         {
-            Version = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? String.Empty; 
+            Version = version;
         }
 
         public string GetVersionLinked()

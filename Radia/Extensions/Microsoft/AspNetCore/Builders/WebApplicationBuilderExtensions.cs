@@ -7,6 +7,7 @@ using Radia.Services;
 using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Microsoft;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Radia.Extensions.Microsoft.AspNetCore.Builders
 {
@@ -39,7 +40,8 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
             builder.Services.AddSingleton<IContentProcessorFactory, ContentProcessorFactory>();
             builder.Services.AddSingleton<IContentTypeIdentifierService, ContentTypeIdentifierService>();
             builder.Services.AddSingleton<IDateTimeService, DateTimeService>();
-            builder.Services.AddSingleton<IVersionService, VersionService>();
+            string version = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? String.Empty;
+            builder.Services.AddSingleton<IVersionService, VersionService>(provider => new VersionService(version));
             builder.Services.AddSingleton<IFooterService, FooterService>();
             builder.Services.AddSingleton<IByteSizeService, ByteSizeService>();
 
