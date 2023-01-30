@@ -31,7 +31,7 @@
     {% renderbody %}
 
     <footer>
-       <span>&copy; Daniel Gilbert, 2019 - @DateTime.Now.Year | v. @AppVersionService.Version </span>
+       <span>{{CopyrightFooter | raw}} | v. @AppVersionService.Version </span>
     </footer>
 </body>
 </html>

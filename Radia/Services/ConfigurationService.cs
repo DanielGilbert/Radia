@@ -39,5 +39,10 @@ namespace Radia.Services
                                                      nameof(this.appConfiguration.DefaultPageHeader));
             return this.appConfiguration.DefaultPageHeader;
         }
+
+        public string GetFooterCopyright()
+        {
+            return this.appConfiguration.FooterCopyright ?? String.Empty;
+        }
     }
 }

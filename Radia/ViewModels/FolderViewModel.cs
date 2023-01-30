@@ -23,7 +23,6 @@ namespace Radia.ViewModels
         {
             Directories = new List<RadiaFileInfoViewModel>();
             Files = new List<RadiaFileInfoViewModel>();
-            this.pathDelimiter = '/';
             this.relativePath = relativePath;
             Ancestors = CreateAncestorList();
             LastAncestor = Ancestors.LastOrDefault();

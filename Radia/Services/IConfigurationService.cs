@@ -7,5 +7,6 @@ namespace Radia.Services
         IList<FileProviderConfiguration> GetFileProviderConfigurations();
         string GetWebsiteTitle();
         string GetPageHeader();
+        string GetFooterCopyright();
     }
 }
