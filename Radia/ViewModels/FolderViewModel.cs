@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Radia.Models;
+using Radia.Services;
 using System.IO;
 using System.Reflection;
 
@@ -19,7 +20,8 @@ namespace Radia.ViewModels
         public FolderViewModel(string pageTitle,
                                string pageHeader,
                                string relativePath,
-                               string websiteRoot) : base(pageTitle, pageHeader, websiteRoot)
+                               string websiteRoot,
+                               IFooterService footerService) : base(pageTitle, pageHeader, websiteRoot, footerService)
         {
             Directories = new List<RadiaFileInfoViewModel>();
             Files = new List<RadiaFileInfoViewModel>();

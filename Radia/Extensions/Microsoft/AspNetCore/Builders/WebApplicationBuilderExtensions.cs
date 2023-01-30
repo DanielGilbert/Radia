@@ -38,6 +38,9 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
             builder.Services.AddSingleton<IViewFactory, ViewFactory>();
             builder.Services.AddSingleton<IContentProcessorFactory, ContentProcessorFactory>();
             builder.Services.AddSingleton<IContentTypeIdentifierService, ContentTypeIdentifierService>();
+            builder.Services.AddSingleton<IDateTimeService, DateTimeService>();
+            builder.Services.AddSingleton<IVersionService, VersionService>();
+            builder.Services.AddSingleton<IFooterService, FooterService>();
 
             return builder;
         }

@@ -1,4 +1,5 @@
 ﻿using Radia.Models;
+using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
 
@@ -19,7 +20,8 @@ namespace Radia.ViewModels
                                       string relativePath,
                                       string pageTitle,
                                       string pageHeader,
-                                      string websiteRoot) : base(pageTitle, pageHeader, websiteRoot)
+                                      string websiteRoot,
+                                      IFooterService footerService) : base(pageTitle, pageHeader, websiteRoot, footerService)
         {
             Content = content;
             ContentType = contentType;

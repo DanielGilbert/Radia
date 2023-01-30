@@ -15,18 +15,21 @@ namespace Radia.Factories.ViewModel
         private readonly IContentTypeIdentifierService contentTypeIdentifierService;
         private readonly IContentProcessorFactory contentProcessorFactory;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IFooterService footerService;
         private readonly IRadiaFileProvider fileProvider;
 
         public ViewModelFactory(IRadiaFileProvider fileProvider,
                                 IConfigurationService configurationService,
                                 IContentTypeIdentifierService contentTypeIdentifierService,
                                 IContentProcessorFactory contentProcessorFactory,
-                                IHttpContextAccessor httpContextAccessor)
+                                IHttpContextAccessor httpContextAccessor,
+                                IFooterService footerService)
         {
             this.configurationService = configurationService;
             this.contentTypeIdentifierService = contentTypeIdentifierService;
             this.contentProcessorFactory = contentProcessorFactory;
             this.httpContextAccessor = httpContextAccessor;
+            this.footerService = footerService;
             this.fileProvider = fileProvider;
         }
 
@@ -66,7 +69,8 @@ namespace Radia.Factories.ViewModel
                 return new DownloadableFileViewModel(radiaFileInfo,
                                                      contentType,
                                                      configurationService.GetWebsiteTitle(),
-                                                     configurationService.GetPageHeader());
+                                                     configurationService.GetPageHeader(),
+                                                     this.footerService);
             }
             StreamReader? reader = null;
             try
@@ -82,7 +86,8 @@ namespace Radia.Factories.ViewModel
                                                       path,
                                                       configurationService.GetWebsiteTitle(),
                                                       configurationService.GetPageHeader(),
-                                                      webHost);
+                                                      webHost,
+                                                      this.footerService);
                 }
             }
             finally
@@ -93,7 +98,8 @@ namespace Radia.Factories.ViewModel
             return new DownloadableFileViewModel(radiaFileInfo,
                                                  contentType,
                                                  configurationService.GetWebsiteTitle(),
-                                                 configurationService.GetPageHeader());
+                                                 configurationService.GetPageHeader(),
+                                                 this.footerService);
 
         }
 
@@ -108,13 +114,15 @@ namespace Radia.Factories.ViewModel
             {
                 return new PathNotFoundViewModel(configurationService.GetWebsiteTitle(),
                                                  configurationService.GetPageHeader(),
-                                                 webHost);
+                                                 webHost,
+                                                 this.footerService);
             }
 
             var folderViewModel = new FolderViewModel(configurationService.GetWebsiteTitle(),
                                                       configurationService.GetPageHeader(),
                                                       path,
-                                                      webHost);
+                                                      webHost,
+                                                      this.footerService);
 
             folderViewModel = SetupFolderViewModel(contentProcessor,
                                                    folderViewModel,

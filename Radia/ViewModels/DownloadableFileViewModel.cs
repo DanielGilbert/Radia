@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.FileProviders;
+using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
 
@@ -12,7 +13,8 @@ namespace Radia.ViewModels
         public DownloadableFileViewModel(IRadiaFileInfo fileInfo,
                                          string contentType,
                                          string pageTitle,
-                                         string pageHeader) : base(pageTitle, pageHeader, string.Empty)
+                                         string pageHeader,
+                                         IFooterService footerService) : base(pageTitle, pageHeader, string.Empty, footerService)
         {
             FileInfo = fileInfo;
             ContentType = contentType;

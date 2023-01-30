@@ -1,21 +1,24 @@
-﻿namespace Radia.ViewModels
+﻿using Radia.Services;
+
+namespace Radia.ViewModels
 {
     public abstract class BaseViewModel : IViewModel
     {
         public string PageTitle { get; }
         public string PageHeader { get; }
         public string WebsiteRoot { get; }
-        public string CopyrightFooter { get; }
+        public string FooterContent { get; }
 
         public BaseViewModel(string pageTitle,
                              string pageHeader,
                              string websiteRoot,
-                             string copyrightFooter = "")
+                             IFooterService footerService)
         {
             PageTitle = pageTitle;
             PageHeader = pageHeader;
             WebsiteRoot = websiteRoot;
-            CopyrightFooter = copyrightFooter;
+            FooterContent = footerService.GetFormattedFooter();
+
         }
     }
 }

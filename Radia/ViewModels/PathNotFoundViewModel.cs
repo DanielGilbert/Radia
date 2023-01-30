@@ -1,10 +1,13 @@
-﻿namespace Radia.ViewModels
+﻿using Radia.Services;
+
+namespace Radia.ViewModels
 {
     public class PathNotFoundViewModel : BaseViewModel
     {
         public PathNotFoundViewModel(string pageTitle,
                                      string pageHeader,
-                                     string websiteRoot) : base(pageTitle, pageHeader, websiteRoot)
+                                     string websiteRoot,
+                                     IFooterService footerService) : base(pageTitle, pageHeader, websiteRoot, footerService)
         {
         }
     }
