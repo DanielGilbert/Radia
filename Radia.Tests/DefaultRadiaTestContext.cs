@@ -52,6 +52,7 @@ namespace Radia.Tests
                                         ContentTypeIdentifierService,
                                         ContentProcessorFactory,
                                         HttpContextAccessor,
+                                        new ByteSizeService(),
                                         null);
             
         }

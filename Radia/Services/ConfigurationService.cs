@@ -12,13 +12,20 @@ namespace Radia.Services
         {
             ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
 
-            this.appConfiguration = configuration?.GetSection("AppConfiguration").Get<AppConfiguration>()
-                                    ?? throw new InvalidOperationException("AppConfiguration must not be null. Check appsettings.json");
+            IConfigurationSection configurationSection = configuration.GetSection("AppConfiguration");
+
+            if (configurationSection.Exists() is false)
+            {
+                throw new InvalidOperationException("AppConfiguration must not be empty. Check appsettings.json");
+            }
+
+            this.appConfiguration = configurationSection.Get<AppConfiguration>()
+                                    ?? throw new InvalidOperationException("AppConfiguration must not be missing. Check appsettings.json");
         }
 
         public string GetWebsiteTitle()
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(this.appConfiguration.WebsiteTitle,
+            ArgumentException.ThrowIfNullOrEmpty(this.appConfiguration.WebsiteTitle,
                                                      nameof(this.appConfiguration.WebsiteTitle));
             return this.appConfiguration.WebsiteTitle;
         }
@@ -35,8 +42,8 @@ namespace Radia.Services
 
         public string GetPageHeader()
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(this.appConfiguration.DefaultPageHeader,
-                                                     nameof(this.appConfiguration.DefaultPageHeader));
+            ArgumentException.ThrowIfNullOrEmpty(this.appConfiguration.DefaultPageHeader,
+                                                 nameof(this.appConfiguration.DefaultPageHeader));
             return this.appConfiguration.DefaultPageHeader;
         }
 
