@@ -79,7 +79,7 @@ namespace Radia.Factories.ViewModel
                 {
                     return new ProcessedFileViewModel(result,
                                                       contentType,
-                                                      radiaFileInfo,
+                                                      path,
                                                       configurationService.GetWebsiteTitle(),
                                                       configurationService.GetPageHeader(),
                                                       webHost);
