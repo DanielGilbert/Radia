@@ -41,6 +41,7 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
             builder.Services.AddSingleton<IDateTimeService, DateTimeService>();
             builder.Services.AddSingleton<IVersionService, VersionService>();
             builder.Services.AddSingleton<IFooterService, FooterService>();
+            builder.Services.AddSingleton<IByteSizeService, ByteSizeService>();
 
             return builder;
         }

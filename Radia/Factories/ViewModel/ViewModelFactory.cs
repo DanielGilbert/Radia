@@ -17,12 +17,14 @@ namespace Radia.Factories.ViewModel
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IFooterService footerService;
         private readonly IRadiaFileProvider fileProvider;
+        private readonly IByteSizeService byteSizeService;
 
         public ViewModelFactory(IRadiaFileProvider fileProvider,
                                 IConfigurationService configurationService,
                                 IContentTypeIdentifierService contentTypeIdentifierService,
                                 IContentProcessorFactory contentProcessorFactory,
                                 IHttpContextAccessor httpContextAccessor,
+                                IByteSizeService byteSizeService,
                                 IFooterService footerService)
         {
             this.configurationService = configurationService;
@@ -31,6 +33,7 @@ namespace Radia.Factories.ViewModel
             this.httpContextAccessor = httpContextAccessor;
             this.footerService = footerService;
             this.fileProvider = fileProvider;
+            this.byteSizeService = byteSizeService;
         }
 
         public IViewModel Create(ViewModelFactoryArgs args)
@@ -51,7 +54,7 @@ namespace Radia.Factories.ViewModel
             }
             else
             {
-                return GetViewModelForNonExistingFile(radiaFileInfo,
+                return GetViewModelForNonExistingFile(this.byteSizeService,
                                                       args.Path,
                                                       webHost,
                                                       contentProcessor);
@@ -98,7 +101,7 @@ namespace Radia.Factories.ViewModel
 
         }
 
-        private IViewModel GetViewModelForNonExistingFile(IRadiaFileInfo radiaFileInfo,
+        private IViewModel GetViewModelForNonExistingFile(IByteSizeService byteSizeService,
                                                           string path,
                                                           string webHost,
                                                           IContentProcessor contentProcessor)
@@ -120,6 +123,7 @@ namespace Radia.Factories.ViewModel
                                                       this.footerService);
 
             folderViewModel = SetupFolderViewModel(contentProcessor,
+                                                   byteSizeService,
                                                    folderViewModel,
                                                    directory,
                                                    webHost,
@@ -129,6 +133,7 @@ namespace Radia.Factories.ViewModel
         }
 
         private FolderViewModel SetupFolderViewModel(IContentProcessor contentProcessor,
+                                                     IByteSizeService byteSizeService,
                                                      FolderViewModel folderViewModel,
                                                      IRadiaDirectoryContents directory,
                                                      string webHost,
@@ -138,7 +143,7 @@ namespace Radia.Factories.ViewModel
             {
                 if (dir.IsDirectory)
                 {
-                    folderViewModel.Directories.Add(new RadiaFileInfoViewModel(webHost, dir, dir.IsDirectory, path));
+                    folderViewModel.Directories.Add(new RadiaFileInfoViewModel(byteSizeService, webHost, dir, dir.IsDirectory, path));
                 }
                 else
                 {
@@ -154,7 +159,7 @@ namespace Radia.Factories.ViewModel
                         var cntntResult = contentProcessor.ProcessContent(cntntType, stringContent);
                         folderViewModel.ReadmeContent = cntntResult;
                     }
-                    folderViewModel.Files.Add(new RadiaFileInfoViewModel(webHost, dir, dir.IsDirectory, path));
+                    folderViewModel.Files.Add(new RadiaFileInfoViewModel(byteSizeService, webHost, dir, dir.IsDirectory, path));
                 }
             }
 
