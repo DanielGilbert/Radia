@@ -51,7 +51,8 @@ namespace Radia.Tests
                                         ConfigurationService,
                                         ContentTypeIdentifierService,
                                         ContentProcessorFactory,
-                                        HttpContextAccessor);
+                                        HttpContextAccessor,
+                                        null);
             
         }
 

@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{PageTitle}}</title>
 
-    <meta name="description" content="@(ViewBag.Description ?? String.Empty)">
+    <meta name="description" content="{{Description}}">
     <meta name="author" content="Daniel Gilbert">
 
     <meta property="og:title" content="{{PageTitle}} - g5t.de">
-    <meta property="og:description" content="@ViewBag.SocialMediaDescription">
-    <meta property="og:image" content="@(Url.FullURL("~/img/g5t_de.jpg"))">
+    <meta property="og:description" content="{{SocialMediaDescription}}">
+    <meta property="og:image" content="{{SocialMediaImage}}"))">
     <meta property="og:locale" content="en">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
-    <meta property="og:url" content="@(Url.FullURL("~/" + (string)ViewBag.Path))">
+    <meta property="og:url" content="{{WebsiteFullUrl}}">
 
     <!-- Core CSS -->
     <!-- CSS for users with dark mode -->
@@ -29,9 +29,5 @@
 <body>
     <!-- Begin page content -->
     {% renderbody %}
-
-    <footer>
-       <span>{{FooterContent | raw}}</span>
-    </footer>
 </body>
 </html>

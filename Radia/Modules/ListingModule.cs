@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.FileProviders;
-using Radia.Factories;
-using Radia.Factories.View;
+﻿using Radia.Factories.View;
 using Radia.Factories.ViewModel;
 using Radia.Services;
-using Radia.Services.FileProviders;
 using Radia.ViewModels;
-using System.Text;
 
 namespace Radia.Modules
 {
@@ -50,7 +45,6 @@ namespace Radia.Modules
             {
                 return Results.File(downloadableFileViewModel.FileInfo.CreateReadStream(),
                                     downloadableFileViewModel.ContentType,
-                                    downloadableFileViewModel.FileInfo.Name,
                                     enableRangeProcessing: true);
             }
 

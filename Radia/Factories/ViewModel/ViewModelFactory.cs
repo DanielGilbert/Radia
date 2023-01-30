@@ -72,27 +72,22 @@ namespace Radia.Factories.ViewModel
                                                      configurationService.GetPageHeader(),
                                                      this.footerService);
             }
-            StreamReader? reader = null;
-            try
+
+            string content = string.Empty;
+            using (var reader = new StreamReader(radiaFileInfo.CreateReadStream()))
             {
-                reader = new StreamReader(radiaFileInfo.CreateReadStream());
-                string content = reader.ReadToEnd();
-                reader.Dispose();
-                var result = contentProcessor.ProcessContent(contentType, content);
-                if (content.Equals(result) is false)
-                {
-                    return new ProcessedFileViewModel(result,
-                                                      contentType,
-                                                      path,
-                                                      configurationService.GetWebsiteTitle(),
-                                                      configurationService.GetPageHeader(),
-                                                      webHost,
-                                                      this.footerService);
-                }
+                content = reader.ReadToEnd();
             }
-            finally
+            var result = contentProcessor.ProcessContent(contentType, content);
+            if (content.Equals(result) is false)
             {
-                reader?.Dispose();
+                return new ProcessedFileViewModel(result,
+                                                    contentType,
+                                                    path,
+                                                    configurationService.GetWebsiteTitle(),
+                                                    configurationService.GetPageHeader(),
+                                                    webHost,
+                                                    this.footerService);
             }
 
             return new DownloadableFileViewModel(radiaFileInfo,
