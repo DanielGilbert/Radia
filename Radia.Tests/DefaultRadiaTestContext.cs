@@ -24,23 +24,46 @@ namespace Radia.Tests
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IViewFactory ViewFactory { get; set; }
         public IRadiaFileProvider FileProvider { get; }
+        public IDateTimeService DateTimeService { get; internal set; }
+        public IVersionService VersionService { get; internal set; }
+
+        public DefaultRadiaTestContext(string rootDirectory) : this(rootDirectory,
+                                                                   DefaultRadiaTestContext.DefaultFileProvider(rootDirectory)) { }
 
         public DefaultRadiaTestContext(string rootDirectory, IRadiaFileProvider fileProvider)
         {
             RootDirectory = rootDirectory;
             FileProvider = fileProvider;
-            ConfigurationService = BuildConfigurationService();
+            ConfigurationService = BuildConfigurationService(rootDirectory);
             ViewModelFactory = BuildViewModelFactory();
             ViewFactory = BuildViewFactory();
             ContentProcessorFactory = BuildContentProcessorFactory();
             ContentTypeIdentifierService = BuildContentTypeIdentifierService();
             HttpContextAccessor = MockHttpContextAccessor();
+            DateTimeService = MockDateTimeService();
+            VersionService = MockVersionService();
         }
 
-        public static IRadiaFileProvider DefaultFileProvider()
+        private IVersionService MockVersionService()
+        {
+            var versionServiceMock = new Mock<IVersionService>();
+            versionServiceMock.Setup(x => x.Version).Returns("3.0.0");
+            versionServiceMock.Setup(x => x.GetVersionLinked()).Returns("<a href=\"https://github.com/DanielGilbert/Radia/releases/tag/v3.0.0\">v3.0.0</a>");
+            return versionServiceMock.Object;
+        }
+
+        private IDateTimeService MockDateTimeService()
+        {
+            var dateTimeServiceMock = new Mock<IDateTimeService>();
+            dateTimeServiceMock.Setup(x => x.Now()).Returns(new DateTime(2023, 01, 30, 21, 15, 21));
+            dateTimeServiceMock.Setup(x => x.UtcNow()).Returns(new DateTime(2023, 01, 30, 19, 15, 21).ToUniversalTime());
+            return dateTimeServiceMock.Object;
+        }
+
+        public static IRadiaFileProvider DefaultFileProvider(string rootDirectory)
         {
             var fileProviderFactory = new FileProviderFactory();
-            var configurationService = BuildConfigurationService();
+            var configurationService = BuildConfigurationService(rootDirectory);
             var fileProvider = fileProviderFactory.CreateComposite(configurationService.GetFileProviderConfigurations());
             return fileProvider;
         }
@@ -80,9 +103,9 @@ namespace Radia.Tests
             return new ContentTypeIdentifierService();
         }
 
-        private static IConfigurationService BuildConfigurationService()
+        private static IConfigurationService BuildConfigurationService(string rootDirectory)
         {
-            var myConfiguration = CreateValidConfiguration();
+            var myConfiguration = CreateValidConfiguration(rootDirectory);
 
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(myConfiguration)
@@ -93,18 +116,38 @@ namespace Radia.Tests
             return configurationService;
         }
 
-        private static Dictionary<string, string?> CreateValidConfiguration()
+        private static Dictionary<string, string?> CreateValidConfiguration(string rootDirectory)
         {
+            var firstFolder = rootDirectory + Path.DirectorySeparatorChar + "TestFolder1/";
+            var secondFolder = rootDirectory + Path.DirectorySeparatorChar + "TestFolder2/";
+            var thirdFolder = rootDirectory + Path.DirectorySeparatorChar + "TestFolder3/";
+
+            if (Directory.Exists(firstFolder) is false)
+            {
+                Directory.CreateDirectory(firstFolder);
+            }
+
+            if (Directory.Exists(secondFolder) is false)
+            {
+                Directory.CreateDirectory(secondFolder);
+            }
+
+            if (Directory.Exists(thirdFolder) is false)
+            {
+                Directory.CreateDirectory(thirdFolder);
+            }
+
             var result = new Dictionary<string, string?>
                 {
                     {"AllowedHosts", "*"},
-                    {"AppConfiguration:FileProviderConfigurations:0:Settings:RootDirectory", "/content/"},
+                    {"AppConfiguration:FileProviderConfigurations:0:Settings:RootDirectory", firstFolder},
                     {"AppConfiguration:FileProviderConfigurations:1:AllowListing", "false"},
-                    {"AppConfiguration:FileProviderConfigurations:1:Settings:RootDirectory", "/app/templates/default/views/"},
+                    {"AppConfiguration:FileProviderConfigurations:1:Settings:RootDirectory", secondFolder},
                     {"AppConfiguration:FileProviderConfigurations:2:AllowListing", "false"},
-                    {"AppConfiguration:FileProviderConfigurations:2:Settings:RootDirectory", "/app/templates/default/"},
+                    {"AppConfiguration:FileProviderConfigurations:2:Settings:RootDirectory", thirdFolder},
                     {"AppConfiguration:WebsiteTitle", "TestWebsiteTitle"},
-                    {"AppConfiguration:DefaultPageHeader", "TestWebsitePageHeader" }
+                    {"AppConfiguration:DefaultPageHeader", "TestWebsitePageHeader" },
+                    {"AppConfiguration:FooterCopyright", "&copy; Daniel Gilbert, 2009 - {{CurrentYear}}" }
                 };
 
             return result;

@@ -20,7 +20,7 @@
             string year = dateTimeService.UtcNow().Year.ToString();
 
             string formattedFooter = configurationService.GetFooterCopyright().Replace("{{CurrentYear}}", year);
-            formattedFooter = $"{formattedFooter} | {this.versionService.GetVersionLinked()} | Made with ❤ &amp; ☕ using <a href=\"https://github.com/DanielGilbert/Radia\">Radia</a> ";
+            formattedFooter = $"{formattedFooter} | {this.versionService.GetVersionLinked()} | Made with ❤ &amp; ☕ using <a href=\"https://github.com/DanielGilbert/Radia\">Radia</a>";
             return formattedFooter;
         }
     }
