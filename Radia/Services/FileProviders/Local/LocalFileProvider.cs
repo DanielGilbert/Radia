@@ -18,11 +18,7 @@ namespace Radia.Services.FileProviders.Local
 
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
-            if (this.allowDirectoryListing is false)
-            {
-                return new EmptyDirectoryContents();
-            }
-            return new LocalDirectoryContents(this.fileProvider.GetDirectoryContents(subpath));
+            return new LocalDirectoryContents(this.fileProvider.GetDirectoryContents(subpath), this.allowDirectoryListing);
         }
 
         public IRadiaFileInfo GetFileInfo(string subpath)

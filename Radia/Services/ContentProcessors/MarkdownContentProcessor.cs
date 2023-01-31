@@ -10,7 +10,7 @@ namespace Radia.Services.ContentProcessors
             {
                 var pipeline = new MarkdownPipelineBuilder().DisableHtml().Build();
 
-                var result = Markdown.ToHtml(content, pipeline);
+                var result = Markdown.ToHtml(content, pipeline).Trim();
                     
                 return base.ProcessContent(contentType, result);
                 

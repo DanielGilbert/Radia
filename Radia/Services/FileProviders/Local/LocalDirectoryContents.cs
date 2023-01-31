@@ -5,10 +5,13 @@ namespace Radia.Services.FileProviders.Local
 {
     public class LocalDirectoryContents : IRadiaDirectoryContents
     {
+        private readonly bool allowDirectoryListing;
         private readonly IDirectoryContents directoryContents;
+        private IEnumerable<IRadiaFileInfo> emptyList = new List<IRadiaFileInfo>();
 
-        public LocalDirectoryContents(IDirectoryContents directoryContents)
+        public LocalDirectoryContents(IDirectoryContents directoryContents, bool allowDirectoryListing = true)
         {
+            this.allowDirectoryListing = allowDirectoryListing;
             this.directoryContents = directoryContents;
         }
 
@@ -16,7 +19,8 @@ namespace Radia.Services.FileProviders.Local
 
         public IEnumerator<IRadiaFileInfo> GetEnumerator()
         {
-            IEnumerable<IRadiaFileInfo> result = this.directoryContents.Select(p => new LocalFileInfo(p));
+            IEnumerable<IRadiaFileInfo> result = this.allowDirectoryListing ? this.directoryContents.Select(p => new LocalFileInfo(p))
+                                                                            : this.emptyList;
             return result.GetEnumerator();
         }
 
