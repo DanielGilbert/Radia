@@ -25,6 +25,10 @@ namespace Radia.ViewModels
             {
                 FormattedLength = byteSizeService.Build((ulong)dir.Length);
             }
+            else
+            {
+                FormattedLength = "-";
+            }
         }
 
         private string CreateUrl(bool isDirectory)

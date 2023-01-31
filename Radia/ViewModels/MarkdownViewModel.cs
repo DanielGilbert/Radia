@@ -1,7 +1,9 @@
 ﻿using Radia.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Radia.ViewModels
 {
+    [ExcludeFromCodeCoverage]
     public class MarkdownViewModel : BaseViewModel
     {
         public string Content { get; set; }

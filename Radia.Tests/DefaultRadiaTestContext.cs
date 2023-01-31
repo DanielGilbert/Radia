@@ -26,6 +26,7 @@ namespace Radia.Tests
         public IRadiaFileProvider FileProvider { get; }
         public IDateTimeService DateTimeService { get; internal set; }
         public IVersionService VersionService { get; internal set; }
+        public IFooterService FooterService { get; }
 
         public DefaultRadiaTestContext(string rootDirectory) : this(rootDirectory,
                                                                    DefaultRadiaTestContext.DefaultFileProvider(rootDirectory)) { }
@@ -42,6 +43,14 @@ namespace Radia.Tests
             HttpContextAccessor = MockHttpContextAccessor();
             DateTimeService = MockDateTimeService();
             VersionService = MockVersionService();
+            FooterService = MockFooterService();
+        }
+
+        private IFooterService MockFooterService()
+        {
+            var footerService = new Mock<IFooterService>();
+            footerService.Setup(x => x.GetFormattedFooter()).Returns("FormattedFooter");
+            return footerService.Object;
         }
 
         private IVersionService MockVersionService()

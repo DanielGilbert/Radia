@@ -2,9 +2,11 @@
 using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Radia.ViewModels
 {
+    [ExcludeFromCodeCoverage]
     public class DownloadableFileViewModel : BaseViewModel, IDownloadableFileViewModel
     {
         public string ContentType { get; }
