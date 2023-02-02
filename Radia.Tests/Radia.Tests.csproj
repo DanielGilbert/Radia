@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Radia\Radia.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\FileProviders\Git\" />
+  </ItemGroup>
+
 </Project>

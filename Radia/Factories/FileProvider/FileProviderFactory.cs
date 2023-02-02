@@ -1,4 +1,6 @@
-﻿using Radia.Services.FileProviders;
+﻿using Microsoft.Extensions.Configuration;
+using Radia.Services.FileProviders;
+using Radia.Services.FileProviders.Git;
 using Radia.Services.FileProviders.Local;
 
 namespace Radia.Factories.FileProvider
@@ -9,12 +11,48 @@ namespace Radia.Factories.FileProvider
         {
             IRadiaFileProvider? result = null;
 
-            if (configuration.Settings.TryGetValue("RootDirectory", out string? value))
+            if (configuration.Settings.TryGetValue("RootDirectory", out string? localRoot))
             {
-                result = new LocalFileProvider(value, configuration.AllowListing);
+                result = new LocalFileProvider(localRoot, configuration.AllowListing);
+            }
+
+            if (configuration.Settings.TryGetValue("Repository", out string? repository))
+            {
+                GitFileProviderSettings gitFileProviderSettings = GetGitFileProviderSettings(configuration.Settings);
+                var localFileProvider = new LocalFileProvider(gitFileProviderSettings.LocalCache, configuration.AllowListing);
+                result = new GitFileProvider(gitFileProviderSettings, localFileProvider);
             }
 
             return result ?? throw new InvalidOperationException("No FileProvider found");
+        }
+
+        private GitFileProviderSettings GetGitFileProviderSettings(Dictionary<string, string> settings)
+        {
+            string repository = string.Empty;
+            string branch = string.Empty;
+            string localCache = string.Empty;
+
+            if (settings.TryGetValue("Repository", out string? repositorySetting))
+            {
+                repository = repositorySetting;
+            }
+
+            if (settings.TryGetValue("Branch", out string? branchSetting))
+            {
+                branch = branchSetting;
+            }
+
+            if (settings.TryGetValue("LocalCache", out string? localCacheSetting))
+            {
+                localCache = localCacheSetting;
+            }
+
+            ArgumentNullException.ThrowIfNull(repository);
+            ArgumentNullException.ThrowIfNull(localCache);
+
+            return new GitFileProviderSettings(repository,
+                                               branch,
+                                               localCache);
         }
 
         public IRadiaFileProvider CreateComposite(IList<FileProviderConfiguration> configuration)
