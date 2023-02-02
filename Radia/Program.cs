@@ -2,6 +2,7 @@ using Microsoft.Extensions.Primitives;
 using Radia.Extensions.Microsoft.AspNetCore.Builders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.AddLocalServices();
 builder.AddRadiaModules();
