@@ -1,0 +1,29 @@
+﻿*,
+*:before,
+*:after,
+*:first-letter,
+p:first-line,
+div:first-line,
+blockquote:first-line,
+li:first-line {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+section {
+    page-break-before: always;
+}
+
+ul {
+    page-break-inside: avoid;
+}
+
+a[href]:after {
+    content: ' (' attr(href) ')';
+}
+
+nav {
+    display: none;
+}

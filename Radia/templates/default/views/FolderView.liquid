@@ -1,0 +1,60 @@
+﻿<header>
+    <h1>{{ PageHeader }}</h1>
+        <nav>
+            {% if LastAncestor != blank %}
+            <ul class="breadcrumb">
+                <li><a href="/">home</a></li>
+                {% for ancestor in AncestorsWithoutLastElement %}
+                    <li><a href="{{ancestor.Url}}">{{ancestor.Name}}</a></li>
+                {% endfor %}
+                <li>{{LastAncestor.Name}}</li>
+            </ul>
+            {% else %}
+            <ul class="breadcrumb">
+                <li>home</li>
+            </ul>
+            {% endif %}
+        </nav>
+</header>
+<main>
+    <nav>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for directory in Directories %}
+                <tr>
+                    <td>
+                        <a href="{{directory.Url}}"><span>{{directory.Name}}</span></a>
+                    </td>
+                    <td>-</td>
+                    <td>{{directory.LastModified}}</td>
+                </tr>
+                {% endfor %}
+                {% for file in Files %}
+                <tr>
+                    <td>
+                        <a href="{{file.Url}}">
+                            <span class="file-name">{{file.Name}}</span>
+                        </a>
+                    </td>
+                    <td>{{file.FormattedLength}}</td>
+                    <td>{{file.LastModified}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </nav>
+    <article>
+        {{ ReadmeContent | raw }}
+    </article>
+</main>
+<footer>
+    <span>{{FooterContent | raw}}</span>
+</footer>
