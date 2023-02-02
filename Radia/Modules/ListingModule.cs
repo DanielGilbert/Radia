@@ -1,4 +1,5 @@
-﻿using Radia.Factories.View;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Radia.Factories.View;
 using Radia.Factories.ViewModel;
 using Radia.Services;
 using Radia.ViewModels;
@@ -10,14 +11,17 @@ namespace Radia.Modules
         private readonly IViewModelFactory viewModelFactory;
         private readonly IViewFactory viewFactory;
         private readonly IConfigurationService configurationService;
+        private readonly IMemoryCache memoryCache;
 
         public ListingModule(IViewModelFactory viewModelFactory,
                              IViewFactory viewFactory,
-                             IConfigurationService configurationService)
+                             IConfigurationService configurationService,
+                             IMemoryCache memoryCache)
         {
             this.viewModelFactory = viewModelFactory;
             this.viewFactory = viewFactory;
             this.configurationService = configurationService;
+            this.memoryCache = memoryCache;
         }
 
         public IResult ProcessRequest(string arg)
@@ -39,7 +43,12 @@ namespace Radia.Modules
             var viewModelFactoryArgs = new ViewModelFactoryArgs(path,
                                                                 this.configurationService.GetWebsiteTitle());
 
-            var resultViewModel = this.viewModelFactory.Create(viewModelFactoryArgs);
+            var resultViewModel = this.memoryCache.GetOrCreate<IViewModel>(path, cacheEntry =>
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2);
+                var resultViewModel = this.viewModelFactory.Create(viewModelFactoryArgs);
+                return resultViewModel;
+            });
 
             if (resultViewModel is IDownloadableFileViewModel downloadableFileViewModel)
             {
@@ -48,7 +57,7 @@ namespace Radia.Modules
                                     enableRangeProcessing: true);
             }
 
-            var resultView = this.viewFactory.Create(resultViewModel);
+            var resultView = this.viewFactory.Create(resultViewModel!);
 
             return Results.Extensions.View(resultView, resultViewModel);
         }
