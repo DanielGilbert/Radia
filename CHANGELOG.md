@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [3.0.1] - 2023-02-03
+
+### Changed
+- Changed appsettings.json
+
 ## [3.0.0] - 2023-02-02
 
 ### Added
@@ -19,5 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Majority of code is now under test.
 
 
-[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.0...HEAD
+[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.1...HEAD
+[3.0.0]: https://github.com/DanielGilbert/Radia/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/DanielGilbert/Radia/releases/tag/v3.0.0
