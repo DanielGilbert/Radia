@@ -2,6 +2,10 @@ using Microsoft.Extensions.Primitives;
 using Radia.Extensions.Microsoft.AspNetCore.Builders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.AllowSynchronousIO = true;
+});
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.AddLocalServices();
