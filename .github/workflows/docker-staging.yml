@@ -39,6 +39,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: dev
+          tags: herrgilbert/radia:dev
           labels: ${{ steps.meta.outputs.labels }}
           file: ./Radia/Dockerfile
