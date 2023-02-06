@@ -11,6 +11,10 @@
     <Version>3.0.1</Version>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="templates\default\css\awsm_theme_black.min.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -30,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fluid.Core" Version="2.3.1" />
     <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0182" />
     <PackageReference Include="Markdig" Version="0.30.4" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
@@ -48,10 +51,10 @@
     <None Update="templates\default\views\FolderView.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\default\views\_layout.liquid">
+    <None Update="templates\default\views\_Layout.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\default\views\_viewstart.liquid">
+    <None Update="templates\default\views\_ViewStart.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
