@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Fixed
+- Uses Forward-Headers, so that the application can access scheme information when used with a proxy
+
 ## [3.0.3] - 2023-02-06
 
 ### Fixed
