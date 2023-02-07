@@ -75,16 +75,15 @@ namespace Radia.Tests.ViewModels
             public void WhenGivenAllDependenciesAndDirectory_ThenAllPropertiesAreSet()
             {
                 string content = "FancyTestSite";
-                string directoryName = "NiceDirectory";
+                string directoryName = "NiceDirectory" + Path.DirectorySeparatorChar;
                 string testDirectory = Path.Combine(TestContext!.TestRunResultsDirectory!, directoryName);
-                Debug.WriteLine("Context {0}", TestContext!.TestRunResultsDirectory!);
-                Debug.WriteLine("testDirectory {0}", testDirectory);
+
                 Directory.CreateDirectory(testDirectory);
 
                 IByteSizeService byteSizeService = new ByteSizeService();
 
                 IRadiaFileProvider radiaFileProvider = new LocalFileProvider(TestContext!.TestRunResultsDirectory!, true);
-                IRadiaFileInfo radiaFileInfo = radiaFileProvider.GetFileInfo(testDirectory);
+                IRadiaFileInfo radiaFileInfo = radiaFileProvider.GetFileInfo(directoryName);
 
                 RadiaFileInfoViewModel radiaFileInfoViewModel = new RadiaFileInfoViewModel(byteSizeService,
                                                                                            DefaultRadiaTestContext.WebHost,
