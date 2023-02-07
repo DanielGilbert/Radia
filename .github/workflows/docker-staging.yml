@@ -34,7 +34,7 @@ jobs:
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: Radia.Tests.dll
-          searchFolder: ./Radia.Tests/bin/Debug/
+          searchFolder: ./Radia/Radia.Tests/bin/Debug/
           runInParallel: false
         
   push_to_registry:
