@@ -22,8 +22,12 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
       
-      - name: Run Tests
-        run: dotnet test --no-restore --verbosity normal
+      - name: Run tests
+        uses: microsoft-approved-actions/vstest@master
+        with:
+          testAssembly: Radia.Test*.dll
+          searchFolder: ./Radia.Tests/
+          runInParallel: false
       
       - name: Log in to Docker Hub
         uses: docker/login-action@v2.1.0
