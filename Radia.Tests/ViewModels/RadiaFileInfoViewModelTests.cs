@@ -75,7 +75,7 @@ namespace Radia.Tests.ViewModels
             public void WhenGivenAllDependenciesAndDirectory_ThenAllPropertiesAreSet()
             {
                 string content = "FancyTestSite";
-                string directoryName = "NiceDirectory" + Path.DirectorySeparatorChar;
+                string directoryName = "NiceDirectory";
                 string testDirectory = Path.Combine(TestContext!.TestRunResultsDirectory!, directoryName);
                 Debug.WriteLine("Context {0}", TestContext!.TestRunResultsDirectory!);
                 Debug.WriteLine("testDirectory {0}", testDirectory);
