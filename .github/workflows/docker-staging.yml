@@ -7,7 +7,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Publish Docker image
+name: Publish Docker image for staging
 
 on:
   push:
@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
+      
+      - name: Run Tests
+        run: dotnet test --no-restore --verbosity normal
       
       - name: Log in to Docker Hub
         uses: docker/login-action@v2.1.0
