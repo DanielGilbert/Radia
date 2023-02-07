@@ -22,7 +22,7 @@ namespace Radia.Tests.Factories.ViewModel
             [TestMethod]
             public void WhenGivenAFolderPath_WillReturnTheFolderViewModel()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
                 ViewModelFactory viewModelFactory = new ViewModelFactory(defaultRadiaTestContext.FileProvider,
                                                                          defaultRadiaTestContext.ConfigurationService,
@@ -43,7 +43,7 @@ namespace Radia.Tests.Factories.ViewModel
             [TestMethod]
             public void WhenGivenAnInvalidFolderPath_WillReturnTheFileNotFoundViewModel()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
                 ViewModelFactory viewModelFactory = new ViewModelFactory(defaultRadiaTestContext.FileProvider,
                                                                          defaultRadiaTestContext.ConfigurationService,
@@ -64,9 +64,9 @@ namespace Radia.Tests.Factories.ViewModel
             [TestMethod]
             public void WhenGivenAValidFilePath_WillReturnTheDownloadableFileViewModel()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
-                string path = Path.Combine(TestContext!.TestRunDirectory!, "TestFolder1\\test.txt");
+                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1\\test.txt");
 
                 File.WriteAllText(path, "test");
 
@@ -89,9 +89,9 @@ namespace Radia.Tests.Factories.ViewModel
             [TestMethod]
             public void WhenGivenAValidLargeFilePath_WillReturnTheDownloadableFileViewModel()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
-                string path = Path.Combine(TestContext!.TestRunDirectory!, "TestFolder1\\test2.png");
+                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1\\test2.png");
 
                 byte[] data = new byte[1024 * 1024 * 4];
                 File.WriteAllBytes(path, data);
@@ -115,9 +115,9 @@ namespace Radia.Tests.Factories.ViewModel
             [TestMethod]
             public void WhenGivenAMarkdownFilePath_WillReturnTheProcessedFileViewModel()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
-                string path = Path.Combine(TestContext!.TestRunDirectory!, "TestFolder1\\test.md");
+                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1\\test.md");
 
                 File.WriteAllText(path, "## Header2");
 

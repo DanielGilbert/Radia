@@ -22,7 +22,7 @@ namespace Radia.Tests.Factories
             [TestMethod]
             public void WhenGivenAFolderViewModel_WillReturnFolderView()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunResultsDirectory!);
                 FolderViewModel folderViewModel = new FolderViewModel(string.Empty,
                                                                       string.Empty,
                                                                       string.Empty,
@@ -38,7 +38,7 @@ namespace Radia.Tests.Factories
             [TestMethod]
             public void WhenGivenAPathNotFoundViewModel_WillReturnPathNotFoundView()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunResultsDirectory!);
                 PathNotFoundViewModel viewModel = new PathNotFoundViewModel(string.Empty,
                                                                       string.Empty,
                                                                       string.Empty,
@@ -53,7 +53,7 @@ namespace Radia.Tests.Factories
             [TestMethod]
             public void WhenGivenADownloadableFileViewModel_WillReturnPhysicalFileView()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunResultsDirectory!);
                 DownloadableFileViewModel viewModel = new DownloadableFileViewModel(null,
                                                                       string.Empty,
                                                                       string.Empty,
@@ -69,7 +69,7 @@ namespace Radia.Tests.Factories
             [TestMethod]
             public void WhenGivenAProcessedFileViewModel_WillReturnProcessedFileView()
             {
-                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunResultsDirectory!);
                 ProcessedFileViewModel viewModel = new ProcessedFileViewModel(string.Empty,
                                                                       string.Empty,
                                                                       string.Empty,

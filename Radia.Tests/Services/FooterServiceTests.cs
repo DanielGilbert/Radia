@@ -19,7 +19,7 @@ namespace Radia.Tests.Services
             public void WhenGivenCorrectValues_WillReturnExpectedFooter()
             {
                 string result = "&copy; Daniel Gilbert, 2009 - 2023 | <a href=\"https://github.com/DanielGilbert/Radia/releases/tag/v3.0.0\">v3.0.0</a> | Made with ❤ &amp; ☕ using <a href=\"https://github.com/DanielGilbert/Radia\">Radia</a>";
-                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestResultsDirectory!);
+                DefaultRadiaTestContext defaultRadiaTestContext = new(TestContext!.TestRunResultsDirectory!);
 
                 IFooterService footerService = new FooterService(defaultRadiaTestContext.ConfigurationService,
                                                                  defaultRadiaTestContext.DateTimeService,

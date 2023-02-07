@@ -24,7 +24,7 @@ namespace Radia.Tests.ViewModels
             public void WhenGivenAllDependencies_ThenAllPropertiesAreSet()
             {
                 string content = "FancyTestSite";
-                string testFile = Path.Combine(TestContext!.TestRunDirectory!, Guid.NewGuid().ToString().ToLowerInvariant().Replace('-', 'd'));
+                string testFile = Path.Combine(TestContext!.TestRunResultsDirectory!, Guid.NewGuid().ToString().ToLowerInvariant().Replace('-', 'd'));
 
                 File.WriteAllText(testFile, content);
 
@@ -49,7 +49,7 @@ namespace Radia.Tests.ViewModels
             public void WhenGivenAllDependenciesAndEmptyFile_ThenAllPropertiesAreSet()
             {
                 string content = "";
-                string testFile = Path.Combine(TestContext!.TestRunDirectory!, Guid.NewGuid().ToString().ToLowerInvariant().Replace('-', 'd'));
+                string testFile = Path.Combine(TestContext!.TestRunResultsDirectory!, Guid.NewGuid().ToString().ToLowerInvariant().Replace('-', 'd'));
 
                 File.WriteAllText(testFile, content);
 
@@ -75,13 +75,13 @@ namespace Radia.Tests.ViewModels
             {
                 string content = "FancyTestSite";
                 string directoryName = "NiceDirectory\\";
-                string testDirectory = Path.Combine(TestContext!.TestRunDirectory!, directoryName);
+                string testDirectory = Path.Combine(TestContext!.TestRunResultsDirectory!, directoryName);
 
                 Directory.CreateDirectory(testDirectory);
 
                 IByteSizeService byteSizeService = new ByteSizeService();
 
-                IRadiaFileProvider radiaFileProvider = new LocalFileProvider(TestContext!.TestRunDirectory!, true);
+                IRadiaFileProvider radiaFileProvider = new LocalFileProvider(TestContext!.TestRunResultsDirectory!, true);
                 IRadiaFileInfo radiaFileInfo = radiaFileProvider.GetFileInfo(testDirectory);
 
                 RadiaFileInfoViewModel radiaFileInfoViewModel = new RadiaFileInfoViewModel(byteSizeService,
