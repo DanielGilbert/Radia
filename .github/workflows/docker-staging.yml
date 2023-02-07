@@ -28,7 +28,7 @@ jobs:
           dotnet-version: '7.0.x'
           
       - name: Build Radia
-        run: dotnet build -c Release Radia.sln
+        run: dotnet build -c Debug Radia.sln
       
       - name: Run tests
         uses: microsoft/vstest-action@v1.0.0
