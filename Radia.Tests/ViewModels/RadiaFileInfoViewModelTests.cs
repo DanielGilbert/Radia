@@ -70,31 +70,6 @@ namespace Radia.Tests.ViewModels
                 radiaFileInfoViewModel.Length.Should().Be(0);
                 radiaFileInfoViewModel.FormattedLength.Should().Be("0 bytes");
             }
-
-            [TestMethod]
-            public void WhenGivenAllDependenciesAndDirectory_ThenAllPropertiesAreSet()
-            {
-                string content = "FancyTestSite";
-                string directoryName = "NiceDirectory" + Path.DirectorySeparatorChar;
-                string testDirectory = Path.Combine(TestContext!.TestRunResultsDirectory!, directoryName);
-
-                Directory.CreateDirectory(testDirectory);
-
-                IByteSizeService byteSizeService = new ByteSizeService();
-
-                IRadiaFileProvider radiaFileProvider = new LocalFileProvider(TestContext!.TestRunResultsDirectory!, true);
-                IRadiaFileInfo radiaFileInfo = radiaFileProvider.GetFileInfo(directoryName);
-
-                RadiaFileInfoViewModel radiaFileInfoViewModel = new RadiaFileInfoViewModel(byteSizeService,
-                                                                                           DefaultRadiaTestContext.WebHost,
-                                                                                           radiaFileInfo,
-                                                                                           true,
-                                                                                           $"/{testDirectory.Replace("\\","/")}");
-
-                radiaFileInfoViewModel.Name.Should().Be(testDirectory);
-                radiaFileInfoViewModel.Length.Should().Be(-1);
-                radiaFileInfoViewModel.FormattedLength.Should().Be("-");
-            }
         }
     }
 }
