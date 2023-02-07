@@ -7,6 +7,7 @@ using Radia.Services.FileProviders.Local;
 using Radia.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,7 +77,8 @@ namespace Radia.Tests.ViewModels
                 string content = "FancyTestSite";
                 string directoryName = "NiceDirectory" + Path.DirectorySeparatorChar;
                 string testDirectory = Path.Combine(TestContext!.TestRunResultsDirectory!, directoryName);
-
+                Debug.WriteLine("Context {0}", TestContext!.TestRunResultsDirectory!);
+                Debug.WriteLine("testDirectory {0}", testDirectory);
                 Directory.CreateDirectory(testDirectory);
 
                 IByteSizeService byteSizeService = new ByteSizeService();
