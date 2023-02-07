@@ -7,12 +7,13 @@ using System.Text;
 
 namespace Radia.Services.FileProviders.Git
 {
-    public class GitFileProvider : IRadiaFileProvider
+    public class GitFileProvider : IRadiaFileProvider, IRadiaNetworkFileProvider
     {
         private readonly string repositoryAddress;
         private readonly string branch;
         private readonly string localCache;
         private readonly IRadiaFileProvider radiaFileProvider;
+        private readonly Repository repository;
 
         public GitFileProvider(GitFileProviderSettings args, bool allowListing)
         {
@@ -25,13 +26,14 @@ namespace Radia.Services.FileProviders.Git
             };
             try
             {
-                _ = Repository.Clone(this.repositoryAddress, this.localCache, cloneOptions);
+                var repositoryPath = Repository.Clone(this.repositoryAddress, this.localCache, cloneOptions);
+                this.repository = new Repository(repositoryPath);
             }
-            catch (NameConflictException)
+            catch (NameConflictException e)
             {
             }
             string path = GitFileProvider.GetCacheFolder(args.LocalCache);
-            this.radiaFileProvider = new LocalFileProvider(path, allowListing);
+            this.radiaFileProvider = new LocalFileProvider(this.localCache, allowListing);
         }
 
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
@@ -56,6 +58,26 @@ namespace Radia.Services.FileProviders.Git
                 return $"/gitTmp/{String.Concat(hash
                   .ComputeHash(Encoding.UTF8.GetBytes(value))
                   .Select(item => item.ToString("x2")))}";
+            }
+        }
+
+        public void Fetch()
+        {
+            string logMessage = "";
+            using (var repo = new Repository(this.localCache))
+            {
+                var remote = repo.Network.Remotes["origin"];
+                var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+                Commands.Fetch(repo, remote.Name, refSpecs, null, logMessage);
+                var branch = repo.Branches[this.branch];
+
+                if (branch == null)
+                {
+                    // repository return null object when branch not exists
+                    return;
+                }
+
+                Branch currentBranch = Commands.Checkout(repo, branch);
             }
         }
     }

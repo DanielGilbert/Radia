@@ -5,9 +5,10 @@ using Microsoft.Extensions.Primitives;
 
 namespace Radia.Services.FileProviders
 {
-    public class CompositeRadiaFileProvider : IRadiaFileProvider
+    public class CompositeRadiaFileProvider : IRadiaFileProvider, IRadiaNetworkFileProvider
     {
         private readonly IList<IRadiaFileProvider> radiaFileProviders;
+        private readonly IList<IRadiaNetworkFileProvider> radiaNetworkFileProviders;
 
         public CompositeRadiaFileProvider(IList<IRadiaFileProvider> radiaFileProviders)
         {
@@ -16,6 +17,15 @@ namespace Radia.Services.FileProviders
         }
 
         public bool AllowListing => true;
+
+        public void Fetch()
+        {
+            foreach (IRadiaNetworkFileProvider networkFileProvider in this.radiaNetworkFileProviders)
+            {
+                networkFileProvider.Fetch();
+            }
+        }
+
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
             var directoryContents = new CompositeRadiaDirectoryContents(this.radiaFileProviders, subpath);
