@@ -21,16 +21,20 @@ jobs:
     steps:
       - name: Check out the repo
       - uses: actions/checkout@v3
+      
+      - name: Setup Dotnet
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7.x'
-      - run: dotnet build Radia
+          
+      - name: Build Radia
+        run: dotnet build Radia
       
       - name: Run tests
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: Radia.Test*.dll
-          searchFolder: ./Radia.Tests/
+          searchFolder: ./Radia.Tests/bin/Debug/
           runInParallel: false
         
   push_to_registry:
