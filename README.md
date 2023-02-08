@@ -1,4 +1,6 @@
 # Radia
+[![Publish Docker image](https://github.com/DanielGilbert/Radia/actions/workflows/docker.yml/badge.svg)](https://github.com/DanielGilbert/Radia/actions/workflows/docker.yml)
+![Docker Pulls](https://img.shields.io/docker/pulls/herrgilbert/radia)
 ## Introduction
 *Radia* is inspired by the old days of Internet, where you would slab your web directory into the wild. Just start the Docker, add a Github repo as source, and you are good to go. You can of course also just reference a local folder on the file system. It's totally up to you.
 ## History

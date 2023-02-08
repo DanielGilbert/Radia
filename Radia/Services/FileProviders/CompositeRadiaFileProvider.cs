@@ -1,21 +1,35 @@
 ﻿using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.FileProviders.Composite;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using Microsoft.Extensions.Primitives;
 
 namespace Radia.Services.FileProviders
 {
-    public class CompositeRadiaFileProvider : IRadiaFileProvider
+    public class CompositeRadiaFileProvider : IRadiaFileProvider, IRadiaNetworkFileProvider
     {
         private readonly IList<IRadiaFileProvider> radiaFileProviders;
+        private readonly IList<IRadiaNetworkFileProvider> radiaNetworkFileProviders;
 
         public CompositeRadiaFileProvider(IList<IRadiaFileProvider> radiaFileProviders)
         {
             ArgumentNullException.ThrowIfNull(radiaFileProviders);
             this.radiaFileProviders = radiaFileProviders;
+            this.radiaNetworkFileProviders = GetRadiaNetworkFileProviders(radiaFileProviders);
+        }
+
+        private IList<IRadiaNetworkFileProvider> GetRadiaNetworkFileProviders(IList<IRadiaFileProvider> radiaFileProviders)
+        {
+            return radiaFileProviders.Where(fileProvider => fileProvider is IRadiaNetworkFileProvider).Select(p => (IRadiaNetworkFileProvider)p).ToList();
         }
 
         public bool AllowListing => true;
+
+        public void Fetch()
+        {
+            foreach (IRadiaNetworkFileProvider networkFileProvider in this.radiaNetworkFileProviders)
+            {
+                networkFileProvider.Fetch();
+            }
+        }
+
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
             var directoryContents = new CompositeRadiaDirectoryContents(this.radiaFileProviders, subpath);

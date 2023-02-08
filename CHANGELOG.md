@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [3.0.5] - 2023-02-08
+
+### Added
+- `GitFileProvider` now supports fetching the content of the remote repository regularly.
+
+### Changed
+- Theme has been changed to be lighter in color.
+
 ## [3.0.4] - 2023-02-06
 
 ### Fixed
@@ -39,7 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Majority of code is now under test.
 
 
-[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.4...HEAD
+[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.5...HEAD
+[3.0.5]: https://github.com/DanielGilbert/Radia/compare/v3.0.4...v3.0.5
 [3.0.4]: https://github.com/DanielGilbert/Radia/compare/v3.0.3...v3.0.4
 [3.0.3]: https://github.com/DanielGilbert/Radia/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/DanielGilbert/Radia/compare/v3.0.1...v3.0.2

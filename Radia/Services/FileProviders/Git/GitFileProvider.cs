@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Radia.Services.FileProviders.Git
 {
-    public class GitFileProvider : IRadiaFileProvider
+    public class GitFileProvider : IRadiaFileProvider, IRadiaNetworkFileProvider
     {
         private readonly string repositoryAddress;
         private readonly string branch;
@@ -30,8 +30,7 @@ namespace Radia.Services.FileProviders.Git
             catch (NameConflictException)
             {
             }
-            string path = GitFileProvider.GetCacheFolder(args.LocalCache);
-            this.radiaFileProvider = new LocalFileProvider(path, allowListing);
+            this.radiaFileProvider = new LocalFileProvider(this.localCache, allowListing);
         }
 
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
@@ -56,6 +55,31 @@ namespace Radia.Services.FileProviders.Git
                 return $"/gitTmp/{String.Concat(hash
                   .ComputeHash(Encoding.UTF8.GetBytes(value))
                   .Select(item => item.ToString("x2")))}";
+            }
+        }
+
+        public void Fetch()
+        {
+            string logMessage = "";
+            using (var repo = new Repository(this.localCache))
+            {
+                var remote = repo.Network.Remotes["origin"];
+                var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+                Commands.Fetch(repo, remote.Name, refSpecs, null, logMessage);
+                var branch = repo.Branches[this.branch];
+
+                if (branch == null)
+                {
+                    // repository return null object when branch not exists
+                    return;
+                }
+
+                Branch currentBranch = Commands.Checkout(repo, branch);
+                LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions();
+                options.FetchOptions = new FetchOptions();
+                var signature = new LibGit2Sharp.Signature(new Identity("Radia", "radia@local.host"), DateTimeOffset.Now);
+                Commands.Pull(repo, signature, options);
+                
             }
         }
     }

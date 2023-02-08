@@ -19,7 +19,9 @@ namespace Radia.Factories.FileProvider
             if (configuration.Settings.TryGetValue("Repository", out string? repository))
             {
                 GitFileProviderSettings gitFileProviderSettings = GetGitFileProviderSettings(configuration.Settings);
-                result = new GitFileProvider(gitFileProviderSettings, configuration.AllowListing);
+                var gitFileProvider = new GitFileProvider(gitFileProviderSettings, configuration.AllowListing);
+                gitFileProvider.Fetch();
+                result = gitFileProvider;
             }
 
             return result ?? throw new InvalidOperationException("No FileProvider found");
