@@ -14,6 +14,12 @@ namespace Radia.Services.FileProviders
         {
             ArgumentNullException.ThrowIfNull(radiaFileProviders);
             this.radiaFileProviders = radiaFileProviders;
+            this.radiaNetworkFileProviders = GetRadiaNetworkFileProviders(radiaFileProviders);
+        }
+
+        private IList<IRadiaNetworkFileProvider> GetRadiaNetworkFileProviders(IList<IRadiaFileProvider> radiaFileProviders)
+        {
+            return radiaFileProviders.Where(fileProvider => fileProvider is IRadiaNetworkFileProvider).Select(p => (IRadiaNetworkFileProvider)p).ToList();
         }
 
         public bool AllowListing => true;

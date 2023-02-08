@@ -45,7 +45,7 @@ namespace Radia.Modules
 
             var resultViewModel = this.memoryCache.GetOrCreate<IViewModel>(path, cacheEntry =>
             {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2);
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
                 var resultViewModel = this.viewModelFactory.Create(viewModelFactoryArgs);
                 return resultViewModel;
             });

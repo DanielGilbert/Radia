@@ -4,6 +4,7 @@ using Radia.Factories.View;
 using Radia.Factories.ViewModel;
 using Radia.Modules;
 using Radia.Services;
+using Radia.Services.Background;
 using Radia.Services.FileProviders;
 using Radia.Services.FileProviders.Microsoft;
 using System.Diagnostics.CodeAnalysis;
@@ -34,7 +35,12 @@ namespace Radia.Extensions.Microsoft.AspNetCore.Builders
                 config.PartialsFileProvider = new MicrosoftFileProvider(radiaFileProvider);
                 config.ViewsFileProvider = new MicrosoftFileProvider(radiaFileProvider);
             });
-            builder.Services.AddSingleton(radiaFileProvider);
+            builder.Services.AddSingleton<IRadiaFileProvider>(radiaFileProvider);
+            if (radiaFileProvider is IRadiaNetworkFileProvider radiaNetworkFileProvider)
+            {
+                builder.Services.AddSingleton<IRadiaNetworkFileProvider>(radiaNetworkFileProvider);
+            }
+            builder.Services.AddHostedService<NetworkFetchBackgroundService>();
             builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             builder.Services.AddSingleton<IViewFactory, ViewFactory>();
             builder.Services.AddSingleton<IContentProcessorFactory, ContentProcessorFactory>();

@@ -13,7 +13,6 @@ namespace Radia.Services.FileProviders.Git
         private readonly string branch;
         private readonly string localCache;
         private readonly IRadiaFileProvider radiaFileProvider;
-        private readonly Repository repository;
 
         public GitFileProvider(GitFileProviderSettings args, bool allowListing)
         {
@@ -26,13 +25,11 @@ namespace Radia.Services.FileProviders.Git
             };
             try
             {
-                var repositoryPath = Repository.Clone(this.repositoryAddress, this.localCache, cloneOptions);
-                this.repository = new Repository(repositoryPath);
+                _ = Repository.Clone(this.repositoryAddress, this.localCache, cloneOptions);
             }
-            catch (NameConflictException e)
+            catch (NameConflictException)
             {
             }
-            string path = GitFileProvider.GetCacheFolder(args.LocalCache);
             this.radiaFileProvider = new LocalFileProvider(this.localCache, allowListing);
         }
 
