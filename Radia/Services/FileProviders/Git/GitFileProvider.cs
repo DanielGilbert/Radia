@@ -75,6 +75,11 @@ namespace Radia.Services.FileProviders.Git
                 }
 
                 Branch currentBranch = Commands.Checkout(repo, branch);
+                LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions();
+                options.FetchOptions = new FetchOptions();
+                var signature = new LibGit2Sharp.Signature(new Identity("Radia", "radia@local.host"), DateTimeOffset.Now);
+                Commands.Pull(repo, signature, options);
+                
             }
         }
     }

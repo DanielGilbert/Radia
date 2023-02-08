@@ -28,14 +28,20 @@ namespace Radia.Services.Background
         private void DoWork(object? state)
         {
             _logger.LogInformation("Fetching Network changes...");
-
-            using (var scope = Services.CreateScope())
+            try
             {
-                var scopedProcessingService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IRadiaNetworkFileProvider>();
+                using (var scope = Services.CreateScope())
+                {
+                    var scopedProcessingService =
+                        scope.ServiceProvider
+                            .GetRequiredService<IRadiaNetworkFileProvider>();
 
-                scopedProcessingService.Fetch();
+                    scopedProcessingService.Fetch();
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, "Fetching network failed.");
             }
         }
 
