@@ -12,16 +12,19 @@ namespace Radia.Modules
         private readonly IViewFactory viewFactory;
         private readonly IConfigurationService configurationService;
         private readonly IMemoryCache memoryCache;
+        private readonly ILogger<ListingModule> logger;
 
         public ListingModule(IViewModelFactory viewModelFactory,
                              IViewFactory viewFactory,
                              IConfigurationService configurationService,
-                             IMemoryCache memoryCache)
+                             IMemoryCache memoryCache,
+                             ILogger<ListingModule> logger)
         {
             this.viewModelFactory = viewModelFactory;
             this.viewFactory = viewFactory;
             this.configurationService = configurationService;
             this.memoryCache = memoryCache;
+            this.logger = logger;
         }
 
         public IResult ProcessRequest(string arg)
@@ -36,6 +39,8 @@ namespace Radia.Modules
 
         private IResult InternalProcessRequest(string path)
         {
+            this.logger.LogDebug($"Processing {path}");
+
             if (string.IsNullOrWhiteSpace(path))
             {
                 path = "/";

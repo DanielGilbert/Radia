@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using Moq;
 using Radia.Factories;
 using Radia.Factories.ContentProcessor;
@@ -28,6 +30,8 @@ namespace Radia.Tests
         public IVersionService VersionService { get; internal set; }
         public IFooterService FooterService { get; }
 
+        public ILogger<ViewModelFactory> ViewModelFactoryLogger { get; }
+
         public DefaultRadiaTestContext(string rootDirectory) : this(rootDirectory,
                                                                    DefaultRadiaTestContext.DefaultFileProvider(rootDirectory)) { }
 
@@ -44,6 +48,12 @@ namespace Radia.Tests
             DateTimeService = MockDateTimeService();
             VersionService = MockVersionService();
             FooterService = MockFooterService();
+            ViewModelFactoryLogger = MockViewModelFactoryLogger();
+        }
+
+        private ILogger<ViewModelFactory> MockViewModelFactoryLogger()
+        {
+            return Mock.Of<ILogger<ViewModelFactory>>();
         }
 
         private IFooterService MockFooterService()
@@ -85,7 +95,8 @@ namespace Radia.Tests
                                         ContentProcessorFactory,
                                         HttpContextAccessor,
                                         new ByteSizeService(),
-                                        null);
+                                        null,
+                                        this.ViewModelFactoryLogger);
             
         }
 

@@ -1,4 +1,7 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
+using Moq;
 using Radia.Factories.ViewModel;
 using Radia.Services;
 using Radia.ViewModels;
@@ -24,13 +27,16 @@ namespace Radia.Tests.Factories.ViewModel
             {
                 DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
+                var logger = Mock.Of<ILogger<ViewModelFactory>>();
+
                 ViewModelFactory viewModelFactory = new ViewModelFactory(defaultRadiaTestContext.FileProvider,
                                                                          defaultRadiaTestContext.ConfigurationService,
                                                                          defaultRadiaTestContext.ContentTypeIdentifierService,
                                                                          defaultRadiaTestContext.ContentProcessorFactory,
                                                                          defaultRadiaTestContext.HttpContextAccessor,
                                                                          new ByteSizeService(),
-                                                                         defaultRadiaTestContext.FooterService);
+                                                                         defaultRadiaTestContext.FooterService,
+                                                                         logger);
 
                 ViewModelFactoryArgs factoryArgs = new ViewModelFactoryArgs("/", "TestTitle");
 
@@ -45,13 +51,16 @@ namespace Radia.Tests.Factories.ViewModel
             {
                 DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
+                var logger = Mock.Of<ILogger<ViewModelFactory>>();
+
                 ViewModelFactory viewModelFactory = new ViewModelFactory(defaultRadiaTestContext.FileProvider,
                                                                          defaultRadiaTestContext.ConfigurationService,
                                                                          defaultRadiaTestContext.ContentTypeIdentifierService,
                                                                          defaultRadiaTestContext.ContentProcessorFactory,
                                                                          defaultRadiaTestContext.HttpContextAccessor,
                                                                          new ByteSizeService(),
-                                                                         defaultRadiaTestContext.FooterService);
+                                                                         defaultRadiaTestContext.FooterService,
+                                                                         logger);
 
                 ViewModelFactoryArgs factoryArgs = new ViewModelFactoryArgs("/invalidViewModel", "TestTitle");
 
@@ -70,13 +79,16 @@ namespace Radia.Tests.Factories.ViewModel
 
                 File.WriteAllText(path, "test");
 
+                var logger = Mock.Of<ILogger<ViewModelFactory>>();
+
                 ViewModelFactory viewModelFactory = new ViewModelFactory(defaultRadiaTestContext.FileProvider,
                                                                          defaultRadiaTestContext.ConfigurationService,
                                                                          defaultRadiaTestContext.ContentTypeIdentifierService,
                                                                          defaultRadiaTestContext.ContentProcessorFactory,
                                                                          defaultRadiaTestContext.HttpContextAccessor,
                                                                          new ByteSizeService(),
-                                                                         defaultRadiaTestContext.FooterService);
+                                                                         defaultRadiaTestContext.FooterService,
+                                                                         logger);
 
                 ViewModelFactoryArgs factoryArgs = new ViewModelFactoryArgs("/test.txt", "TestTitle");
 
@@ -96,13 +108,16 @@ namespace Radia.Tests.Factories.ViewModel
                 byte[] data = new byte[1024 * 1024 * 4];
                 File.WriteAllBytes(path, data);
 
+                var logger = Mock.Of<ILogger<ViewModelFactory>>();
+
                 ViewModelFactory viewModelFactory = new ViewModelFactory(defaultRadiaTestContext.FileProvider,
                                                                          defaultRadiaTestContext.ConfigurationService,
                                                                          defaultRadiaTestContext.ContentTypeIdentifierService,
                                                                          defaultRadiaTestContext.ContentProcessorFactory,
                                                                          defaultRadiaTestContext.HttpContextAccessor,
                                                                          new ByteSizeService(),
-                                                                         defaultRadiaTestContext.FooterService);
+                                                                         defaultRadiaTestContext.FooterService,
+                                                                         logger);
 
                 ViewModelFactoryArgs factoryArgs = new ViewModelFactoryArgs("/test2.png", "TestTitle");
 
@@ -121,13 +136,16 @@ namespace Radia.Tests.Factories.ViewModel
 
                 File.WriteAllText(path, "## Header2");
 
+                var logger = Mock.Of<ILogger<ViewModelFactory>>();
+
                 ViewModelFactory viewModelFactory = new ViewModelFactory(defaultRadiaTestContext.FileProvider,
                                                                          defaultRadiaTestContext.ConfigurationService,
                                                                          defaultRadiaTestContext.ContentTypeIdentifierService,
                                                                          defaultRadiaTestContext.ContentProcessorFactory,
                                                                          defaultRadiaTestContext.HttpContextAccessor,
                                                                          new ByteSizeService(),
-                                                                         defaultRadiaTestContext.FooterService);
+                                                                         defaultRadiaTestContext.FooterService,
+                                                                         logger);
 
                 ViewModelFactoryArgs factoryArgs = new ViewModelFactoryArgs("/test.md", "TestTitle");
 
