@@ -45,11 +45,11 @@ namespace Radia.Modules
             {
                 path = "/";
             }
-            var viewModelFactoryArgs = new ViewModelFactoryArgs(path,
-                                                                this.configurationService.GetWebsiteTitle());
 
             var resultViewModel = this.memoryCache.GetOrCreate<IViewModel>(path, cacheEntry =>
             {
+                var viewModelFactoryArgs = new ViewModelFactoryArgs(path,
+                                                    this.configurationService.GetWebsiteTitle());
                 cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
                 var resultViewModel = this.viewModelFactory.Create(viewModelFactoryArgs);
                 return resultViewModel;
@@ -62,9 +62,15 @@ namespace Radia.Modules
                                     enableRangeProcessing: true);
             }
 
-            var resultView = this.viewFactory.Create(resultViewModel!);
+            IResult result = this.memoryCache.GetOrCreate<IResult>(path + "/View", cachedEntry =>
+            {
+                var resultView = this.viewFactory.Create(resultViewModel!);
 
-            return Results.Extensions.View(resultView, resultViewModel);
+                return Results.Extensions.View(resultView, resultViewModel);
+            });
+
+            return result;
+
         }
     }
 }
