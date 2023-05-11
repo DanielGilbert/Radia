@@ -1,4 +1,5 @@
-﻿using Radia.Models;
+﻿using Parlot.Fluent;
+using Radia.Models;
 using Radia.Services.FileProviders;
 using System.Diagnostics.CodeAnalysis;
 
@@ -32,8 +33,9 @@ namespace Radia.Services
 
         public IList<FileProviderConfiguration> GetFileProviderConfigurations()
         {
-            ArgumentNullException.ThrowIfNull(appConfiguration.FileProviderConfigurations,
-                                              nameof(appConfiguration.FileProviderConfigurations));
+            if (appConfiguration.FileProviderConfigurations is null)
+                return new List<FileProviderConfiguration>();
+
             return appConfiguration
                    .FileProviderConfigurations.OrderBy(kvp => Convert.ToInt32(kvp.Key))
                                               .Select(kvp => kvp.Value)
