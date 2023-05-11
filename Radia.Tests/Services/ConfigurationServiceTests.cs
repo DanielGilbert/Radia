@@ -203,7 +203,7 @@ namespace Radia.Tests.Services
             }
 
             [TestMethod]
-            public void WhenGivenNoWebsiteTitle_ThenWillThrowArgumentException()
+            public void WhenGivenNoFileProviderConfigurations_ThenWillReturnAnEmptyList()
             {
                 var configuration = new Dictionary<string, string?>
                 {
@@ -212,9 +212,7 @@ namespace Radia.Tests.Services
 
                 IConfigurationService configurationService = BuildConfigurationService(configuration);
 
-                Action act = () => configurationService.GetFileProviderConfigurations();
-
-                act.Should().Throw<ArgumentException>();
+                configurationService.GetFileProviderConfigurations().Should().BeEmpty();
             }
         }
 
