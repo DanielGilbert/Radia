@@ -10,8 +10,9 @@ I also happen to like to build stuff. So there goes that.
 
 The name comes from the likes of [Radia Perlman](https://en.wikipedia.org/wiki/Radia_Perlman), who is most famous for the invention of the [Spanning Tree Protocol](https://en.wikipedia.org/wiki/Spanning_Tree_Protocol). With this, she laid the foundation of what we nowadays refer to as "The Internet". Also, I like the name. 
 ## Features
+- Works on folders and/or repositories
 - Clones given git repositories
 - Can serve from multiple file repositories. Want your template in a different repo than your content? No Problem!
-- Renders Markdown files natively
+- Renders Markdown files
 - Respects hidden file attributes
-- Just works.™
+- ~~Just~~ Kinda works.™
