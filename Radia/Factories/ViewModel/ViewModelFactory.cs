@@ -15,6 +15,7 @@ namespace Radia.Factories.ViewModel
         private readonly IContentProcessorFactory contentProcessorFactory;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IFooterService footerService;
+        private readonly ILogger<ViewModelFactory> logger;
         private readonly IRadiaFileProvider fileProvider;
         private readonly IByteSizeService byteSizeService;
 
@@ -24,13 +25,15 @@ namespace Radia.Factories.ViewModel
                                 IContentProcessorFactory contentProcessorFactory,
                                 IHttpContextAccessor httpContextAccessor,
                                 IByteSizeService byteSizeService,
-                                IFooterService footerService)
+                                IFooterService footerService,
+                                ILogger<ViewModelFactory> logger)
         {
             this.configurationService = configurationService;
             this.contentTypeIdentifierService = contentTypeIdentifierService;
             this.contentProcessorFactory = contentProcessorFactory;
             this.httpContextAccessor = httpContextAccessor;
             this.footerService = footerService;
+            this.logger = logger;
             this.fileProvider = fileProvider;
             this.byteSizeService = byteSizeService;
         }
@@ -43,8 +46,11 @@ namespace Radia.Factories.ViewModel
 
             IRadiaFileInfo radiaFileInfo = fileProvider.GetFileInfo(args.Path);
 
+            this.logger.LogDebug($"Matching to file object {radiaFileInfo}");
+
             if (radiaFileInfo.Exists)
             {
+                this.logger.LogDebug("Getting ViewModel for existing file");
                 return GetViewModelForExistingFile(radiaFileInfo,
                                                    contentType,
                                                    args.Path,
@@ -53,6 +59,7 @@ namespace Radia.Factories.ViewModel
             }
             else
             {
+                this.logger.LogDebug("Getting ViewModel for non-existing file");
                 return GetViewModelForNonExistingFile(this.byteSizeService,
                                                       args.Path,
                                                       webHost,
@@ -68,6 +75,7 @@ namespace Radia.Factories.ViewModel
         {
             if (radiaFileInfo.Length >= MaxProcessingFileSize)
             {
+                this.logger.LogDebug("File is too large to process, downloading instead");
                 return new DownloadableFileViewModel(radiaFileInfo,
                                                      contentType,
                                                      configurationService.GetWebsiteTitle(),
@@ -80,9 +88,11 @@ namespace Radia.Factories.ViewModel
             {
                 content = reader.ReadToEnd();
             }
+            this.logger.LogDebug("Processing content");
             var result = contentProcessor.ProcessContent(contentType, content);
             if (content.Equals(result) is false)
             {
+                this.logger.LogDebug("File got processed");
                 return new ProcessedFileViewModel(result,
                                                     contentType,
                                                     path,
@@ -92,6 +102,7 @@ namespace Radia.Factories.ViewModel
                                                     this.footerService);
             }
 
+            this.logger.LogDebug("File for download");
             return new DownloadableFileViewModel(radiaFileInfo,
                                                  contentType,
                                                  configurationService.GetWebsiteTitle(),
@@ -105,6 +116,7 @@ namespace Radia.Factories.ViewModel
                                                           string webHost,
                                                           IContentProcessor contentProcessor)
         {
+            this.logger.LogDebug("Trying to get as directory");
             var directory = fileProvider.GetDirectoryContents(path);
 
             if (directory.Exists is false)

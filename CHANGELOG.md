@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [3.0.6] - 2023-05-13
+
+### Added
+- `Readme.md` now contains more explanation to get `Radia` up and running.
+
+### Changed
+- Some changes under the hood now allow better caching.
+
 ## [3.0.5] - 2023-02-08
 
 ### Added
@@ -47,7 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Majority of code is now under test.
 
 
-[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.5...HEAD
+[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.6...HEAD
+[3.0.6]: https://github.com/DanielGilbert/Radia/compare/v3.0.5...v3.0.6
 [3.0.5]: https://github.com/DanielGilbert/Radia/compare/v3.0.4...v3.0.5
 [3.0.4]: https://github.com/DanielGilbert/Radia/compare/v3.0.3...v3.0.4
 [3.0.3]: https://github.com/DanielGilbert/Radia/compare/v3.0.2...v3.0.3

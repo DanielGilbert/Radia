@@ -12,16 +12,19 @@ namespace Radia.Modules
         private readonly IViewFactory viewFactory;
         private readonly IConfigurationService configurationService;
         private readonly IMemoryCache memoryCache;
+        private readonly ILogger<ListingModule> logger;
 
         public ListingModule(IViewModelFactory viewModelFactory,
                              IViewFactory viewFactory,
                              IConfigurationService configurationService,
-                             IMemoryCache memoryCache)
+                             IMemoryCache memoryCache,
+                             ILogger<ListingModule> logger)
         {
             this.viewModelFactory = viewModelFactory;
             this.viewFactory = viewFactory;
             this.configurationService = configurationService;
             this.memoryCache = memoryCache;
+            this.logger = logger;
         }
 
         public IResult ProcessRequest(string arg)
@@ -36,15 +39,17 @@ namespace Radia.Modules
 
         private IResult InternalProcessRequest(string path)
         {
+            this.logger.LogDebug($"Processing {path}");
+
             if (string.IsNullOrWhiteSpace(path))
             {
                 path = "/";
             }
-            var viewModelFactoryArgs = new ViewModelFactoryArgs(path,
-                                                                this.configurationService.GetWebsiteTitle());
 
             var resultViewModel = this.memoryCache.GetOrCreate<IViewModel>(path, cacheEntry =>
             {
+                var viewModelFactoryArgs = new ViewModelFactoryArgs(path,
+                                                    this.configurationService.GetWebsiteTitle());
                 cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
                 var resultViewModel = this.viewModelFactory.Create(viewModelFactoryArgs);
                 return resultViewModel;
@@ -57,9 +62,15 @@ namespace Radia.Modules
                                     enableRangeProcessing: true);
             }
 
-            var resultView = this.viewFactory.Create(resultViewModel!);
+            IResult result = this.memoryCache.GetOrCreate<IResult>(path + "/View", cachedEntry =>
+            {
+                var resultView = this.viewFactory.Create(resultViewModel!);
 
-            return Results.Extensions.View(resultView, resultViewModel);
+                return Results.Extensions.View(resultView, resultViewModel);
+            });
+
+            return result;
+
         }
     }
 }
