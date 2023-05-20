@@ -7,45 +7,55 @@ using System.Text;
 
 namespace Radia.Services.FileProviders.Git
 {
-    public class GitFileProvider : IRadiaFileProvider, IRadiaNetworkFileProvider
+    public class GitFileProvider : IRadiaFileProvider, IRadiaNetworkFileProvider, IDisposable
     {
+        private readonly bool allowListing;
         private readonly string repositoryAddress;
         private readonly string branch;
         private readonly string localCache;
-        private readonly IRadiaFileProvider radiaFileProvider;
+        private bool disposedValue;
+        private readonly Repository repository;
 
         public GitFileProvider(GitFileProviderSettings args, bool allowListing)
         {
+            this.allowListing = allowListing;
             this.repositoryAddress = args.Repository;
             this.branch = args.Branch;
             this.localCache = GetCacheFolder(args.LocalCache);
-            CloneOptions cloneOptions = new()
-            {
-                BranchName = this.branch
-            };
-            try
-            {
-                _ = Repository.Clone(this.repositoryAddress, this.localCache, cloneOptions);
-            }
-            catch (NameConflictException)
-            {
-            }
-            this.radiaFileProvider = new LocalFileProvider(this.localCache, allowListing);
+            this.repository = new Repository(this.repositoryAddress);
         }
 
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
-            return this.radiaFileProvider.GetDirectoryContents(subpath);
+            //var directoryContents = this.radiaFileProvider.GetDirectoryContents(subpath);
+            return new GitDirectoryContents();
         }
 
         public IRadiaFileInfo GetFileInfo(string subpath)
         {
-            return this.radiaFileProvider.GetFileInfo(subpath);
+            //var localFileInfo = this.radiaFileProvider.GetFileInfo(subpath);
+            throw new NotImplementedException();
+            //using (var repo = new Repository(this.localCache))
+            //{
+            //    localFileInfo = GetLastModifiedDate(repo, subpath, localFileInfo);
+            //}
+            //return localFileInfo;
+        }
+
+        private IRadiaFileInfo GetLastModifiedDate(Repository repo, string subpath, IRadiaFileInfo localFileInfo)
+        {
+            var status = repo.RetrieveStatus(subpath);
+            var fileHistory = repo.Commits.QueryBy(subpath);
+
+            if (fileHistory.Any() is false)
+                return localFileInfo;
+
+            return localFileInfo;            
         }
 
         public IChangeToken Watch(string filter)
         {
-            return this.radiaFileProvider.Watch(filter);
+            throw new NotImplementedException();
         }
 
         public static String GetCacheFolder(string value)
@@ -81,6 +91,35 @@ namespace Radia.Services.FileProviders.Git
                 Commands.Pull(repo, signature, options);
                 
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~GitFileProvider()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
