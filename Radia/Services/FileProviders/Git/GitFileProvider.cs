@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using Radia.Services.FileProviders.Local;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Radia.Services.FileProviders.Git
@@ -16,19 +15,39 @@ namespace Radia.Services.FileProviders.Git
         private bool disposedValue;
         private readonly Repository repository;
 
-        public GitFileProvider(GitFileProviderSettings args, bool allowListing)
+        /// <summary>
+        /// This file provider implementation works on git branches.
+        /// </summary>
+        /// <exception cref="BranchNotFoundException">Gets thrown if the given branch cannot be found.</exception>
+        /// <param name="args">A set of arguments for the GitFileProvider</param>
+        /// <param name="allowListing"></param>
+        public GitFileProvider(GitFileProviderSettings args)
         {
-            this.allowListing = allowListing;
+            this.allowListing = args.AllowListing;
             this.repositoryAddress = args.Repository;
             this.branch = args.Branch;
             this.localCache = GetCacheFolder(args.LocalCache);
-            this.repository = new Repository(this.repositoryAddress);
+            this.repository = GetRepositoryInstance(this.repositoryAddress, this.branch);
+        }
+
+        private Repository GetRepositoryInstance(string repositoryAddress, string branch)
+        {
+            Repository repository = new(repositoryAddress);
+            if (repository.Refs[$"refs/heads/{branch}"] is Reference reference)
+            {
+                repository.Refs.UpdateTarget(repository.Refs.Head, reference);
+            }
+            else
+            {
+                throw new BranchNotFoundException(branch);
+            }
+            return repository;
         }
 
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
             //var directoryContents = this.radiaFileProvider.GetDirectoryContents(subpath);
-            return new GitDirectoryContents();
+            return new GitDirectoryContents(this.repository, this.branch, subpath);
         }
 
         public IRadiaFileInfo GetFileInfo(string subpath)
@@ -42,17 +61,6 @@ namespace Radia.Services.FileProviders.Git
             //return localFileInfo;
         }
 
-        private IRadiaFileInfo GetLastModifiedDate(Repository repo, string subpath, IRadiaFileInfo localFileInfo)
-        {
-            var status = repo.RetrieveStatus(subpath);
-            var fileHistory = repo.Commits.QueryBy(subpath);
-
-            if (fileHistory.Any() is false)
-                return localFileInfo;
-
-            return localFileInfo;            
-        }
-
         public IChangeToken Watch(string filter)
         {
             throw new NotImplementedException();
@@ -60,7 +68,7 @@ namespace Radia.Services.FileProviders.Git
 
         public static String GetCacheFolder(string value)
         {
-            using (SHA256 hash = SHA256.Create())
+            using (System.Security.Cryptography.SHA256 hash = System.Security.Cryptography.SHA256.Create())
             {
                 return $"/gitTmp/{String.Concat(hash
                   .ComputeHash(Encoding.UTF8.GetBytes(value))
@@ -70,27 +78,13 @@ namespace Radia.Services.FileProviders.Git
 
         public void Fetch()
         {
-            string logMessage = "";
-            using (var repo = new Repository(this.localCache))
-            {
-                var remote = repo.Network.Remotes["origin"];
-                var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-                Commands.Fetch(repo, remote.Name, refSpecs, null, logMessage);
-                var branch = repo.Branches[this.branch];
-
-                if (branch == null)
-                {
-                    // repository return null object when branch not exists
-                    return;
-                }
-
-                Branch currentBranch = Commands.Checkout(repo, branch);
-                LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions();
-                options.FetchOptions = new FetchOptions();
-                var signature = new LibGit2Sharp.Signature(new Identity("Radia", "radia@local.host"), DateTimeOffset.Now);
-                Commands.Pull(repo, signature, options);
-                
-            }
+            //var remote = this.repository.Network.Remotes["origin"];
+            //var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+            //Commands.Fetch(this.repository, remote.Name, refSpecs, null, string.Empty);
+            //PullOptions options = new PullOptions();
+            //options.FetchOptions = new FetchOptions();
+            //var signature = new Signature(new Identity("Radia", "radia@local.host"), DateTimeOffset.Now);
+            //Commands.Pull(this.repository, signature, options);
         }
 
         protected virtual void Dispose(bool disposing)

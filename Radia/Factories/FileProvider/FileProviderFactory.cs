@@ -18,8 +18,8 @@ namespace Radia.Factories.FileProvider
 
             if (configuration.Settings.TryGetValue("Repository", out string? repository))
             {
-                GitFileProviderSettings gitFileProviderSettings = GetGitFileProviderSettings(configuration.Settings);
-                var gitFileProvider = new GitFileProvider(gitFileProviderSettings, configuration.AllowListing);
+                GitFileProviderSettings gitFileProviderSettings = GetGitFileProviderSettings(configuration.Settings, configuration.AllowListing);
+                var gitFileProvider = new GitFileProvider(gitFileProviderSettings);
                 gitFileProvider.Fetch();
                 result = gitFileProvider;
             }
@@ -27,7 +27,7 @@ namespace Radia.Factories.FileProvider
             return result ?? throw new InvalidOperationException("No FileProvider found");
         }
 
-        private GitFileProviderSettings GetGitFileProviderSettings(Dictionary<string, string> settings)
+        private GitFileProviderSettings GetGitFileProviderSettings(Dictionary<string, string> settings, bool allowListing)
         {
             string repository = string.Empty;
             string branch = string.Empty;
@@ -53,7 +53,8 @@ namespace Radia.Factories.FileProvider
 
             return new GitFileProviderSettings(repository,
                                                branch,
-                                               localCache);
+                                               localCache,
+                                               allowListing);
         }
 
         public IRadiaFileProvider CreateComposite(IList<FileProviderConfiguration> configuration)

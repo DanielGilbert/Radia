@@ -1,4 +1,5 @@
-﻿using Radia.Services.FileProviders.Git;
+﻿using FluentAssertions;
+using Radia.Services.FileProviders.Git;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,22 @@ namespace Radia.Tests.Services.FileProviders.Git
         {
             public TestContext? TestContext { get; set; }
 
-            [TestMethod]
-            public void WhenReceivingTheRoot_ThenWillReturnAllFiles()
+            [DataRow("")]
+            [DataRow("/")]
+            [DataRow("articles/")]
+            [DataTestMethod]
+            public void WhenReceivingTheRoot_ThenWillReturnAllFiles(string rootDirectory)
             {
-                string repository = TestContext.DeploymentDirectory + "\\GitRepository";
-                string localCache = TestContext.TestRunDirectory + "\\" + Path.GetRandomFileName();
+                string repository = TestContext!.DeploymentDirectory + "\\GitRepository";
+                string localCache = TestContext!.TestRunDirectory + "\\" + Path.GetRandomFileName();
                 Directory.CreateDirectory(localCache);
-                GitFileProviderSettings gitFileProviderSettings = new GitFileProviderSettings(repository, "main", localCache);
-                GitFileProvider gitFileProvider = new GitFileProvider(gitFileProviderSettings, true);
+                GitFileProviderSettings gitFileProviderSettings = new GitFileProviderSettings(repository, "main", localCache, true);
+                GitFileProvider gitFileProvider = new GitFileProvider(gitFileProviderSettings);
+                gitFileProvider.Fetch();
+                var result = gitFileProvider.GetDirectoryContents(rootDirectory);
+
+                result.Should().NotBeEmpty();
+                result.First().Name.EndsWith(".md").Should().BeTrue();
             }
         }
     }
