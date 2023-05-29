@@ -17,7 +17,9 @@ namespace Radia.Tests.Services.FileProviders.Git
 
             [DataRow("")]
             [DataRow("/")]
+            [DataRow("articles/[001]-building-a-webengine.md")]
             [DataRow("articles/")]
+            [DataRow("readme.md")]
             [DataTestMethod]
             public void WhenReceivingTheRoot_ThenWillReturnAllFiles(string rootDirectory)
             {

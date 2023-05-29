@@ -43,8 +43,30 @@ namespace Radia.Services.FileProviders.Git
             {
                 var treeEntry = currentCommit[this.subpath];
 
-                yield return null;
+                if (treeEntry.TargetType == TreeEntryTargetType.Tree)
+                {
+                    if (treeEntry.Target is Tree subtree)
+                    {
+                        foreach (var entry in subtree)
+                        {
+                            if (entry.Mode == Mode.Directory)
+                            {
+                                yield return GitDirectoryInfo.Create(entry, currentCommit.Author.When);
+                            }
+                            else
+                            {
+                                yield return GitFileInfo.Create(entry, currentCommit.Author.When);
+                            }
+                        }
+                    }
+                }
+                else if (treeEntry.TargetType == TreeEntryTargetType.Blob)
+                {
+                    yield return GitFileInfo.Create(treeEntry, currentCommit.Author.When);
+                }
             }
+
+            yield break;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
