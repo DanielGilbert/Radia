@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,11 +15,13 @@ namespace Radia.Tests
         {
             string testDataSourceDirPath = testContext.Properties["TestDataDirectory"].ToString();
             Console.WriteLine($"Test Data Source Path: {testDataSourceDirPath}");
+            Trace.WriteLine($"Test Data Source Path: {testDataSourceDirPath}");
             DirectoryInfo sourceDir = new DirectoryInfo(testDataSourceDirPath);
 
             string testDataDestDirPath = testContext.DeploymentDirectory;
             DirectoryInfo destDir = new DirectoryInfo(testDataDestDirPath);
             Console.WriteLine($"Test Data Dest Path: {testDataDestDirPath}");
+            Trace.WriteLine($"Test Data Dest Path: {testDataDestDirPath}");
             Directory.CreateDirectory(destDir.FullName + "\\GitRepository");
 
             DirectoryCopy(sourceDir.FullName, destDir.FullName + "\\GitRepository", true);
