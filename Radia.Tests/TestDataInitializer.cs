@@ -13,11 +13,12 @@ namespace Radia.Tests
         public static void TestAssemblyInitialize(TestContext testContext)
         {
             string testDataSourceDirPath = testContext.Properties["TestDataDirectory"].ToString();
+            Console.WriteLine($"Test Data Source Path: {testDataSourceDirPath}");
             DirectoryInfo sourceDir = new DirectoryInfo(testDataSourceDirPath);
 
             string testDataDestDirPath = testContext.DeploymentDirectory;
             DirectoryInfo destDir = new DirectoryInfo(testDataDestDirPath);
-
+            Console.WriteLine($"Test Data Dest Path: {testDataDestDirPath}");
             Directory.CreateDirectory(destDir.FullName + "\\GitRepository");
 
             DirectoryCopy(sourceDir.FullName, destDir.FullName + "\\GitRepository", true);
