@@ -32,7 +32,7 @@ namespace Radia.Tests.Services.FileProviders.Git
                 var result = gitFileProvider.GetDirectoryContents(rootDirectory);
 
                 result.Should().NotBeEmpty();
-                result.First().Name.EndsWith(".md").Should().BeTrue();
+                result.Where((x) => x.Name.EndsWith(".md")).Should().NotBeEmpty();
             }
         }
     }

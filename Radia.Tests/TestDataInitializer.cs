@@ -30,9 +30,9 @@ namespace Radia.Tests
             Console.WriteLine($"Test Data Dest Path: {destDir}");
             Trace.WriteLine($"Test Data Dest Path: {destDir}");
 
-            Directory.CreateDirectory(destDir.FullName + "\\GitRepository");
+            Directory.CreateDirectory(destDir.FullName + Path.DirectorySeparatorChar + "GitRepository");
 
-            DirectoryCopy(sourceDir.FullName, destDir.FullName + "\\GitRepository", true);
+            DirectoryCopy(sourceDir.FullName, destDir.FullName + Path.DirectorySeparatorChar + "GitRepository", true);
         }
 
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
