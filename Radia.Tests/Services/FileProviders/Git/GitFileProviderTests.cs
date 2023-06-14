@@ -24,6 +24,10 @@ namespace Radia.Tests.Services.FileProviders.Git
             public void WhenReceivingTheRoot_ThenWillReturnAllFiles(string rootDirectory)
             {
                 string repository = TestContext!.DeploymentDirectory + Path.DirectorySeparatorChar + "GitRepository" + Path.DirectorySeparatorChar;
+                foreach (var entry in Directory.GetFiles(repository))
+                {
+                    Console.WriteLine(entry);
+                }
                 string localCache = TestContext!.TestRunDirectory + Path.DirectorySeparatorChar + Path.GetRandomFileName();
                 Directory.CreateDirectory(localCache);
                 GitFileProviderSettings gitFileProviderSettings = new GitFileProviderSettings(repository, "main", localCache, true);
