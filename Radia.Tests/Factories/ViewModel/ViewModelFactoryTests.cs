@@ -75,7 +75,7 @@ namespace Radia.Tests.Factories.ViewModel
             {
                 DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
-                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1\\test.txt");
+                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1" + Path.DirectorySeparatorChar + "test.txt");
 
                 File.WriteAllText(path, "test");
 
@@ -103,7 +103,7 @@ namespace Radia.Tests.Factories.ViewModel
             {
                 DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
-                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1\\test2.png");
+                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1" + Path.DirectorySeparatorChar + "test2.png");
 
                 byte[] data = new byte[1024 * 1024 * 4];
                 File.WriteAllBytes(path, data);
@@ -132,7 +132,7 @@ namespace Radia.Tests.Factories.ViewModel
             {
                 DefaultRadiaTestContext defaultRadiaTestContext = new DefaultRadiaTestContext(TestContext!.TestRunResultsDirectory!);
 
-                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1\\test.md");
+                string path = Path.Combine(TestContext!.TestRunResultsDirectory!, "TestFolder1" + Path.DirectorySeparatorChar + "test.md");
 
                 File.WriteAllText(path, "## Header2");
 
