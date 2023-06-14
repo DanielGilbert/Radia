@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [3.0.7] - 2023-06-14
+
+### Added
+- The Git implementation now works on the repository itself, and does not need a working copy any longer
+
+### Changed
+- Timestamps of files and folders are now taken from the commits the files and folders got changed. This may not necessarily be the _real_ timestamps, but git doesn't record them anyways.
+
+### Fixed
+- The tests now run independently from the operating system (w/r to path delimiters)
+
 ## [3.0.6] - 2023-05-13
 
 ### Added
@@ -55,7 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Majority of code is now under test.
 
 
-[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.6...HEAD
+[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.7...HEAD
+[3.0.7]: https://github.com/DanielGilbert/Radia/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/DanielGilbert/Radia/compare/v3.0.5...v3.0.6
 [3.0.5]: https://github.com/DanielGilbert/Radia/compare/v3.0.4...v3.0.5
 [3.0.4]: https://github.com/DanielGilbert/Radia/compare/v3.0.3...v3.0.4
