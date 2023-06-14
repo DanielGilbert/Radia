@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Resources\TestData\GitRepository\objects\info\" />
+    <Folder Include="Resources\TestData\GitRepository\refs\heads\" />
+    <Folder Include="Resources\TestData\GitRepository\refs\tags\" />
     <Folder Include="Services\FileProviders\Git\" />
   </ItemGroup>
 

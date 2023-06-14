@@ -5,6 +5,4 @@
 	symlinks = false
 	ignorecase = true
 [remote "origin"]
-	url = https://github.com/DanielGilbert/g5t.de.git
-	fetch = +refs/*:refs/*
-	mirror = true
+	url = https://github.com/DanielGilbert/g5t.de
