@@ -16,8 +16,7 @@ namespace Radia.Tests
             string testDataSourceDirPath = testContext.Properties["TestDataDirectory"].ToString();
 
             DirectoryInfo sourceDir = new DirectoryInfo(testDataSourceDirPath);
-            Console.WriteLine($"Test Data Source Path: {sourceDir}");
-            Trace.WriteLine($"Test Data Source Path: {sourceDir}");
+            Trace.WriteLine($"Test Data 2 Source Path: {sourceDir}");
 
             foreach (var file in Directory.GetFiles(sourceDir.FullName))
             {
@@ -28,7 +27,6 @@ namespace Radia.Tests
             string testDataDestDirPath = testContext.DeploymentDirectory;
             DirectoryInfo destDir = new DirectoryInfo(testDataDestDirPath);
             Console.WriteLine($"Test Data Dest Path: {destDir}");
-            Trace.WriteLine($"Test Data Dest Path: {destDir}");
 
             Directory.CreateDirectory(destDir.FullName + Path.DirectorySeparatorChar + "GitRepository");
 
@@ -59,6 +57,7 @@ namespace Radia.Tests
             foreach (FileInfo file in files)
             {
                 string temppath = Path.Combine(destDirName, file.Name);
+                Console.WriteLine($"Copy file: {temppath}");
                 file.CopyTo(temppath, false);
             }
 
@@ -68,6 +67,7 @@ namespace Radia.Tests
                 foreach (DirectoryInfo subdir in dirs)
                 {
                     string temppath = Path.Combine(destDirName, subdir.Name);
+                    Console.WriteLine($"Copy dir: {temppath}");
                     DirectoryCopy(subdir.FullName, temppath, copySubDirs);
                 }
             }
