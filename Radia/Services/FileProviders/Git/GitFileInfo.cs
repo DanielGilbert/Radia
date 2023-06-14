@@ -49,5 +49,35 @@ namespace Radia.Services.FileProviders.Git
 
             return new GitFileInfo(treeEntry, lastModifiedDate);
         }
+
+        internal static IRadiaFileInfo Create(Repository repository, string branch, string subpath)
+        {
+            var currentCommit = repository.Head.Tip;
+            var treeEntry = currentCommit[subpath];
+
+            if (treeEntry.TargetType == TreeEntryTargetType.Tree)
+            {
+                if (treeEntry.Target is Tree subtree)
+                {
+                    foreach (var entry in subtree)
+                    {
+                        if (entry.Mode == Mode.Directory)
+                        {
+                            throw new FileNotFoundException();
+                        }
+                        else
+                        {
+                            return Create(entry, currentCommit.Author.When);
+                        }
+                    }
+                }
+            }
+            else if (treeEntry.TargetType == TreeEntryTargetType.Blob)
+            {
+                return Create(treeEntry, currentCommit.Author.When);
+            }
+
+            throw new FileNotFoundException();
+        }
     }
 }

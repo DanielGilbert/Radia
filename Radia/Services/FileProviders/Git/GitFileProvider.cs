@@ -27,10 +27,10 @@ namespace Radia.Services.FileProviders.Git
             this.repositoryAddress = args.Repository;
             this.branch = args.Branch;
             this.localCache = GetCacheFolder(args.LocalCache);
-            this.repository = GetRepositoryInstance(this.repositoryAddress, this.branch);
+            this.repository = GetRepositoryInstance(this.repositoryAddress, this.branch, this.localCache);
         }
 
-        private Repository GetRepositoryInstance(string repositoryAddress, string branch)
+        private Repository GetRepositoryInstance(string repositoryAddress, string branch, string localCache)
         {
             Repository repository = new(repositoryAddress);
             if (repository.Refs[$"refs/heads/{branch}"] is Reference reference)
@@ -46,14 +46,13 @@ namespace Radia.Services.FileProviders.Git
 
         public IRadiaDirectoryContents GetDirectoryContents(string subpath)
         {
-            //var directoryContents = this.radiaFileProvider.GetDirectoryContents(subpath);
             return new GitDirectoryContents(this.repository, this.branch, subpath);
         }
 
         public IRadiaFileInfo GetFileInfo(string subpath)
         {
             //var localFileInfo = this.radiaFileProvider.GetFileInfo(subpath);
-            throw new NotImplementedException();
+            return GitFileInfo.Create(this.repository, this.branch, subpath);
             //using (var repo = new Repository(this.localCache))
             //{
             //    localFileInfo = GetLastModifiedDate(repo, subpath, localFileInfo);
