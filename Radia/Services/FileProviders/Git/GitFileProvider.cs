@@ -1,7 +1,9 @@
 ﻿using LibGit2Sharp;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Radia.Services.FileProviders.Local;
+using System.IO;
 using System.Text;
 
 namespace Radia.Services.FileProviders.Git
@@ -26,13 +28,33 @@ namespace Radia.Services.FileProviders.Git
             this.allowListing = args.AllowListing;
             this.repositoryAddress = args.Repository;
             this.branch = args.Branch;
-            this.localCache = GetCacheFolder(args.LocalCache);
+            this.localCache = GetCacheFolder(args.Repository + args.Branch);
             this.repository = GetRepositoryInstance(this.repositoryAddress, this.branch, this.localCache);
         }
 
         private Repository GetRepositoryInstance(string repositoryAddress, string branch, string localCache)
         {
-            Repository repository = new(repositoryAddress);
+            Repository repository;
+
+            try
+            {
+                string path = Repository.Clone(repositoryAddress, localCache, new CloneOptions()
+                {
+                    IsBare = true
+                });
+
+                repository = new(path);
+            }
+            catch(NameConflictException)
+            {
+                if (Repository.IsValid(localCache) is false)
+                    throw new InvalidOperationException("Path is not empty and not a valid repository");
+
+                repository = new(this.localCache);
+            }
+
+
+
             if (repository.Refs[$"refs/heads/{branch}"] is Reference reference)
             {
                 repository.Refs.UpdateTarget(repository.Refs.Head, reference);
@@ -41,6 +63,7 @@ namespace Radia.Services.FileProviders.Git
             {
                 throw new BranchNotFoundException(branch);
             }
+
             return repository;
         }
 
@@ -51,18 +74,12 @@ namespace Radia.Services.FileProviders.Git
 
         public IRadiaFileInfo GetFileInfo(string subpath)
         {
-            //var localFileInfo = this.radiaFileProvider.GetFileInfo(subpath);
-            return GitFileInfo.Create(this.repository, this.branch, subpath);
-            //using (var repo = new Repository(this.localCache))
-            //{
-            //    localFileInfo = GetLastModifiedDate(repo, subpath, localFileInfo);
-            //}
-            //return localFileInfo;
+            return GitFileInfo.Create(this.repository, subpath);
         }
 
         public IChangeToken Watch(string filter)
         {
-            throw new NotImplementedException();
+            return NullChangeToken.Singleton;
         }
 
         public static String GetCacheFolder(string value)
