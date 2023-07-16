@@ -1,14 +1,38 @@
 ﻿@charset "UTF-8";
 
 body {
-    margin: 40px auto;
-    max-width: 650px;
-    line-height: 1.6;
-    font-size: 18px;
-    color: #444;
-    padding: 0 10px
+    color: #eee;
+    background: #333;
 }
 
-h1, h2, h3 {
-    line-height: 1.2
+footer {
+    color: #888;
+}
+
+a {
+    color: #82b1ff;
+}
+
+table, td, th {
+    border: 1px solid #444;
+}
+
+/* Style the list */
+ul.breadcrumb {
+    background-color: #333;
+}
+
+/* Add a slash symbol (/) before/behind each list item */
+ul.breadcrumb li + li:before {
+    color: #eee;
+}
+
+/* Add a color to all links inside the list */
+ul.breadcrumb li a {
+    color: #82b1ff;
+}
+
+/* Add a color on mouse-over */
+ul.breadcrumb li a:hover {
+    color: #82b1ff;
 }
