@@ -16,13 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="templates\default\css\awsm_theme_black.min.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="templates\default\css\awsm_theme_white.min.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="templates\default\css\main.css">
+    <Content Include="templates\default\css\light.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="templates\default\css\print.css">
