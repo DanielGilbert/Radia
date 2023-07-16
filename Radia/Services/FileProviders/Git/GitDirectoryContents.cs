@@ -35,7 +35,7 @@ namespace Radia.Services.FileProviders.Git
                     }
                     else
                     {
-                        yield return GitFileInfo.Create(entry, currentCommit.Author.When);
+                        yield return GitFileInfo.Create(this.repository, entry, currentCommit.Author.When);
                     }
                 }
             }
@@ -55,14 +55,14 @@ namespace Radia.Services.FileProviders.Git
                             }
                             else
                             {
-                                yield return GitFileInfo.Create(entry, currentCommit.Author.When);
+                                yield return GitFileInfo.Create(this.repository, entry, currentCommit.Author.When);
                             }
                         }
                     }
                 }
                 else if (treeEntry.TargetType == TreeEntryTargetType.Blob)
                 {
-                    yield return GitFileInfo.Create(treeEntry, currentCommit.Author.When);
+                    yield return GitFileInfo.Create(this.repository, treeEntry, currentCommit.Author.When);
                 }
             }
 

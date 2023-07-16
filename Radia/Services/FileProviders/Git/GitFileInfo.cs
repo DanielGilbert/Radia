@@ -1,5 +1,4 @@
 ﻿using LibGit2Sharp;
-using System.Runtime.CompilerServices;
 
 namespace Radia.Services.FileProviders.Git
 {
@@ -7,11 +6,12 @@ namespace Radia.Services.FileProviders.Git
     {
         private readonly TreeEntry? treeEntry;
         private readonly DateTimeOffset lastModifiedDate;
+        private readonly long blobSize;
         private readonly string invalidPath;
 
         public bool Exists => this.treeEntry != null ? true : false;
 
-        public long Length => 0;
+        public long Length => blobSize;
 
         public string? PhysicalPath => this.treeEntry?.Path ?? invalidPath;
 
@@ -22,10 +22,13 @@ namespace Radia.Services.FileProviders.Git
         public bool IsDirectory => this.treeEntry?.Mode == Mode.Directory;
 
         private GitFileInfo(TreeEntry treeEntry,
-                            DateTimeOffset lastModifiedDate)
+                            DateTimeOffset lastModifiedDate,
+                            long blobSize)
         {
             this.treeEntry = treeEntry;
             this.lastModifiedDate = lastModifiedDate;
+            this.blobSize = blobSize;
+            this.invalidPath = string.Empty;
         }
 
         private GitFileInfo(string invalidPath)
@@ -33,6 +36,7 @@ namespace Radia.Services.FileProviders.Git
             this.treeEntry = null;
             this.lastModifiedDate = DateTimeOffset.MinValue;
             this.invalidPath = invalidPath;
+            this.blobSize = 0;
         }
 
         public Stream CreateReadStream()
@@ -42,7 +46,7 @@ namespace Radia.Services.FileProviders.Git
                 return Stream.Null;
             }
 
-            if (this.treeEntry.Target is Blob blob)
+            if (this.treeEntry?.Target is Blob blob)
             {
                 return blob.GetContentStream();
             }
@@ -55,12 +59,14 @@ namespace Radia.Services.FileProviders.Git
             return new GitFileInfo(invalidPath);
         }
 
-        internal static IRadiaFileInfo Create(TreeEntry treeEntry, DateTimeOffset lastModifiedDate)
+        internal static IRadiaFileInfo Create(Repository repository, TreeEntry treeEntry, DateTimeOffset lastModifiedDate)
         {
-            if (treeEntry.TargetType is not TreeEntryTargetType.Blob)
+            if (treeEntry.TargetType is not TreeEntryTargetType.Blob || treeEntry.Target is not Blob blob)
                 throw new InvalidOperationException("Only blobs can be used for GitFileInfo");
 
-            return new GitFileInfo(treeEntry, lastModifiedDate);
+            var blobSize = repository.ObjectDatabase.RetrieveObjectMetadata(blob.Id).Size;
+
+            return new GitFileInfo(treeEntry, lastModifiedDate, blobSize);
         }
 
         internal static IRadiaFileInfo Create(Repository repository, string subpath)
@@ -75,26 +81,10 @@ namespace Radia.Services.FileProviders.Git
             }
             else if (treeEntry?.TargetType == TreeEntryTargetType.Blob)
             {
-                repository.ObjectDatabase
-                return Create(treeEntry, currentCommit.Author.When);
+                return Create(repository, treeEntry, currentCommit.Author.When);
             }
 
             return CreateInvalid(subpath);
         }
-
-        private static bool IsRoot(string subpath)
-        {
-            return String.IsNullOrEmpty(subpath) || subpath.Equals("\\") || subpath.Equals("/");
-        }
-
-        //private static TreeEntry GetTreeEntryForPath(Commit currentCommit, string subpath)
-        //{
-        //    return IsRoot(subpath) ? currentCommit.Tree : currentCommit[subpath];
-        //}
-
-        //private static bool IsRoot(string subpath)
-        //{
-        //    return string.IsNullOrEmpty(subpath) || subpath.Equals("\\") || subpath.Equals("/"); 
-        //}
     }
 }
