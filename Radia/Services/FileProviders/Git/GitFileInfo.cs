@@ -69,25 +69,13 @@ namespace Radia.Services.FileProviders.Git
 
             var treeEntry = currentCommit[subpath];
 
-            if (treeEntry?.TargetType == TreeEntryTargetType.Tree)
+            if (treeEntry?.Mode == Mode.Directory)
             {
-                if (treeEntry.Target is Tree subtree)
-                {
-                    foreach (var entry in subtree)
-                    {
-                        if (entry.Mode == Mode.Directory)
-                        {
-                            return CreateInvalid(entry.Path);
-                        }
-                        else
-                        {
-                            return Create(entry, currentCommit.Author.When);
-                        }
-                    }
-                }
+                return CreateInvalid(subpath);
             }
             else if (treeEntry?.TargetType == TreeEntryTargetType.Blob)
             {
+                repository.ObjectDatabase
                 return Create(treeEntry, currentCommit.Author.When);
             }
 
