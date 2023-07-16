@@ -1,8 +1,12 @@
-﻿using Radia.Factories.ContentProcessor;
+﻿using IniParser.Model;
+using IniParser;
+using Radia.Factories.ContentProcessor;
 using Radia.Services;
 using Radia.Services.ContentProcessors;
 using Radia.Services.FileProviders;
 using Radia.ViewModels;
+using IniParser.Parser;
+using System.Net.Http;
 
 namespace Radia.Factories.ViewModel
 {
@@ -152,6 +156,9 @@ namespace Radia.Factories.ViewModel
                                                      string webHost,
                                                      string path)
         {
+            bool hasMetaFile = false;
+            string metaFileContent = string.Empty;
+
             foreach (var dir in directory)
             {
                 if (dir.IsDirectory)
@@ -172,11 +179,66 @@ namespace Radia.Factories.ViewModel
                         var cntntResult = contentProcessor.ProcessContent(cntntType, stringContent);
                         folderViewModel.ReadmeContent = cntntResult;
                     }
-                    folderViewModel.Files.Add(new RadiaFileInfoViewModel(byteSizeService, webHost, dir, dir.IsDirectory, path));
+                    else if (dir.Name.ToLowerInvariant().Equals(".meta"))
+                    {
+                        using (var reader = new StreamReader(dir.CreateReadStream()))
+                        {
+                            metaFileContent = reader.ReadToEnd();
+                            hasMetaFile = true;
+                        }
+                    }
+                    else
+                    {
+                        folderViewModel.Files.Add(new RadiaFileInfoViewModel(byteSizeService, webHost, dir, dir.IsDirectory, path));
+                    }
                 }
             }
 
+            if (hasMetaFile)
+            {
+                ParseDescriptionsFromMetaContent(folderViewModel, metaFileContent);
+            }
+
             return folderViewModel;
+        }
+
+        private void ParseDescriptionsFromMetaContent(FolderViewModel folderViewModel, string metaFileContent)
+        {
+            var result = new Dictionary<string, string>();
+
+            if (!String.IsNullOrWhiteSpace(metaFileContent))
+            {
+                IniDataParser iniDataParser = new();
+                var data = iniDataParser.Parse(metaFileContent);
+
+                foreach (var section in data.Sections)
+                {
+                    if (section.Keys.ContainsKey("Description"))
+                    {
+                        result.Add(section.SectionName, section.Keys["Description"]);
+                        folderViewModel.HasAnyDescriptions = true;
+                    }
+                }
+            }
+
+            foreach(var directory in folderViewModel.Directories)
+            {
+                if (result.TryGetValue(directory.Name, out string? description))
+                {
+                    directory.Description = description ?? string.Empty;
+                    folderViewModel.HasAnyDescriptions = true;
+                }
+
+            }
+
+            foreach (var file in folderViewModel.Files)
+            {
+                if (result.TryGetValue(file.Name, out string? description))
+                {
+                    file.Description = description ?? string.Empty;
+                }
+
+            }
         }
     }
 }

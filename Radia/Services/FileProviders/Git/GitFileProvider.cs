@@ -40,7 +40,7 @@ namespace Radia.Services.FileProviders.Git
             {
                 string path = Repository.Clone(repositoryAddress, localCache, new CloneOptions()
                 {
-                    IsBare = true
+                    IsBare = false
                 });
 
                 repository = new(path);
@@ -51,6 +51,11 @@ namespace Radia.Services.FileProviders.Git
                     throw new InvalidOperationException("Path is not empty and not a valid repository");
 
                 repository = new(this.localCache);
+                PullOptions options = new PullOptions();
+                options.MergeOptions = new MergeOptions();
+                options.FetchOptions = new FetchOptions();
+
+                Commands.Pull(repository, new Signature("Radía", "radia@local.host", new DateTimeOffset(DateTime.Now)), options);
             }
 
 
@@ -94,13 +99,11 @@ namespace Radia.Services.FileProviders.Git
 
         public void Fetch()
         {
-            //var remote = this.repository.Network.Remotes["origin"];
-            //var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-            //Commands.Fetch(this.repository, remote.Name, refSpecs, null, string.Empty);
-            //PullOptions options = new PullOptions();
-            //options.FetchOptions = new FetchOptions();
-            //var signature = new Signature(new Identity("Radia", "radia@local.host"), DateTimeOffset.Now);
-            //Commands.Pull(this.repository, signature, options);
+            PullOptions options = new PullOptions();
+            options.MergeOptions = new MergeOptions();
+            options.FetchOptions = new FetchOptions();
+
+            Commands.Pull(this.repository, new Signature("Radía", "radia@local.host", new DateTimeOffset(DateTime.Now)), options);
         }
 
         protected virtual void Dispose(bool disposing)
