@@ -86,9 +86,9 @@ namespace Radia.Services.FileProviders.Git
         {
             using (System.Security.Cryptography.SHA256 hash = System.Security.Cryptography.SHA256.Create())
             {
-                return $"/gitTmp/{String.Concat(hash
+                return Path.Combine(Path.GetTempPath() + $"gitTmp/{String.Concat(hash
                   .ComputeHash(Encoding.UTF8.GetBytes(value))
-                  .Select(item => item.ToString("x2")))}";
+                  .Select(item => item.ToString("x2")))}");
             }
         }
 
