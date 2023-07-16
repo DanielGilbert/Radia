@@ -49,6 +49,9 @@ namespace Radia.Services.FileProviders.Git
                     {
                         foreach (var entry in subtree)
                         {
+                            if (entry.Name.StartsWith("."))
+                                continue;
+
                             if (entry.Mode == Mode.Directory)
                             {
                                 yield return GitDirectoryInfo.Create(entry, currentCommit.Author.When);
