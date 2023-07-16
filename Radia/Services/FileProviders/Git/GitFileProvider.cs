@@ -40,7 +40,8 @@ namespace Radia.Services.FileProviders.Git
             {
                 string path = Repository.Clone(repositoryAddress, localCache, new CloneOptions()
                 {
-                    IsBare = false
+                    IsBare = false,
+                    BranchName = branch
                 });
 
                 repository = new(path);
