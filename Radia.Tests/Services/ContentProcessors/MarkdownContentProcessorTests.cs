@@ -22,7 +22,7 @@ namespace Radia.Tests.Services.ContentProcessors
 
                 string result = markdownContentProcessor.ProcessContent(contentType, markdownContent);
 
-                result.Should().Be("<h2>Header2</h2>");
+                result.Should().Be("<h2 id=\"header2\">Header2</h2>");
             }
 
             [TestMethod]

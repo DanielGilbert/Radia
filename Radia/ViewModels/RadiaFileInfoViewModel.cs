@@ -14,6 +14,7 @@ namespace Radia.ViewModels
         public long Length => dir.Length;
         public string FormattedLength { get; }
         public DateTimeOffset LastModified => dir.LastModified;
+        public string Description { get; set; }
 
         public RadiaFileInfoViewModel(IByteSizeService byteSizeService, string webHost, IRadiaFileInfo dir, bool isDirectory, string path)
         {

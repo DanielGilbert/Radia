@@ -14,11 +14,16 @@ namespace Radia.ViewModels
                              string websiteRoot,
                              IFooterService footerService)
         {
-            PageTitle = pageTitle;
+            PageTitle = CreatePageTitle(pageTitle, pageHeader);
             PageHeader = pageHeader;
             WebsiteRoot = websiteRoot;
             FooterContent = footerService.GetFormattedFooter();
 
+        }
+
+        private string CreatePageTitle(string pageTitle, string pageHeader)
+        {
+            return String.IsNullOrWhiteSpace(pageHeader) ? pageTitle : $"{pageHeader} - {pageTitle}";
         }
     }
 }

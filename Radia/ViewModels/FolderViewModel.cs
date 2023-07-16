@@ -16,6 +16,8 @@ namespace Radia.ViewModels
         public IList<IRadiaAncestorInfo> AncestorsWithoutLastElement => Ancestors.Take(Ancestors.Count - 1).ToList();
         public IRadiaAncestorInfo? LastAncestor { get; }
         public string ReadmeContent { get; set; }
+        public Dictionary<string, string> Descriptions { get; set; }
+        public bool HasAnyDescriptions { get; set; }
 
         public FolderViewModel(string pageTitle,
                                string pageHeader,
@@ -29,6 +31,7 @@ namespace Radia.ViewModels
             Ancestors = CreateAncestorList();
             LastAncestor = Ancestors.LastOrDefault();
             ReadmeContent = string.Empty;
+            Descriptions = new Dictionary<string, string>();
         }
 
         private IList<IRadiaAncestorInfo> CreateAncestorList()

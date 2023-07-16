@@ -24,6 +24,9 @@
                     <th>Name</th>
                     <th>Size</th>
                     <th>Date</th>
+                    {% if HasAnyDescriptions != false %}
+                    <th>Description</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +38,9 @@
                     </td>
                     <td>-</td>
                     <td>{{directory.LastModified}}</td>
+                    {% if HasAnyDescriptions != false %}
+                    <td>{{directory.Description}}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 {% for file in Files %}
@@ -46,6 +52,9 @@
                     </td>
                     <td>{{file.FormattedLength}}</td>
                     <td>{{file.LastModified}}</td>
+                    {% if HasAnyDescriptions != false %}
+                    <td>{{file.Description}}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

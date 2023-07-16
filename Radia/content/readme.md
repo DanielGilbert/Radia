@@ -95,3 +95,8 @@ Another nice aspect about Radia is that it can directly display the contents of 
 | Property     | Description                                                                                                                               |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | AllowListing | This boolean decides if the content of this directory will be listed on the index page. I do not recommend that for template directories or similar. |
+
+## Building
+I really encourage you to use the existing docker image. If you really like to build Radia on your own, you can do so by running `dotnet build Radia.sln`
+### Tests
+For the time being, the tests can be run using Windows. A `tests.runsettings`is located at the root of the project repository. This is needed and should be included in all `dotnet test Radia.sln` calls.

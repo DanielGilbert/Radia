@@ -8,7 +8,7 @@ namespace Radia.Services.ContentProcessors
         {
             if (contentType.ToLowerInvariant().Contains("text/markdown"))
             {
-                var pipeline = new MarkdownPipelineBuilder().DisableHtml().Build();
+                var pipeline = new MarkdownPipelineBuilder().DisableHtml().UseAdvancedExtensions().Build();
 
                 var result = Markdown.ToHtml(content, pipeline).Trim();
                     
