@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [3.0.8] - 2023-07-16
+
+### Added
+- The `.meta` file now allows you to add a description to each entry in your directory, either file or sub-directory.
+- Markdown extensions have been activated. Now tables, footnotes and more can be parsed.
+- File sizes are now parsed from Git entries.
+
+### Changed
+- The Git implementation resorts to working copy for now. It's easier to work with.
+- Awsm.css sadly hat to be removed. The original author completely disappeared. I re-implemented a basic css layout.
+- A available `Readme.md` will be parsed as before, but won't show up on the directory list.
+
+### Fixed
+- Using the temp folder explicitly now fixes some issues related to permissions on unix-based systems.
 
 ## [3.0.7] - 2023-06-14
 
@@ -66,7 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Majority of code is now under test.
 
 
-[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.7...HEAD
+[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.8...HEAD
+[3.0.8]: https://github.com/DanielGilbert/Radia/compare/v3.0.7...v3.0.8
 [3.0.7]: https://github.com/DanielGilbert/Radia/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/DanielGilbert/Radia/compare/v3.0.5...v3.0.6
 [3.0.5]: https://github.com/DanielGilbert/Radia/compare/v3.0.4...v3.0.5

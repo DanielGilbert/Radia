@@ -18,7 +18,7 @@ The name comes from the likes of [Radia Perlman](https://en.wikipedia.org/wiki/R
 - Works on folders and/or Git repositories
 - Can serve from multiple file repositories. Want your template in a different repo than your content? No Problem!
 - Renders Markdown files
-- Respects hidden file attributes
+- Respects hidden file attributes (for the git file provider, hidden files have to start with a ".")
 - ~~Just~~ Kinda works.™
 
 ## Usage
@@ -117,6 +117,13 @@ Another nice aspect about Radia is that it can directly display the contents of 
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | AllowListing | This boolean decides if the content of this directory will be listed on the index page. I do not recommend that for template directories or similar. |
 
+### Meta Files
+Meta files (designated by the name `.meta`) allow you to add a description to files or directories. The file is basically a [INI file](https://en.wikipedia.org/wiki/INI_file), which looks like this:
+```ini
+[games]
+Description=Some of the games I developed lately.
+```
+The section name (in brackets) is the name of file or folder that is affected by the key(s) that follow in this sections. In this case, the only key available is `Description`. So a folder called `games` would now show the description given in this example. The `.meta` file needs to be placed in the parent folder. So, if you want to give the folder `/content/games/` a description, the `.meta` file must be placed at `/content/.meta`, and the section must be called `[games]`.
 ## Building
 I really encourage you to use the existing docker image. If you really like to build Radia on your own, you can do so by running `dotnet build Radia.sln`
 ### Tests
