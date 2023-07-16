@@ -117,7 +117,7 @@ Another nice aspect about Radia is that it can directly display the contents of 
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | AllowListing | This boolean decides if the content of this directory will be listed on the index page. I do not recommend that for template directories or similar. |
 
-### Meta Files
+## Meta Files
 Meta files (designated by the name `.meta`) allow you to add a description to files or directories. The file is basically a [INI file](https://en.wikipedia.org/wiki/INI_file), which looks like this:
 ```ini
 [games]
