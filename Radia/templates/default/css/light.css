@@ -1,35 +1,14 @@
 ﻿@charset "UTF-8";
-/* Style the list */
-ul.breadcrumb {
-    list-style: none;
-}
 
-/* Display list items side by side */
-ul.breadcrumb li {
-    display: inline;
+body {
+    margin: 40px auto;
+    max-width: 650px;
+    line-height: 1.6;
     font-size: 18px;
+    color: #444;
+    padding: 0 10px
 }
 
-/* Add a slash symbol (/) before/behind each list item */
-ul.breadcrumb li + li:before {
-    padding: 1px;
-    content: "/\00a0";
-}
-
-/* Add a color to all links inside the list */
-ul.breadcrumb li a {
-    text-decoration: none;
-}
-
-/* Add a color on mouse-over */
-ul.breadcrumb li a:hover {
-    text-decoration: underline;
-}
-
-nav li {
-    margin-right: 0em;
-}
-
-body > header {
-    margin-bottom: 1.5em;
+h1, h2, h3 {
+    line-height: 1.2
 }
