@@ -97,7 +97,7 @@ namespace Radia.Factories.ViewModel
                                                     contentType,
                                                     path,
                                                     configurationService.GetWebsiteTitle(),
-                                                    configurationService.GetPageHeader(),
+                                                    Path.GetFileName(path) ?? configurationService.GetPageHeader(),
                                                     webHost,
                                                     this.footerService);
             }
@@ -128,7 +128,9 @@ namespace Radia.Factories.ViewModel
             }
 
             var folderViewModel = new FolderViewModel(configurationService.GetWebsiteTitle(),
-                                                      configurationService.GetPageHeader(),
+                                                      String.IsNullOrWhiteSpace(path) 
+                                                      || path == "/" ? configurationService.GetPageHeader() 
+                                                                     : (Path.GetDirectoryName(path) ?? configurationService.GetPageHeader()),
                                                       path,
                                                       webHost,
                                                       this.footerService);
