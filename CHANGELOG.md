@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [3.0.10] - 2023-07-17
+
+### Changed
+- Design of tables has been changed in the light layout.
+- The navigation is now hidden in the root element.
+
 ## [3.0.9] - 2023-07-17
 
 ### Fixed
@@ -87,8 +93,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Majority of code is now under test.
 
 
-[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.9...HEAD
-[3.0.8]: https://github.com/DanielGilbert/Radia/compare/v3.0.8...v3.0.9
+[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.10...HEAD
+[3.0.10]: https://github.com/DanielGilbert/Radia/compare/v3.0.9...v3.0.10
+[3.0.9]: https://github.com/DanielGilbert/Radia/compare/v3.0.8...v3.0.9
 [3.0.8]: https://github.com/DanielGilbert/Radia/compare/v3.0.7...v3.0.8
 [3.0.7]: https://github.com/DanielGilbert/Radia/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/DanielGilbert/Radia/compare/v3.0.5...v3.0.6
