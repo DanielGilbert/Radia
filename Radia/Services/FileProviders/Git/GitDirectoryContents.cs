@@ -29,13 +29,15 @@ namespace Radia.Services.FileProviders.Git
             {
                 foreach(var entry in currentCommit.Tree)
                 {
+                    var result = this.repository.Commits.QueryBy(entry.Name);
+
                     if (entry.Mode == Mode.Directory)
                     {
-                        yield return GitDirectoryInfo.Create(entry, currentCommit.Author.When);
+                        yield return GitDirectoryInfo.Create(entry, result.Last().Commit.Author.When);
                     }
                     else
                     {
-                        yield return GitFileInfo.Create(this.repository, entry, currentCommit.Author.When);
+                        yield return GitFileInfo.Create(this.repository, entry, result.Last().Commit.Author.When);
                     }
                 }
             }
@@ -52,13 +54,16 @@ namespace Radia.Services.FileProviders.Git
                             if (entry.Name.StartsWith("."))
                                 continue;
 
+                            var result = this.repository.Commits.QueryBy(this.subpath + entry.Name);
+
                             if (entry.Mode == Mode.Directory)
                             {
-                                yield return GitDirectoryInfo.Create(entry, currentCommit.Author.When);
+
+                                yield return GitDirectoryInfo.Create(entry, result.Last().Commit.Author.When);
                             }
                             else
                             {
-                                yield return GitFileInfo.Create(this.repository, entry, currentCommit.Author.When);
+                                yield return GitFileInfo.Create(this.repository, entry, result.Last().Commit.Author.When);
                             }
                         }
                     }
@@ -70,6 +75,17 @@ namespace Radia.Services.FileProviders.Git
             }
 
             yield break;
+        }
+
+        /// <summary>
+        /// For some reasons, the libgit2sharp implementation doubles the first part of the path.
+        /// I'm not sure why, but this tries to mitigate this issue, without breaking everything.
+        /// </summary>
+        /// <param name="path">The path to clean</param>
+        /// <returns>The cleaned path.</returns>
+        private string FixEntryPath(string path)
+        {
+            return path;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
