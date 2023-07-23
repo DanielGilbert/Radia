@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [3.0.11] - 2023-07-23
+
+### Changed
+- Timestamps of folders and files are now taken from the last commit they got changed on.
+
 ## [3.0.10] - 2023-07-17
 
 ### Changed
@@ -93,7 +98,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Majority of code is now under test.
 
 
-[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.10...HEAD
+[unreleased]: https://github.com/DanielGilbert/Radia/compare/v3.0.11...HEAD
+[3.0.11]: https://github.com/DanielGilbert/Radia/compare/v3.0.10...v3.0.11
 [3.0.10]: https://github.com/DanielGilbert/Radia/compare/v3.0.9...v3.0.10
 [3.0.9]: https://github.com/DanielGilbert/Radia/compare/v3.0.8...v3.0.9
 [3.0.8]: https://github.com/DanielGilbert/Radia/compare/v3.0.7...v3.0.8
