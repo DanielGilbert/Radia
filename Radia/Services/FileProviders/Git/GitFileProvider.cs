@@ -56,7 +56,15 @@ namespace Radia.Services.FileProviders.Git
                 options.MergeOptions = new MergeOptions();
                 options.FetchOptions = new FetchOptions();
 
-                Commands.Pull(repository, new Signature("Radía", "radia@local.host", new DateTimeOffset(DateTime.Now)), options);
+                try
+                {
+                    Commands.Pull(repository, new Signature("Radía", "radia@local.host", new DateTimeOffset(DateTime.Now)), options);
+                }
+                catch
+                {
+                    Directory.Delete(localCache, true);
+                    GetRepositoryInstance(repositoryAddress, branch, localCache);
+                }
             }
 
 
