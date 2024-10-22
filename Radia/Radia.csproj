@@ -36,7 +36,7 @@
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.30.0" />
     <PackageReference Include="Markdig" Version="0.37.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="MinimalApis.LiquidViews" Version="2.11.1" />
 	<PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
